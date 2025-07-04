@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Font Awesome assets (auto-generated from node_modules)
+/public/fontawesome-free

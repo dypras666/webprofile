@@ -222,6 +222,176 @@
                                     <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-book" title="Book">
                                         <i class="fas fa-book text-lg"></i>
                                     </button>
+                                    <!-- Business & Office -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-briefcase" title="Briefcase">
+                                        <i class="fas fa-briefcase text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-building" title="Building">
+                                        <i class="fas fa-building text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-chart-bar" title="Chart">
+                                        <i class="fas fa-chart-bar text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-handshake" title="Partnership">
+                                        <i class="fas fa-handshake text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-trophy" title="Achievement">
+                                        <i class="fas fa-trophy text-lg"></i>
+                                    </button>
+                                    <!-- Education -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-graduation-cap" title="Education">
+                                        <i class="fas fa-graduation-cap text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-university" title="University">
+                                        <i class="fas fa-university text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-chalkboard-teacher" title="Teaching">
+                                        <i class="fas fa-chalkboard-teacher text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-certificate" title="Certificate">
+                                        <i class="fas fa-certificate text-lg"></i>
+                                    </button>
+                                    <!-- Social Media -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fab fa-facebook" title="Facebook">
+                                        <i class="fab fa-facebook text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fab fa-twitter" title="Twitter">
+                                        <i class="fab fa-twitter text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fab fa-instagram" title="Instagram">
+                                        <i class="fab fa-instagram text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fab fa-youtube" title="YouTube">
+                                        <i class="fab fa-youtube text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fab fa-linkedin" title="LinkedIn">
+                                        <i class="fab fa-linkedin text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fab fa-whatsapp" title="WhatsApp">
+                                        <i class="fab fa-whatsapp text-lg"></i>
+                                    </button>
+                                    <!-- Technology -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-laptop" title="Laptop">
+                                        <i class="fas fa-laptop text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-mobile-alt" title="Mobile">
+                                        <i class="fas fa-mobile-alt text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-code" title="Code">
+                                        <i class="fas fa-code text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-database" title="Database">
+                                        <i class="fas fa-database text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-server" title="Server">
+                                        <i class="fas fa-server text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-wifi" title="WiFi">
+                                        <i class="fas fa-wifi text-lg"></i>
+                                    </button>
+                                    <!-- Health & Medical -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-hospital" title="Hospital">
+                                        <i class="fas fa-hospital text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-user-md" title="Doctor">
+                                        <i class="fas fa-user-md text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-stethoscope" title="Medical">
+                                        <i class="fas fa-stethoscope text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-pills" title="Medicine">
+                                        <i class="fas fa-pills text-lg"></i>
+                                    </button>
+                                    <!-- Transportation -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-car" title="Car">
+                                        <i class="fas fa-car text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-plane" title="Plane">
+                                        <i class="fas fa-plane text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-ship" title="Ship">
+                                        <i class="fas fa-ship text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-bus" title="Bus">
+                                        <i class="fas fa-bus text-lg"></i>
+                                    </button>
+                                    <!-- Food & Restaurant -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-utensils" title="Restaurant">
+                                        <i class="fas fa-utensils text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-coffee" title="Coffee">
+                                        <i class="fas fa-coffee text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-pizza-slice" title="Food">
+                                        <i class="fas fa-pizza-slice text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-wine-glass" title="Beverage">
+                                        <i class="fas fa-wine-glass text-lg"></i>
+                                    </button>
+                                    <!-- Sports & Recreation -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-football-ball" title="Sports">
+                                        <i class="fas fa-football-ball text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-dumbbell" title="Fitness">
+                                        <i class="fas fa-dumbbell text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-swimming-pool" title="Swimming">
+                                        <i class="fas fa-swimming-pool text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-gamepad" title="Gaming">
+                                        <i class="fas fa-gamepad text-lg"></i>
+                                    </button>
+                                    <!-- Finance -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-dollar-sign" title="Money">
+                                        <i class="fas fa-dollar-sign text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-credit-card" title="Payment">
+                                        <i class="fas fa-credit-card text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-piggy-bank" title="Savings">
+                                        <i class="fas fa-piggy-bank text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-coins" title="Coins">
+                                        <i class="fas fa-coins text-lg"></i>
+                                    </button>
+                                    <!-- Weather -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-sun" title="Sunny">
+                                        <i class="fas fa-sun text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-cloud" title="Cloudy">
+                                        <i class="fas fa-cloud text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-snowflake" title="Snow">
+                                        <i class="fas fa-snowflake text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-bolt" title="Thunder">
+                                        <i class="fas fa-bolt text-lg"></i>
+                                    </button>
+                                    <!-- Miscellaneous -->
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-gift" title="Gift">
+                                        <i class="fas fa-gift text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-bell" title="Notification">
+                                        <i class="fas fa-bell text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-lock" title="Security">
+                                        <i class="fas fa-lock text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-key" title="Key">
+                                        <i class="fas fa-key text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-shield-alt" title="Protection">
+                                        <i class="fas fa-shield-alt text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-globe" title="Global">
+                                        <i class="fas fa-globe text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-flag" title="Flag">
+                                        <i class="fas fa-flag text-lg"></i>
+                                    </button>
+                                    <button type="button" class="icon-option p-2 text-center hover:bg-gray-100 rounded" data-icon="fas fa-clock" title="Time">
+                                        <i class="fas fa-clock text-lg"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>

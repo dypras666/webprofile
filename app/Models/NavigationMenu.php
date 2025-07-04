@@ -88,15 +88,15 @@ class NavigationMenu extends Model
         }
 
         if ($this->type === 'post' && $this->referencedPost) {
-            return route('frontend.post.show', $this->referencedPost->slug);
+            return route('frontend.post', $this->referencedPost->slug);
         }
 
         if ($this->type === 'page' && $this->referencedPost) {
-            return route('frontend.page.show', $this->referencedPost->slug);
+            return route('frontend.post', $this->referencedPost->slug);
         }
 
         if ($this->type === 'category' && $this->referencedCategory) {
-            return route('frontend.category.show', $this->referencedCategory->slug);
+            return route('frontend.category', $this->referencedCategory->slug);
         }
 
         return $this->url ?? '#';
