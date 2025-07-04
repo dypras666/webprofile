@@ -80,11 +80,20 @@ class NavigationController extends Controller
             'type' => 'required|in:custom,post,page,category',
             'url' => 'nullable|string|max:255',
             'reference_id' => 'nullable|integer',
+            'parent_id' => 'nullable|exists:navigation_menus,id',
             'target' => 'in:_self,_blank',
             'css_class' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'is_active' => 'boolean'
         ]);
+
+        // Prevent setting self as parent
+        if (isset($validated['parent_id']) && $validated['parent_id'] == $menu->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Menu tidak dapat menjadi parent dari dirinya sendiri'
+            ], 422);
+        }
 
         $validated['target'] = $validated['target'] ?? '_self';
         $validated['is_active'] = $validated['is_active'] ?? true;
@@ -120,11 +129,18 @@ class NavigationController extends Controller
         $validated = $request->validate([
             'menus' => 'required|array',
             'menus.*.id' => 'required|exists:navigation_menus,id',
-            'menus.*.children' => 'sometimes|array'
+            'menus.*.parent_id' => 'nullable|exists:navigation_menus,id',
+            'menus.*.sort_order' => 'required|integer|min:1'
         ]);
 
         try {
-            NavigationMenu::updateSortOrder($validated['menus']);
+            foreach ($validated['menus'] as $menuData) {
+                NavigationMenu::where('id', $menuData['id'])
+                             ->update([
+                                 'parent_id' => $menuData['parent_id'],
+                                 'sort_order' => $menuData['sort_order']
+                             ]);
+            }
 
             return response()->json([
                 'success' => true,

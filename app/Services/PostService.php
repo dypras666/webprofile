@@ -135,7 +135,7 @@ class PostService
             if (isset($data['featured_image'])) {
                 if ($data['featured_image'] instanceof UploadedFile) {
                     $media = $this->fileUploadService->upload($data['featured_image'], 'posts/featured');
-                    $data['featured_image'] = $media->path;
+                    $data['featured_image'] = $media->file_path;
                 } elseif (is_string($data['featured_image']) && !empty($data['featured_image'])) {
                     // Keep the media library path as is
                     $data['featured_image'] = $data['featured_image'];
@@ -145,16 +145,51 @@ class PostService
                 }
             }
             
-            // Handle gallery images upload
-            if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
-                $galleryPaths = [];
-                foreach ($data['gallery_images'] as $image) {
-                    if ($image instanceof UploadedFile) {
-                        $media = $this->fileUploadService->upload($image, 'posts/gallery');
-                        $galleryPaths[] = $media->path;
+            // Handle gallery images upload or selection from media library
+            if (isset($data['gallery_images'])) {
+                \Log::info('=== GALLERY DEBUG START ===');
+                \Log::info('Processing gallery_images', ['data' => $data['gallery_images'], 'type' => gettype($data['gallery_images'])]);
+                
+                if (is_string($data['gallery_images']) && !empty($data['gallery_images'])) {
+                    // Data from media picker (JSON string of media IDs)
+                    $mediaIds = json_decode($data['gallery_images'], true);
+                    \Log::info('Decoded media IDs', ['mediaIds' => $mediaIds]);
+                    
+                    if (is_array($mediaIds) && !empty($mediaIds)) {
+                        $galleryPaths = [];
+                        foreach ($mediaIds as $mediaId) {
+                            $media = \App\Models\Media::find($mediaId);
+                            if ($media) {
+                                $galleryPaths[] = $media->file_path;
+                                \Log::info('Found media', ['id' => $mediaId, 'path' => $media->file_path]);
+                            } else {
+                                \Log::warning('Media not found', ['id' => $mediaId]);
+                            }
+                        }
+                        $data['gallery_images'] = $galleryPaths;
+                        \Log::info('Final gallery_images JSON', ['json' => $data['gallery_images']]);
+                        \Log::info('Gallery paths array', ['paths' => $galleryPaths]);
+                    } else {
+                        \Log::info('No valid media IDs found');
+                        $data['gallery_images'] = null;
                     }
+                } elseif (is_array($data['gallery_images'])) {
+                    // Handle direct file uploads (if any)
+                    \Log::info('Processing direct file uploads');
+                    $galleryPaths = [];
+                    foreach ($data['gallery_images'] as $image) {
+                        if ($image instanceof UploadedFile) {
+                            $media = $this->fileUploadService->upload($image, 'posts/gallery');
+                            $galleryPaths[] = $media->file_path;
+                        }
+                    }
+                    $data['gallery_images'] = $galleryPaths;
+                } else {
+                    \Log::info('Gallery images is null or empty');
+                    $data['gallery_images'] = null;
                 }
-                $data['gallery_images'] = json_encode($galleryPaths);
+            } else {
+                \Log::info('No gallery_images in data');
             }
             
             // Set published_at if publishing
@@ -177,6 +212,12 @@ class PostService
             }
             
             $post = $this->postRepository->create($data);
+            
+            \Log::info('=== POST CREATED ===');
+            \Log::info('Post ID: ' . $post->id);
+            \Log::info('Post gallery_images from DB', ['gallery_images' => $post->gallery_images]);
+            \Log::info('Post gallery_images raw', ['raw' => $post->getRawOriginal('gallery_images')]);
+            \Log::info('=== GALLERY DEBUG END ===');
             
             // Clear related caches
             $this->clearRelatedCaches();
@@ -220,7 +261,7 @@ class PostService
                     }
                     
                     $media = $this->fileUploadService->upload($data['featured_image'], 'posts/featured');
-                    $data['featured_image'] = $media->path;
+                    $data['featured_image'] = $media->file_path;
                 } elseif (is_string($data['featured_image']) && !empty($data['featured_image'])) {
                     // Only delete old image if we're changing to a different one
                     if ($post->featured_image && $post->featured_image !== $data['featured_image']) {
@@ -237,24 +278,71 @@ class PostService
                 }
             }
             
-            // Handle gallery images upload
-            if (isset($data['gallery_images']) && is_array($data['gallery_images'])) {
-                // Delete old gallery images if exists
-                if ($post->gallery_images) {
-                    $oldImages = json_decode($post->gallery_images, true);
-                    foreach ($oldImages as $imagePath) {
-                        $this->fileUploadService->delete($imagePath);
+            // Handle gallery images upload or selection from media library
+            if (isset($data['gallery_images'])) {
+                if (is_string($data['gallery_images']) && !empty($data['gallery_images'])) {
+                    // Data from media picker (JSON string of media IDs)
+                    $mediaIds = json_decode($data['gallery_images'], true);
+                    if (is_array($mediaIds) && !empty($mediaIds)) {
+                        // Only delete old images if we're changing to different ones
+                        $newPaths = [];
+                        foreach ($mediaIds as $mediaId) {
+                             $media = \App\Models\Media::find($mediaId);
+                             if ($media) {
+                                 $newPaths[] = $media->file_path;
+                             }
+                         }
+                        
+                        // Check if gallery images actually changed
+                        $oldPaths = $post->gallery_images ? json_decode($post->gallery_images, true) : [];
+                        if ($oldPaths !== $newPaths) {
+                            // Delete old gallery images if they're different
+                            foreach ($oldPaths as $imagePath) {
+                                if (!in_array($imagePath, $newPaths)) {
+                                    $this->fileUploadService->delete($imagePath);
+                                }
+                            }
+                        }
+                        
+                        $data['gallery_images'] = $newPaths;
+                    } else {
+                        // Remove gallery images
+                        if ($post->gallery_images) {
+                            $oldImages = json_decode($post->gallery_images, true);
+                            foreach ($oldImages as $imagePath) {
+                                $this->fileUploadService->delete($imagePath);
+                            }
+                        }
+                        $data['gallery_images'] = null;
                     }
-                }
-                
-                $galleryPaths = [];
-                foreach ($data['gallery_images'] as $image) {
-                    if ($image instanceof UploadedFile) {
-                        $media = $this->fileUploadService->upload($image, 'posts/gallery');
-                        $galleryPaths[] = $media->path;
+                } elseif (is_array($data['gallery_images'])) {
+                    // Handle direct file uploads (if any)
+                    // Delete old gallery images if exists
+                    if ($post->gallery_images) {
+                        $oldImages = json_decode($post->gallery_images, true);
+                        foreach ($oldImages as $imagePath) {
+                            $this->fileUploadService->delete($imagePath);
+                        }
                     }
+                    
+                    $galleryPaths = [];
+                    foreach ($data['gallery_images'] as $image) {
+                        if ($image instanceof UploadedFile) {
+                            $media = $this->fileUploadService->upload($image, 'posts/gallery');
+                            $galleryPaths[] = $media->file_path;
+                        }
+                    }
+                    $data['gallery_images'] = json_encode($galleryPaths);
+                } elseif ($data['gallery_images'] === '' || $data['gallery_images'] === null) {
+                    // Remove gallery images
+                    if ($post->gallery_images) {
+                        $oldImages = json_decode($post->gallery_images, true);
+                        foreach ($oldImages as $imagePath) {
+                            $this->fileUploadService->delete($imagePath);
+                        }
+                    }
+                    $data['gallery_images'] = null;
                 }
-                $data['gallery_images'] = json_encode($galleryPaths);
             }
             
             // Set published_at if publishing for the first time
@@ -282,6 +370,12 @@ class PostService
             }
             
             $updatedPost = $this->postRepository->update($id, $data);
+            
+            \Log::info('=== POST UPDATED ===');
+            \Log::info('Updated Post ID: ' . $updatedPost->id);
+            \Log::info('Updated Post gallery_images from DB', ['gallery_images' => $updatedPost->gallery_images]);
+            \Log::info('Updated Post gallery_images raw', ['raw' => $updatedPost->getRawOriginal('gallery_images')]);
+            \Log::info('=== GALLERY DEBUG END ===');
             
             // Clear related caches
             $this->clearRelatedCaches();
@@ -487,7 +581,13 @@ class PostService
      */
     protected function clearRelatedCaches(): void
     {
-        Cache::tags(['posts', 'categories', 'homepage'])->flush();
+        // Check if cache driver supports tagging
+        if (method_exists(Cache::getStore(), 'tags')) {
+            Cache::tags(['posts', 'categories', 'homepage'])->flush();
+        } else {
+            // Fallback for cache drivers that don't support tagging (like database)
+            Cache::flush();
+        }
     }
 
     /**

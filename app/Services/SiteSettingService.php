@@ -564,7 +564,13 @@ class SiteSettingService
      */
     protected function clearAllSettingCaches(): void
     {
-        Cache::tags(['settings', 'admin'])->flush();
+        // Check if cache driver supports tagging
+        if (method_exists(Cache::getStore(), 'tags')) {
+            Cache::tags(['settings', 'admin'])->flush();
+        } else {
+            // Fallback for cache drivers that don't support tagging (like database)
+            Cache::flush();
+        }
         
         // Also clear specific caches
         $patterns = [

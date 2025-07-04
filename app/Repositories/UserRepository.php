@@ -183,24 +183,29 @@ class UserRepository extends BaseRepository
     /**
      * Search users
      */
-    public function search($query, $filters = []): Collection
+    public function search($query, $fields = [], $limit = null): Collection
     {
         $modelQuery = $this->model->newQuery();
         
-        // Search in name, email, and bio
-        $modelQuery->where(function ($q) use ($query) {
-            $q->where('name', 'LIKE', "%{$query}%")
-              ->orWhere('email', 'LIKE', "%{$query}%")
-              ->orWhere('bio', 'LIKE', "%{$query}%");
-        });
-        
-        // Apply filters
-        if (!empty($filters['role'])) {
-            $modelQuery->where('role', $filters['role']);
+        // If specific fields are provided, search in those fields
+        if (!empty($fields)) {
+            $modelQuery->where(function ($q) use ($query, $fields) {
+                foreach ($fields as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$query}%");
+                }
+            });
+        } else {
+            // Default search in name, email, and bio
+            $modelQuery->where(function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('email', 'LIKE', "%{$query}%")
+                  ->orWhere('bio', 'LIKE', "%{$query}%");
+            });
         }
         
-        if (isset($filters['is_active'])) {
-            $modelQuery->where('is_active', $filters['is_active']);
+        // Apply limit if provided
+        if ($limit) {
+            $modelQuery->limit($limit);
         }
         
         return $modelQuery->withCount('posts')

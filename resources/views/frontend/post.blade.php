@@ -65,7 +65,19 @@
             </li>
             <li>
                 <a href="{{ route('frontend.posts') }}" class="hover:text-blue-600 transition-colors">
-                    Articles
+                    @switch($post->type)
+                        @case('page')
+                            Pages
+                            @break
+                        @case('video')
+                            Videos
+                            @break
+                        @case('gallery')
+                            Gallery
+                            @break
+                        @default
+                            Articles
+                    @endswitch
                 </a>
             </li>
             @if($post->category)
@@ -203,6 +215,52 @@
             <div class="prose prose-lg max-w-none">
                 {!! $post->content !!}
             </div>
+            
+            {{-- Gallery Images --}}
+            @if($post->type === 'gallery')
+                {{-- Debug Info --}}
+                @php
+                    \Log::info('=== FRONTEND GALLERY DEBUG ===');
+                    \Log::info('Post ID: ' . $post->id);
+                    \Log::info('Post Type: ' . $post->type);
+                    \Log::info('Gallery Images Raw: ' . $post->getRawOriginal('gallery_images'));
+                    \Log::info('Gallery Images Cast: ', ['gallery_images' => $post->gallery_images]);
+                    \Log::info('Gallery Images Count: ' . (is_array($post->gallery_images) ? count($post->gallery_images) : 'not array'));
+                @endphp
+                
+                @if($post->gallery_images && count($post->gallery_images) > 0)
+                    <div class="mt-12 pt-8 border-t border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">Gallery ({{ count($post->gallery_images) }} images)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            @foreach($post->gallery_images as $index => $image)
+                                @php
+                                    \Log::info('Image ' . $index . ': ' . $image);
+                                @endphp
+                                <div class="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                                    <img src="{{ asset('storage/' . $image) }}" 
+                                         alt="Gallery image {{ $index + 1 }}"
+                                         class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                                         onerror="console.log('Failed to load image: {{ asset('storage/' . $image) }}')">
+                                    
+                                    {{-- Overlay --}}
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                                        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    <div class="mt-12 pt-8 border-t border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">Gallery</h3>
+                        <p class="text-gray-500">No gallery images found. Debug: gallery_images = {{ json_encode($post->gallery_images) }}</p>
+                    </div>
+                @endif
+            @endif
             
             {{-- Tags --}}
             @if($post->tags)

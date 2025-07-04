@@ -22,6 +22,30 @@
         margin-left: 2rem;
         border-left: 2px solid #e5e7eb;
         padding-left: 1rem;
+        margin-top: 0.5rem;
+    }
+    .nested-menu .menu-item {
+        background-color: #f8fafc;
+        border-left: 3px solid #3b82f6;
+        margin-bottom: 0.5rem;
+    }
+    .nested-menu .menu-item:hover {
+        background-color: #f1f5f9;
+    }
+    .menu-level-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background-color: #3b82f6;
+        border-radius: 50%;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+    .add-submenu-btn {
+        transition: all 0.2s ease;
+    }
+    .add-submenu-btn:hover {
+        transform: scale(1.1);
     }
     .drag-handle {
         cursor: grab;
@@ -116,6 +140,23 @@
                         <select id="menu-reference" name="reference_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Pilih...</option>
                         </select>
+                    </div>
+
+                    <!-- Parent Menu -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Parent Menu</label>
+                        <select id="menu-parent" name="parent_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">-- Root Menu --</option>
+                            @foreach($menus->where('parent_id', null) as $parentMenu)
+                                <option value="{{ $parentMenu->id }}">{{ $parentMenu->title }}</option>
+                                @if($parentMenu->children && $parentMenu->children->count() > 0)
+                                    @foreach($parentMenu->children as $childMenu)
+                                        <option value="{{ $childMenu->id }}">-- {{ $childMenu->title }}</option>
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Pilih parent menu untuk membuat sub menu. Kosongkan untuk menu utama.</p>
                     </div>
 
                     <!-- Target -->
@@ -446,10 +487,60 @@ function initializeSortable() {
         animation: 150,
         ghostClass: 'sortable-ghost',
         chosenClass: 'sortable-chosen',
+        group: 'nested',
+        fallbackOnBody: true,
+        swapThreshold: 0.65,
         onEnd: function(evt) {
             updateMenuOrder();
         }
     });
+    
+    // Initialize sortable for nested menus
+    initializeNestedSortable();
+}
+
+function initializeNestedSortable() {
+    const nestedContainers = document.querySelectorAll('.nested-menu');
+    nestedContainers.forEach(container => {
+        new Sortable(container, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            group: 'nested',
+            fallbackOnBody: true,
+            swapThreshold: 0.65,
+            onEnd: function(evt) {
+                updateMenuOrder();
+            }
+        });
+    });
+}
+
+function refreshSortable() {
+    // Re-initialize sortable for main container
+    const mainContainer = document.getElementById('sortable-menu');
+    if (mainContainer && sortable) {
+        sortable.destroy();
+    }
+    
+    if (mainContainer) {
+        sortable = new Sortable(mainContainer, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            group: 'nested',
+            fallbackOnBody: true,
+            swapThreshold: 0.65,
+            onEnd: function(evt) {
+                updateMenuOrder();
+            }
+        });
+    }
+    
+    // Re-initialize nested sortables
+    initializeNestedSortable();
 }
 
 function setupEventListeners() {
@@ -473,6 +564,20 @@ function openAddModal() {
     document.getElementById('submit-text').textContent = 'Simpan';
     document.getElementById('menu-form').reset();
     document.getElementById('menu-active').checked = true;
+    document.getElementById('menu-parent').value = ''; // Reset parent selection
+    updateIconPreview(''); // Reset icon preview
+    handleTypeChange();
+    document.getElementById('menu-modal').classList.remove('hidden');
+}
+
+function openAddSubMenuModal(parentId, parentTitle) {
+    isEditing = false;
+    currentMenuId = null;
+    document.getElementById('modal-title').textContent = `Tambah Sub Menu - ${parentTitle}`;
+    document.getElementById('submit-text').textContent = 'Simpan';
+    document.getElementById('menu-form').reset();
+    document.getElementById('menu-active').checked = true;
+    document.getElementById('menu-parent').value = parentId; // Set parent
     updateIconPreview(''); // Reset icon preview
     handleTypeChange();
     document.getElementById('menu-modal').classList.remove('hidden');
@@ -493,6 +598,7 @@ function openEditModal(menuId) {
         document.getElementById('menu-type').value = menuItem.dataset.type || 'custom';
         document.getElementById('menu-url').value = menuItem.dataset.url || '';
         document.getElementById('menu-target').value = menuItem.dataset.target || '_self';
+        document.getElementById('menu-parent').value = menuItem.dataset.parentId || '';
         const iconValue = menuItem.dataset.icon || '';
         document.getElementById('menu-icon').value = iconValue;
         updateIconPreview(iconValue);
@@ -577,7 +683,7 @@ function handleFormSubmit(e) {
     .then(data => {
         if (data.success) {
             closeModal();
-            location.reload(); // Reload to show updated menu
+            location.reload(); // Reload to show updated menu and refresh sortable
         } else {
             alert('Error: ' + (data.message || 'Something went wrong'));
         }
@@ -633,11 +739,32 @@ function toggleActive(menuId) {
 }
 
 function updateMenuOrder() {
-    const menuItems = document.querySelectorAll('#sortable-menu > .menu-item');
-    const menus = Array.from(menuItems).map((item, index) => ({
-        id: parseInt(item.dataset.menuId),
-        sort_order: index + 1
-    }));
+    const menus = [];
+    
+    // Process root level menus
+    const rootMenus = document.querySelectorAll('#sortable-menu > .menu-item');
+    rootMenus.forEach((item, index) => {
+        const menuData = {
+            id: parseInt(item.dataset.menuId),
+            parent_id: null,
+            sort_order: index + 1
+        };
+        menus.push(menuData);
+        
+        // Process children of this menu
+        const nestedContainer = item.querySelector('.nested-menu');
+        if (nestedContainer) {
+            const childMenus = nestedContainer.querySelectorAll('.menu-item');
+            childMenus.forEach((childItem, childIndex) => {
+                const childData = {
+                    id: parseInt(childItem.dataset.menuId),
+                    parent_id: parseInt(item.dataset.menuId),
+                    sort_order: childIndex + 1
+                };
+                menus.push(childData);
+            });
+        }
+    });
     
     fetch('/admin/navigation/update-order', {
         method: 'POST',

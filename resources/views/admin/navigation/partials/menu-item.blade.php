@@ -6,7 +6,8 @@
      data-target="{{ $menu->target }}"
      data-icon="{{ $menu->icon }}"
      data-css-class="{{ $menu->css_class }}"
-     data-active="{{ $menu->is_active ? '1' : '0' }}">
+     data-active="{{ $menu->is_active ? '1' : '0' }}"
+     data-parent-id="{{ $menu->parent_id }}">
     
     <div class="flex items-center justify-between">
         <!-- Left side: Drag handle and menu info -->
@@ -26,6 +27,9 @@
             <!-- Menu Info -->
             <div class="flex-1">
                 <div class="flex items-center space-x-2">
+                    @if($menu->parent_id)
+                        <span class="menu-level-indicator"></span>
+                    @endif
                     <h4 class="font-medium text-gray-900">{{ $menu->title }}</h4>
                     
                     <!-- Type Badge -->
@@ -72,6 +76,12 @@
         
         <!-- Right side: Actions -->
         <div class="flex items-center space-x-2">
+            <!-- Add Sub Menu -->
+            <button onclick="openAddSubMenuModal({{ $menu->id }}, '{{ $menu->title }}')" 
+                    class="add-submenu-btn text-gray-400 hover:text-green-600" title="Tambah Sub Menu">
+                <i class="fas fa-plus"></i>
+            </button>
+            
             <!-- Preview Link -->
             @if($menu->final_url && $menu->final_url !== '#')
                 <a href="{{ $menu->final_url }}" target="_blank" 

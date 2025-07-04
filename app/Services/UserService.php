@@ -434,7 +434,13 @@ class UserService
      */
     protected function clearRelatedCaches(): void
     {
-        Cache::tags(['users', 'posts', 'admin'])->flush();
+        // Check if cache driver supports tagging
+        if (method_exists(Cache::getStore(), 'tags')) {
+            Cache::tags(['users', 'posts', 'admin'])->flush();
+        } else {
+            // Fallback for cache drivers that don't support tagging (like database)
+            Cache::flush();
+        }
     }
 
     /**

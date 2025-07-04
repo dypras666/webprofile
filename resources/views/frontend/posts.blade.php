@@ -2,9 +2,33 @@
 
 @section('title')
     @if(request('category'))
-        {{ $category->name ?? 'Category' }} - Articles
+        {{ $category->name ?? 'Category' }} - @switch(request('type'))
+            @case('page')
+                Pages
+                @break
+            @case('video')
+                Videos
+                @break
+            @case('gallery')
+                Gallery
+                @break
+            @default
+                Articles
+        @endswitch
     @elseif(request('type'))
-        {{ ucfirst(request('type')) }} Articles
+        @switch(request('type'))
+            @case('page')
+                Pages
+                @break
+            @case('video')
+                Videos
+                @break
+            @case('gallery')
+                Gallery
+                @break
+            @default
+                {{ ucfirst(request('type')) }} Articles
+        @endswitch
     @elseif(request('search'))
         Search Results for "{{ request('search') }}"
     @else
@@ -14,11 +38,47 @@
 
 @section('meta_description')
     @if(request('category'))
-        Browse {{ $category->name ?? 'category' }} articles and stay updated with the latest news and insights.
+        Browse {{ $category->name ?? 'category' }} @switch(request('type'))
+            @case('page')
+                pages
+                @break
+            @case('video')
+                videos
+                @break
+            @case('gallery')
+                gallery
+                @break
+            @default
+                articles
+        @endswitch and stay updated with the latest content.
     @elseif(request('search'))
-        Search results for "{{ request('search') }}" - Find relevant articles and news.
+        Search results for "{{ request('search') }}" - Find relevant @switch(request('type'))
+            @case('page')
+                pages
+                @break
+            @case('video')
+                videos
+                @break
+            @case('gallery')
+                gallery
+                @break
+            @default
+                articles and news
+        @endswitch.
     @else
-        Browse all articles, news, and insights. Stay informed with our comprehensive coverage.
+        Browse all @switch(request('type'))
+            @case('page')
+                pages
+                @break
+            @case('video')
+                videos
+                @break
+            @case('gallery')
+                gallery
+                @break
+            @default
+                articles, news, and insights
+        @endswitch. Stay informed with our comprehensive coverage.
     @endif
 @endsection
 
@@ -31,7 +91,19 @@
                 @if(request('category'))
                     {{ $category->name ?? 'Category' }}
                 @elseif(request('type'))
-                    {{ ucfirst(request('type')) }} Articles
+                    @switch(request('type'))
+                        @case('page')
+                            Pages
+                            @break
+                        @case('video')
+                            Videos
+                            @break
+                        @case('gallery')
+                            Gallery
+                            @break
+                        @default
+                            {{ ucfirst(request('type')) }} Articles
+                    @endswitch
                 @elseif(request('search'))
                     Search Results
                 @else
@@ -45,11 +117,35 @@
                 </p>
             @elseif(request('category') && isset($category))
                 <p class="text-xl text-blue-100 mb-6">
-                    {{ $category->description ?? 'Explore articles in this category' }}
+                    {{ $category->description ?? 'Explore @switch(request('type'))
+                        @case('page')
+                            pages
+                            @break
+                        @case('video')
+                            videos
+                            @break
+                        @case('gallery')
+                            gallery
+                            @break
+                        @default
+                            articles
+                    @endswitch in this category' }}
                 </p>
             @else
                 <p class="text-xl text-blue-100 mb-6">
-                    Discover our latest articles, news, and insights
+                    Discover our latest @switch(request('type'))
+                        @case('page')
+                            pages
+                            @break
+                        @case('video')
+                            videos
+                            @break
+                        @case('gallery')
+                            gallery
+                            @break
+                        @default
+                            articles, news, and insights
+                    @endswitch
                 </p>
             @endif
             
@@ -67,7 +163,19 @@
                         <input type="text" 
                                name="search" 
                                value="{{ request('search') }}"
-                               placeholder="Search articles..."
+                               placeholder="Search @switch(request('type'))
+                                   @case('page')
+                                       pages
+                                       @break
+                                   @case('video')
+                                       videos
+                                       @break
+                                   @case('gallery')
+                                       gallery
+                                       @break
+                                   @default
+                                       articles
+                               @endswitch..."
                                class="w-full px-6 py-4 rounded-l-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50">
                         <svg class="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -197,19 +305,67 @@
                     <svg class="w-24 h-24 mx-auto text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">No Articles Found</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">No @switch(request('type'))
+                        @case('page')
+                            Pages
+                            @break
+                        @case('video')
+                            Videos
+                            @break
+                        @case('gallery')
+                            Gallery
+                            @break
+                        @default
+                            Articles
+                    @endswitch Found</h3>
                     <p class="text-gray-600 mb-8">
                         @if(request('search'))
-                            No articles match your search criteria. Try different keywords.
+                            No @switch(request('type'))
+                                @case('page')
+                                    pages
+                                    @break
+                                @case('video')
+                                    videos
+                                    @break
+                                @case('gallery')
+                                    gallery
+                                    @break
+                                @default
+                                    articles
+                            @endswitch match your search criteria. Try different keywords.
                         @else
-                            There are no articles in this category yet.
+                            There are no @switch(request('type'))
+                                @case('page')
+                                    pages
+                                    @break
+                                @case('video')
+                                    videos
+                                    @break
+                                @case('gallery')
+                                    gallery
+                                    @break
+                                @default
+                                    articles
+                            @endswitch in this category yet.
                         @endif
                     </p>
                     <a href="{{ route('frontend.posts') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
-                        Browse All Articles
+                        Browse All @switch(request('type'))
+                            @case('page')
+                                Pages
+                                @break
+                            @case('video')
+                                Videos
+                                @break
+                            @case('gallery')
+                                Gallery
+                                @break
+                            @default
+                                Articles
+                        @endswitch
                     </a>
                 </div>
             @endif

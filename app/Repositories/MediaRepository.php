@@ -164,28 +164,29 @@ class MediaRepository extends BaseRepository
     /**
      * Search media
      */
-    public function search($query, $filters = []): Collection
+    public function search($query, $fields = [], $limit = null): Collection
     {
         $modelQuery = $this->model->newQuery();
         
-        // Search in original_name, alt_text, and caption
-        $modelQuery->where(function ($q) use ($query) {
-            $q->where('original_name', 'LIKE', "%{$query}%")
-              ->orWhere('alt_text', 'LIKE', "%{$query}%")
-              ->orWhere('caption', 'LIKE', "%{$query}%");
-        });
-        
-        // Apply filters
-        if (!empty($filters['type'])) {
-            $modelQuery->where('type', $filters['type']);
+        // If specific fields are provided, search in those fields
+        if (!empty($fields)) {
+            $modelQuery->where(function ($q) use ($query, $fields) {
+                foreach ($fields as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$query}%");
+                }
+            });
+        } else {
+            // Default search in original_name, alt_text, and caption
+            $modelQuery->where(function ($q) use ($query) {
+                $q->where('original_name', 'LIKE', "%{$query}%")
+                  ->orWhere('alt_text', 'LIKE', "%{$query}%")
+                  ->orWhere('caption', 'LIKE', "%{$query}%");
+            });
         }
         
-        if (!empty($filters['user_id'])) {
-            $modelQuery->where('user_id', $filters['user_id']);
-        }
-        
-        if (!empty($filters['extension'])) {
-            $modelQuery->where('extension', $filters['extension']);
+        // Apply limit if provided
+        if ($limit) {
+            $modelQuery->limit($limit);
         }
         
         return $modelQuery->with('user')

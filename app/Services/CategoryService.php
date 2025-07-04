@@ -339,7 +339,13 @@ class CategoryService
      */
     protected function clearRelatedCaches(): void
     {
-        Cache::tags(['categories', 'posts', 'homepage'])->flush();
+        // Check if cache driver supports tagging
+        if (method_exists(Cache::getStore(), 'tags')) {
+            Cache::tags(['categories', 'posts', 'homepage'])->flush();
+        } else {
+            // Fallback for cache drivers that don't support tagging (like database)
+            Cache::flush();
+        }
     }
 
     /**

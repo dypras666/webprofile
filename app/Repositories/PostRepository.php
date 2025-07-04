@@ -162,28 +162,29 @@ class PostRepository extends BaseRepository
     /**
      * Search posts
      */
-    public function search($query, $filters = []): Collection
+    public function search($query, $fields = [], $limit = null): Collection
     {
         $modelQuery = $this->model->newQuery();
         
-        // Search in title, content, and excerpt
-        $modelQuery->where(function ($q) use ($query) {
-            $q->where('title', 'LIKE', "%{$query}%")
-              ->orWhere('content', 'LIKE', "%{$query}%")
-              ->orWhere('excerpt', 'LIKE', "%{$query}%");
-        });
-        
-        // Apply filters
-        if (isset($filters['category_id'])) {
-            $modelQuery->where('category_id', $filters['category_id']);
+        // If specific fields are provided, search in those fields
+        if (!empty($fields)) {
+            $modelQuery->where(function ($q) use ($query, $fields) {
+                foreach ($fields as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$query}%");
+                }
+            });
+        } else {
+            // Default search in title, content, and excerpt
+            $modelQuery->where(function ($q) use ($query) {
+                $q->where('title', 'LIKE', "%{$query}%")
+                  ->orWhere('content', 'LIKE', "%{$query}%")
+                  ->orWhere('excerpt', 'LIKE', "%{$query}%");
+            });
         }
         
-        if (isset($filters['type'])) {
-            $modelQuery->byType($filters['type']);
-        }
-        
-        if (isset($filters['published_only']) && $filters['published_only']) {
-            $modelQuery->published();
+        // Apply limit if provided
+        if ($limit) {
+            $modelQuery->limit($limit);
         }
         
         return $modelQuery->with(['category', 'user', 'featuredImage'])

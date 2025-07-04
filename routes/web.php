@@ -10,6 +10,111 @@ use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Admin\NavigationController;
 
+// Debug route for media
+Route::get('/debug-media', function() {
+    $media = App\Models\Media::all(['id', 'name', 'file_path', 'type']);
+    return response()->json($media);
+});
+
+// Create test media
+Route::get('/create-test-media', function () {
+    // Get first available user or create one
+    $user = App\Models\User::first();
+    if (!$user) {
+        $user = App\Models\User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password')
+        ]);
+    }
+    
+    // Create test media entries
+    $media1 = App\Models\Media::create([
+        'name' => 'test-image-1.svg',
+        'original_name' => 'test-image-1.svg',
+        'file_path' => 'media/test-image-1.svg',
+        'disk' => 'public',
+        'mime_type' => 'image/svg+xml',
+        'size' => 500,
+        'extension' => 'svg',
+        'type' => 'image',
+        'user_id' => $user->id
+    ]);
+    
+    $media2 = App\Models\Media::create([
+        'name' => 'test-image-2.svg',
+        'original_name' => 'test-image-2.svg',
+        'file_path' => 'media/test-image-2.svg',
+        'disk' => 'public',
+        'mime_type' => 'image/svg+xml',
+        'size' => 500,
+        'extension' => 'svg',
+        'type' => 'image',
+        'user_id' => $user->id
+    ]);
+    
+    return response()->json([
+        'message' => 'Test media created',
+        'user' => $user->toArray(),
+        'media1' => $media1->toArray(),
+        'media2' => $media2->toArray()
+    ]);
+});
+ 
+ // Update post gallery images
+ Route::get('/update-gallery-images', function() {
+     $post = App\Models\Post::find(11);
+     if (!$post) {
+         return response()->json(['error' => 'Post not found']);
+     }
+     
+     // Get available media IDs
+     $mediaIds = App\Models\Media::pluck('id')->toArray();
+     
+     if (count($mediaIds) >= 2) {
+         // Store as array, not JSON string - Laravel will handle the casting
+         $post->gallery_images = [$mediaIds[0], $mediaIds[1]];
+         $post->save();
+         
+         return response()->json([
+             'message' => 'Gallery images updated',
+             'post_id' => $post->id,
+             'gallery_images' => $post->gallery_images,
+             'gallery_images_raw' => $post->getRawOriginal('gallery_images'),
+             'available_media' => $mediaIds
+         ]);
+     }
+     
+     return response()->json([
+         'error' => 'Not enough media available',
+         'available_media' => $mediaIds
+     ]);
+ });
+
+Route::get('/check-users', function () {
+    $users = App\Models\User::all();
+    return response()->json([
+        'users' => $users->toArray()
+    ]);
+});
+
+// Debug gallery images data
+Route::get('/debug-gallery-data', function() {
+    $post = App\Models\Post::find(11);
+    if (!$post) {
+        return response()->json(['error' => 'Post not found']);
+    }
+    
+    return response()->json([
+        'post_id' => $post->id,
+        'gallery_images_cast' => $post->gallery_images,
+        'gallery_images_raw' => $post->getRawOriginal('gallery_images'),
+        'is_array' => is_array($post->gallery_images),
+        'count' => is_array($post->gallery_images) ? count($post->gallery_images) : 'not array',
+        'type' => gettype($post->gallery_images)
+    ]);
+});
+
 // Frontend Routes
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.index');
 Route::get('/posts', [FrontendController::class, 'posts'])->name('frontend.posts');

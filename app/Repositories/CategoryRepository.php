@@ -126,24 +126,29 @@ class CategoryRepository extends BaseRepository
     /**
      * Search categories
      */
-    public function search($query, $filters = []): Collection
+    public function search($query, $fields = [], $limit = null): Collection
     {
         $modelQuery = $this->model->newQuery();
         
-        // Search in name, description, and slug
-        $modelQuery->where(function ($q) use ($query) {
-            $q->where('name', 'LIKE', "%{$query}%")
-              ->orWhere('description', 'LIKE', "%{$query}%")
-              ->orWhere('slug', 'LIKE', "%{$query}%");
-        });
-        
-        // Apply filters
-        if (isset($filters['is_active'])) {
-            $modelQuery->where('is_active', $filters['is_active']);
+        // If specific fields are provided, search in those fields
+        if (!empty($fields)) {
+            $modelQuery->where(function ($q) use ($query, $fields) {
+                foreach ($fields as $field) {
+                    $q->orWhere($field, 'LIKE', "%{$query}%");
+                }
+            });
+        } else {
+            // Default search in name, description, and slug
+            $modelQuery->where(function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('description', 'LIKE', "%{$query}%")
+                  ->orWhere('slug', 'LIKE', "%{$query}%");
+            });
         }
         
-        if (!empty($filters['color'])) {
-            $modelQuery->where('color', $filters['color']);
+        // Apply limit if provided
+        if ($limit) {
+            $modelQuery->limit($limit);
         }
         
         return $modelQuery->withCount('posts')

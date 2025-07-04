@@ -23,8 +23,9 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         $postId = $this->route('post') ? $this->route('post')->id : null;
+        $type = $this->input('type', 'berita');
         
-        return [
+        $rules = [
             'title' => 'required|string|max:255',
             'slug' => [
                 'nullable',
@@ -38,7 +39,7 @@ class PostRequest extends FormRequest
             'type' => 'required|in:berita,page,gallery,video',
             'featured_image' => 'nullable|string|max:500',
             'video_url' => 'nullable|url|max:500',
-            'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gallery_images' => 'nullable|string|max:5000', // JSON string of media IDs from media picker
             'is_slider' => 'boolean',
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
@@ -46,9 +47,17 @@ class PostRequest extends FormRequest
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:255',
-            'category_id' => 'required|exists:categories,id',
             'sort_order' => 'nullable|integer|min:0'
         ];
+        
+        // Category is only required for 'berita' type
+        if ($type === 'berita') {
+            $rules['category_id'] = 'required|exists:categories,id';
+        } else {
+            $rules['category_id'] = 'nullable|exists:categories,id';
+        }
+        
+        return $rules;
     }
 
     /**
@@ -68,9 +77,8 @@ class PostRequest extends FormRequest
             'featured_image.string' => 'Featured image harus berupa string.',
             'featured_image.max' => 'Featured image path maksimal 500 karakter.',
             'video_url.url' => 'URL video tidak valid.',
-            'gallery_images.*.image' => 'File galeri harus berupa gambar.',
-            'gallery_images.*.mimes' => 'Gambar galeri harus berformat: jpeg, png, jpg, gif, webp.',
-            'gallery_images.*.max' => 'Ukuran gambar galeri maksimal 2MB.',
+            'gallery_images.string' => 'Data galeri harus berupa string.',
+            'gallery_images.max' => 'Data galeri terlalu panjang.',
             'meta_title.max' => 'Meta title maksimal 255 karakter.',
             'meta_description.max' => 'Meta description maksimal 500 karakter.',
             'meta_keywords.max' => 'Meta keywords maksimal 255 karakter.',

@@ -76,17 +76,23 @@ class FileUploadService
         return $media;
     }
     
-    public function delete(Media $media)
+    public function delete($media)
     {
-        // Delete file from storage
-        if ($media->disk === 's3') {
-            Storage::disk('s3')->delete($media->file_path);
-        } else {
-            Storage::disk('public')->delete($media->file_path);
+        // Handle both Media object and string path
+        if ($media instanceof Media) {
+            // Delete file from storage
+            if ($media->disk === 's3') {
+                Storage::disk('s3')->delete($media->file_path);
+            } else {
+                Storage::disk('public')->delete($media->file_path);
+            }
+            
+            // Delete media record
+            $media->delete();
+        } elseif (is_string($media)) {
+            // Delete file by path (legacy support)
+            Storage::disk('public')->delete($media);
         }
-        
-        // Delete media record
-        $media->delete();
         
         return true;
     }

@@ -473,8 +473,9 @@ class MediaController extends Controller
         
         // Add image-specific metadata
         if ($media->type === 'image' && $media->metadata) {
-            $imageData = json_decode($media->metadata, true);
-            if ($imageData) {
+            // Check if metadata is already an array or needs to be decoded
+            $imageData = is_array($media->metadata) ? $media->metadata : json_decode($media->metadata, true);
+            if ($imageData && is_array($imageData)) {
                 $metadata['dimensions'] = ($imageData['width'] ?? 0) . ' x ' . ($imageData['height'] ?? 0);
                 $metadata['width'] = $imageData['width'] ?? null;
                 $metadata['height'] = $imageData['height'] ?? null;

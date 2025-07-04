@@ -108,19 +108,19 @@ abstract class BaseRepository
     /**
      * Update record
      */
-    public function update($id, array $data): bool
+    public function update($id, array $data): Model
     {
         DB::beginTransaction();
         
         try {
             $model = $this->findOrFail($id);
-            $updated = $model->update($data);
+            $model->update($data);
             
             $this->clearCache();
             
             DB::commit();
             
-            return $updated;
+            return $model->fresh();
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -346,13 +346,44 @@ abstract class BaseRepository
      */
     protected function clearCache(): void
     {
-        $pattern = $this->cachePrefix . '.*';
+        $cacheDriver = config('cache.default');
         
-        // Get all cache keys matching pattern
-        $keys = Cache::getRedis()->keys($pattern);
-        
-        foreach ($keys as $key) {
-            Cache::forget(str_replace(config('cache.prefix') . ':', '', $key));
+        // Handle different cache drivers
+        if ($cacheDriver === 'redis') {
+            $pattern = $this->cachePrefix . '.*';
+            
+            // Get all cache keys matching pattern
+            $keys = Cache::getRedis()->keys($pattern);
+            
+            foreach ($keys as $key) {
+                Cache::forget(str_replace(config('cache.prefix') . ':', '', $key));
+            }
+        } else {
+            // For non-Redis drivers (database, file, etc.), we maintain a list
+            // of common cache keys that we know about and clear them individually
+            $commonMethods = ['all', 'latest', 'oldest', 'statistics', 'count'];
+            
+            foreach ($commonMethods as $method) {
+                // Clear cache keys that don't have parameters
+                Cache::forget($this->getCacheKey($method));
+                
+                // For parameterized cache keys, we can't efficiently clear all variations
+                // so we rely on TTL expiration. In production, consider using cache tags.
+            }
+            
+            // Clear some common parameterized cache patterns
+            // This is a best-effort approach for database/file cache drivers
+            $commonParams = [
+                [['*']], // for 'all' method with columns
+                [[10, ['*']]], // for 'latest' method with default params
+                [[15, ['*']]], // for pagination
+            ];
+            
+            foreach ($commonMethods as $method) {
+                foreach ($commonParams as $params) {
+                    Cache::forget($this->getCacheKey($method, $params));
+                }
+            }
         }
     }
 

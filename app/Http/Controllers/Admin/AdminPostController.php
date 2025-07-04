@@ -66,7 +66,26 @@ class AdminPostController extends BaseAdminController
             
             $this->logActivity('post_created', 'Created post: ' . $post->title, $post->id);
             
-            return redirect()->route('admin.posts.index')
+            // Redirect based on post type
+            $redirectRoute = 'admin.posts.index';
+            $redirectParams = [];
+            
+            switch ($post->type) {
+                case 'page':
+                    $redirectParams['type'] = 'page';
+                    break;
+                case 'video':
+                    $redirectParams['type'] = 'video';
+                    break;
+                case 'gallery':
+                    $redirectParams['type'] = 'gallery';
+                    break;
+                default:
+                    // For 'berita' or other types, no additional params needed
+                    break;
+            }
+            
+            return redirect()->route($redirectRoute, $redirectParams)
                 ->with('success', 'Post created successfully.');
         } catch (\Exception $e) {
             return back()->withInput()
@@ -113,6 +132,11 @@ class AdminPostController extends BaseAdminController
     public function update(PostRequest $request, $id): RedirectResponse
     {
         try {
+            \Log::info('=== ADMIN CONTROLLER DEBUG START ===');
+            \Log::info('Admin Request data received', ['data' => $request->validated()]);
+            \Log::info('Admin Gallery images in request', ['gallery_images' => $request->input('gallery_images')]);
+            \Log::info('Admin All request data', ['all' => $request->all()]);
+            
             $post = $this->postService->updatePost($id, $request->validated());
             
             if (!$post) {
@@ -121,7 +145,26 @@ class AdminPostController extends BaseAdminController
             
             $this->logActivity('post_updated', 'Updated post: ' . $post->title, $post->id);
             
-            return redirect()->route('admin.posts.index')
+            // Redirect based on post type
+            $redirectRoute = 'admin.posts.index';
+            $redirectParams = [];
+            
+            switch ($post->type) {
+                case 'page':
+                    $redirectParams['type'] = 'page';
+                    break;
+                case 'video':
+                    $redirectParams['type'] = 'video';
+                    break;
+                case 'gallery':
+                    $redirectParams['type'] = 'gallery';
+                    break;
+                default:
+                    // For 'berita' or other types, no additional params needed
+                    break;
+            }
+            
+            return redirect()->route($redirectRoute, $redirectParams)
                 ->with('success', 'Post updated successfully.');
         } catch (\Exception $e) {
             return back()->withInput()

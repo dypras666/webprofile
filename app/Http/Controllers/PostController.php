@@ -7,6 +7,7 @@ use App\Http\Requests\PageRequest;
 use App\Models\Post;
 use App\Models\Category;
 use App\Services\FileUploadService;
+use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -15,10 +16,12 @@ use Illuminate\Support\Str;
 class PostController extends Controller
 {
     protected $fileUploadService;
+    protected $postService;
 
-    public function __construct(FileUploadService $fileUploadService)
+    public function __construct(FileUploadService $fileUploadService, PostService $postService)
     {
         $this->fileUploadService = $fileUploadService;
+        $this->postService = $postService;
         $this->middleware('auth');
         $this->middleware('permission:view posts')->only(['index', 'show']);
         $this->middleware('permission:create posts')->only(['create', 'store']);
@@ -90,45 +93,31 @@ class PostController extends Controller
     public function store(PostRequest $request)
     {
         try {
-            DB::beginTransaction();
-
             $data = $request->validated();
-            $data['user_id'] = auth()->id();
+            $post = $this->postService->createPost($data);
 
-            // Handle featured image upload
-            if ($request->hasFile('featured_image')) {
-                $media = $this->fileUploadService->uploadImage(
-                    $request->file('featured_image'),
-                    'posts/featured',
-                    auth()->id(),
-                    ['width' => 1200, 'height' => 630]
-                );
-                $data['featured_image'] = $media->file_path;
+            // Redirect based on post type
+            $redirectRoute = 'admin.posts.index';
+            $redirectParams = [];
+            
+            switch ($post->type) {
+                case 'page':
+                    $redirectParams['type'] = 'page';
+                    break;
+                case 'video':
+                    $redirectParams['type'] = 'video';
+                    break;
+                case 'gallery':
+                    $redirectParams['type'] = 'gallery';
+                    break;
+                default:
+                    // For 'berita' or other types, no additional params needed
+                    break;
             }
 
-            // Handle gallery images upload
-            if ($request->hasFile('gallery_images')) {
-                $galleryPaths = [];
-                foreach ($request->file('gallery_images') as $file) {
-                    $media = $this->fileUploadService->uploadImage(
-                        $file,
-                        'posts/gallery',
-                        auth()->id(),
-                        ['width' => 800]
-                    );
-                    $galleryPaths[] = $media->file_path;
-                }
-                $data['gallery_images'] = json_encode($galleryPaths);
-            }
-
-            $post = Post::create($data);
-
-            DB::commit();
-
-            return redirect()->route('admin.posts.index')
+            return redirect()->route($redirectRoute, $redirectParams)
                            ->with('success', 'Post berhasil dibuat.');
         } catch (\Exception $e) {
-            DB::rollback();
             return back()->withInput()
                         ->with('error', 'Gagal membuat post: ' . $e->getMessage());
         }
@@ -160,57 +149,37 @@ class PostController extends Controller
     public function update(PostRequest $request, Post $post)
     {
         try {
-            DB::beginTransaction();
-
             $data = $request->validated();
+            
+            \Log::info('=== CONTROLLER DEBUG START ===');
+            \Log::info('Request data received in controller', ['data' => $data]);
+            \Log::info('Gallery images in request', ['gallery_images' => $request->input('gallery_images')]);
+            \Log::info('All request data', ['all' => $request->all()]);
+            
+            $updatedPost = $this->postService->updatePost($post->id, $data);
 
-            // Handle featured image upload
-            if ($request->hasFile('featured_image')) {
-                // Delete old featured image
-                if ($post->featured_image) {
-                    Storage::disk('public')->delete($post->featured_image);
-                }
-
-                $media = $this->fileUploadService->uploadImage(
-                    $request->file('featured_image'),
-                    'posts/featured',
-                    auth()->id(),
-                    ['width' => 1200, 'height' => 630]
-                );
-                $data['featured_image'] = $media->file_path;
+            // Redirect based on post type
+            $redirectRoute = 'admin.posts.index';
+            $redirectParams = [];
+            
+            switch ($updatedPost->type) {
+                case 'page':
+                    $redirectParams['type'] = 'page';
+                    break;
+                case 'video':
+                    $redirectParams['type'] = 'video';
+                    break;
+                case 'gallery':
+                    $redirectParams['type'] = 'gallery';
+                    break;
+                default:
+                    // For 'berita' or other types, no additional params needed
+                    break;
             }
 
-            // Handle gallery images upload
-            if ($request->hasFile('gallery_images')) {
-                // Delete old gallery images
-                if ($post->gallery_images) {
-                    $oldImages = json_decode($post->gallery_images, true);
-                    foreach ($oldImages as $imagePath) {
-                        Storage::disk('public')->delete($imagePath);
-                    }
-                }
-
-                $galleryPaths = [];
-                foreach ($request->file('gallery_images') as $file) {
-                    $media = $this->fileUploadService->uploadImage(
-                        $file,
-                        'posts/gallery',
-                        auth()->id(),
-                        ['width' => 800]
-                    );
-                    $galleryPaths[] = $media->file_path;
-                }
-                $data['gallery_images'] = json_encode($galleryPaths);
-            }
-
-            $post->update($data);
-
-            DB::commit();
-
-            return redirect()->route('admin.posts.index')
+            return redirect()->route($redirectRoute, $redirectParams)
                            ->with('success', 'Post berhasil diperbarui.');
         } catch (\Exception $e) {
-            DB::rollback();
             return back()->withInput()
                         ->with('error', 'Gagal memperbarui post: ' . $e->getMessage());
         }
@@ -222,29 +191,11 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         try {
-            DB::beginTransaction();
-
-            // Delete featured image
-            if ($post->featured_image) {
-                Storage::disk('public')->delete($post->featured_image);
-            }
-
-            // Delete gallery images
-            if ($post->gallery_images) {
-                $galleryImages = json_decode($post->gallery_images, true);
-                foreach ($galleryImages as $imagePath) {
-                    Storage::disk('public')->delete($imagePath);
-                }
-            }
-
-            $post->delete();
-
-            DB::commit();
+            $this->postService->deletePost($post->id);
 
             return redirect()->route('admin.posts.index')
                            ->with('success', 'Post berhasil dihapus.');
         } catch (\Exception $e) {
-            DB::rollback();
             return back()->with('error', 'Gagal menghapus post: ' . $e->getMessage());
         }
     }
@@ -284,7 +235,7 @@ class PostController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.posts.index')
+            return redirect()->route('admin.posts.index', ['type' => 'page'])
                            ->with('success', 'Page berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollback();
@@ -343,7 +294,7 @@ class PostController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.posts.index')
+            return redirect()->route('admin.posts.index', ['type' => 'page'])
                            ->with('success', 'Page berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();
