@@ -117,6 +117,7 @@
                             </h3>
                             
                             <div class="space-y-4">
+                                @if($post->type === 'berita')
                                 <!-- Category -->
                                 <div>
                                     <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
@@ -133,21 +134,23 @@
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
+                                @endif
 
-                                <!-- Type -->
+                                <!-- Type Display -->
                                 <div>
-                                    <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                                    <select id="type" name="type" 
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" 
-                                            required>
-                                        <option value="berita" {{ old('type', $post->type) == 'berita' ? 'selected' : '' }}>Berita</option>
-                                        <option value="halaman" {{ old('type', $post->type) == 'halaman' ? 'selected' : '' }}>Halaman</option>
-                                        <option value="gallery" {{ old('type', $post->type) == 'gallery' ? 'selected' : '' }}>Gallery</option>
-                                        <option value="video" {{ old('type', $post->type) == 'video' ? 'selected' : '' }}>Video</option>
-                                    </select>
-                                    @error('type')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                                    <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700">
+                                        @if($post->type === 'gallery')
+                                            <i class="fas fa-images mr-2 text-purple-600"></i>Gallery
+                                        @elseif($post->type === 'video')
+                                            <i class="fas fa-video mr-2 text-red-600"></i>Video
+                                        @elseif($post->type === 'page')
+                                            <i class="fas fa-file-alt mr-2 text-green-600"></i>Page
+                                        @else
+                                            <i class="fas fa-newspaper mr-2 text-blue-600"></i>Berita
+                                        @endif
+                                    </div>
+                                    <input type="hidden" name="type" value="{{ $post->type }}">
                                 </div>
                             </div>
                         </div>
@@ -170,6 +173,58 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        @if($post->type === 'video')
+                        <!-- Video URL -->
+                        <div class="bg-white rounded-lg p-4 shadow-sm">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-video mr-2 text-red-600"></i>
+                                Video URL
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="video_url" class="block text-sm font-medium text-gray-700 mb-2">Video URL (YouTube, Vimeo, etc.)</label>
+                                    <input type="url" id="video_url" name="video_url" 
+                                           value="{{ old('video_url', $post->video_url) }}"
+                                           placeholder="https://www.youtube.com/watch?v=..."
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                                    @error('video_url')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <p class="text-sm text-gray-500">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Supported: YouTube, Vimeo, and direct video file URLs
+                                </p>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if($post->type === 'gallery')
+                        <!-- Gallery Images -->
+                        <div class="bg-white rounded-lg p-4 shadow-sm">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-images mr-2 text-purple-600"></i>
+                                Gallery Images
+                            </h3>
+                            
+                            <x-media-picker 
+                                name="gallery_images" 
+                                :value="$post->gallery_images" 
+                                label="" 
+                                accept="image/*" 
+                                :multiple="true" 
+                            />
+                            @error('gallery_images')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <p class="text-sm text-gray-500 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Select multiple images for your gallery
+                            </p>
+                        </div>
+                        @endif
 
                         <!-- Action Buttons -->
                         <div class="bg-white rounded-lg p-4 shadow-sm">

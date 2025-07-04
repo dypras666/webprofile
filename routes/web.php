@@ -8,6 +8,7 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\Admin\NavigationController;
 
 // Frontend Routes
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.index');
@@ -50,6 +51,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::patch('/posts/{post}/toggle-slider', [PostController::class, 'toggleSlider'])->name('posts.toggle-slider');
     Route::patch('/posts/{post}/toggle-featured', [PostController::class, 'toggleFeatured'])->name('posts.toggle-featured');
     
+    // Pages (Special routes for page type posts)
+    Route::get('/pages/create', [PostController::class, 'createPage'])->name('pages.create');
+    Route::post('/pages', [PostController::class, 'storePage'])->name('pages.store');
+    Route::get('/pages/{post}/edit', [PostController::class, 'editPage'])->name('pages.edit');
+    Route::put('/pages/{post}', [PostController::class, 'updatePage'])->name('pages.update');
+    
     // Media - API routes first to avoid conflicts with resource routes
     Route::get('/media/api', [MediaController::class, 'apiIndex'])->name('media.api');
     Route::get('/media/ajax', [MediaController::class, 'ajaxIndex'])->name('media.ajax');
@@ -61,6 +68,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Users
     Route::resource('users', UserController::class);
     Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
+    
+    // Navigation Management
+    Route::prefix('navigation')->name('navigation.')->group(function () {
+        Route::get('/', [NavigationController::class, 'index'])->name('index');
+        Route::post('/', [NavigationController::class, 'store'])->name('store');
+        Route::put('/{menu}', [NavigationController::class, 'update'])->name('update');
+        Route::delete('/{menu}', [NavigationController::class, 'destroy'])->name('destroy');
+        Route::post('/update-order', [NavigationController::class, 'updateOrder'])->name('update-order');
+        Route::patch('/{menu}/toggle-active', [NavigationController::class, 'toggleActive'])->name('toggle-active');
+        Route::get('/posts', [NavigationController::class, 'getPosts'])->name('posts');
+        Route::get('/categories', [NavigationController::class, 'getCategories'])->name('categories');
+    });
     
     // Site Settings
     Route::prefix('settings')->name('settings.')->group(function () {

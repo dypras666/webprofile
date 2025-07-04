@@ -102,6 +102,20 @@ class LppmSiteSettingSeeder extends Seeder
                 'group' => 'seo',
                 'description' => 'Default meta keywords for SEO'
             ],
+            [
+                'key' => 'google_analytics',
+                'value' => '',
+                'type' => 'text',
+                'group' => 'seo',
+                'description' => 'Google Analytics tracking ID'
+            ],
+            [
+                'key' => 'google_search_console',
+                'value' => '',
+                'type' => 'text',
+                'group' => 'seo',
+                'description' => 'Google Search Console verification code'
+            ],
 
             // Appearance Settings
             [
@@ -124,6 +138,101 @@ class LppmSiteSettingSeeder extends Seeder
                 'type' => 'boolean',
                 'group' => 'appearance',
                 'description' => 'Show post excerpts on homepage'
+            ],
+            [
+                'key' => 'logo',
+                'value' => '',
+                'type' => 'file',
+                'group' => 'appearance',
+                'description' => 'Site logo image'
+            ],
+            [
+                'key' => 'favicon',
+                'value' => '',
+                'type' => 'file',
+                'group' => 'appearance',
+                'description' => 'Site favicon image'
+            ],
+
+            // Social Media Settings
+            [
+                'key' => 'facebook_url',
+                'value' => '',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'Facebook page URL'
+            ],
+            [
+                'key' => 'twitter_url',
+                'value' => '',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'Twitter profile URL'
+            ],
+            [
+                'key' => 'instagram_url',
+                'value' => '',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'Instagram profile URL'
+            ],
+            [
+                'key' => 'linkedin_url',
+                'value' => '',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'LinkedIn profile URL'
+            ],
+            [
+                'key' => 'youtube_url',
+                'value' => '',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'YouTube channel URL'
+            ],
+
+            // Email Settings
+            [
+                'key' => 'smtp_host',
+                'value' => '',
+                'type' => 'text',
+                'group' => 'email',
+                'description' => 'SMTP server host'
+            ],
+            [
+                'key' => 'smtp_port',
+                'value' => '587',
+                'type' => 'number',
+                'group' => 'email',
+                'description' => 'SMTP server port'
+            ],
+            [
+                'key' => 'smtp_username',
+                'value' => '',
+                'type' => 'text',
+                'group' => 'email',
+                'description' => 'SMTP username'
+            ],
+            [
+                'key' => 'smtp_password',
+                'value' => '',
+                'type' => 'password',
+                'group' => 'email',
+                'description' => 'SMTP password'
+            ],
+            [
+                'key' => 'from_email',
+                'value' => 'lppm@iimsabak.ac.id',
+                'type' => 'email',
+                'group' => 'email',
+                'description' => 'Default from email address'
+            ],
+            [
+                'key' => 'from_name',
+                'value' => 'LPPM Institut Islam Al-Mujaddid Sabak',
+                'type' => 'text',
+                'group' => 'email',
+                'description' => 'Default from name'
             ],
 
             // Security Settings

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
+use App\Http\Requests\PageRequest;
 use App\Models\Post;
 use App\Models\Category;
 use App\Services\FileUploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -29,7 +31,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::with(['category', 'user']);
+        $query = Post::with(['category', 'user', 'featuredImage']);
 
         // Filter by type
         if ($request->filled('type')) {
@@ -69,10 +71,17 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $type = $request->get('type', 'berita');
         $categories = Category::active()->ordered()->get();
-        return view('admin.posts.create', compact('categories'));
+        
+        // Redirect to specific create view based on type
+        if ($type === 'page') {
+            return view('admin.posts.create-page');
+        }
+        
+        return view('admin.posts.create', compact('categories', 'type'));
     }
 
     /**
@@ -237,6 +246,109 @@ class PostController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return back()->with('error', 'Gagal menghapus post: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for creating a new page
+     */
+    public function createPage()
+    {
+        return view('admin.posts.create-page');
+    }
+
+    /**
+     * Store a newly created page in storage.
+     */
+    public function storePage(PageRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $data = $request->validated();
+            $data['user_id'] = auth()->id();
+            $data['type'] = 'page';
+
+            // Handle featured image upload
+            if ($request->hasFile('featured_image')) {
+                $media = $this->fileUploadService->uploadImage(
+                    $request->file('featured_image'),
+                    'posts/featured',
+                    auth()->id(),
+                    ['width' => 1200, 'height' => 630]
+                );
+                $data['featured_image'] = $media->file_path;
+            }
+
+            $post = Post::create($data);
+
+            DB::commit();
+
+            return redirect()->route('admin.posts.index')
+                           ->with('success', 'Page berhasil dibuat.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->withInput()
+                        ->with('error', 'Gagal membuat page: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for editing a page
+     */
+    public function editPage(Post $post)
+    {
+        // Ensure this is a page type post
+        if ($post->type !== 'page') {
+            return redirect()->route('admin.posts.edit', $post->id)
+                ->with('info', 'This post is not a page type. Redirected to regular edit form.');
+        }
+        
+        return view('admin.posts.edit-page', compact('post'));
+    }
+
+    /**
+     * Update the specified page in storage.
+     */
+    public function updatePage(PageRequest $request, Post $post)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Ensure this is a page type post
+            if ($post->type !== 'page') {
+                return redirect()->route('admin.posts.update', $post->id)
+                    ->with('info', 'This post is not a page type. Redirected to regular update.');
+            }
+
+            $data = $request->validated();
+
+            // Handle featured image upload
+            if ($request->hasFile('featured_image')) {
+                // Delete old featured image
+                if ($post->featured_image) {
+                    Storage::disk('public')->delete($post->featured_image);
+                }
+
+                $media = $this->fileUploadService->uploadImage(
+                    $request->file('featured_image'),
+                    'posts/featured',
+                    auth()->id(),
+                    ['width' => 1200, 'height' => 630]
+                );
+                $data['featured_image'] = $media->file_path;
+            }
+
+            $post->update($data);
+
+            DB::commit();
+
+            return redirect()->route('admin.posts.index')
+                           ->with('success', 'Page berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->withInput()
+                        ->with('error', 'Gagal memperbarui page: ' . $e->getMessage());
         }
     }
 

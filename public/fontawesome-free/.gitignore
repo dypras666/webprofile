@@ -1,0 +1,4 @@
+# Ignore all Font Awesome files
+# These files are copied from node_modules and should not be tracked
+*
+!.gitignore

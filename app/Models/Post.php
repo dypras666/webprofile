@@ -104,18 +104,26 @@ class Post extends Model
             $this->load('featuredImage');
         }
         
-        // If we have a featured image relation, use the Media model's URL
+        // SISTEM BARU: featured_image_id + Media model (PRIORITAS UTAMA)
         if ($this->featuredImage) {
             return $this->featuredImage->url;
         }
         
-        // Fallback to the old featured_image field
+        // SISTEM LAMA: featured_image field
         if ($this->featured_image) {
+            // Jika berisi angka/ID (seperti "5", "2"), ambil dari Media model
+            if (is_numeric($this->featured_image)) {
+                $media = \App\Models\Media::find($this->featured_image);
+                return $media ? $media->url : null;
+            }
+            
+            // Jika berisi path file (seperti "posts/image.jpg"), gunakan sebagai path
             return asset('storage/' . $this->featured_image);
         }
         
         return null;
     }
+ 
 
     public function getFeaturedImageAltTextAttribute()
     {

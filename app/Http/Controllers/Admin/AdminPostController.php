@@ -48,11 +48,12 @@ class AdminPostController extends BaseAdminController
     /**
      * Show the form for creating a new post
      */
-    public function create(): View
+    public function create(Request $request): View
     {
         $categories = $this->categoryService->getCategoriesForDropdown();
+        $currentType = $request->get('type', 'berita');
         
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', compact('categories', 'currentType'));
     }
 
     /**

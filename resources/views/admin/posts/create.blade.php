@@ -1,11 +1,24 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Post')
+@php
+    $currentType = $type ?? 'berita';
+    $pageTitle = match($currentType) {
+        'gallery' => 'Create Gallery',
+        'video' => 'Create Video',
+        default => 'Create Post'
+    };
+@endphp
+
+@section('title', $pageTitle)
 
 @push('styles')
 <style>
     .tox-tinymce {
-        border-radius: 0.375rem !important;
+        border-radius: 0.5rem !important;
+        border: 1px solid #d1d5db !important;
+    }
+    .tox .tox-editor-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
     }
 </style>
 @endpush
@@ -15,11 +28,20 @@
                 <div class="bg-white">
                      <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data" class="">
                          @csrf
+                         <input type="hidden" name="type" value="{{ $currentType }}">
                          
                          <!-- Header -->
                          <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                             <h1 class="text-2xl font-bold text-gray-900">Create New Post</h1>
-                             <p class="text-sm text-gray-600 mt-1">Fill in the post information below.</p>
+                             <h1 class="text-2xl font-bold text-gray-900">{{ $pageTitle }}</h1>
+                             <p class="text-sm text-gray-600 mt-1">
+                                 @if($currentType === 'gallery')
+                                     Create a new gallery with multiple images.
+                                 @elseif($currentType === 'video')
+                                     Create a new video post with video content.
+                                 @else
+                                     Fill in the post information below.
+                                 @endif
+                             </p>
                          </div>
                          
                          <!-- Form Content -->
@@ -30,25 +52,11 @@
                                 <div class="space-y-6">
                                     <!-- Title -->
                                     <div>
-                                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
                                         <input type="text" id="title" name="title" value="{{ old('title') }}" 
                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-lg" 
                                                required>
                                         @error('title')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <!-- Featured Image -->
-                                    <div>
-                                        <x-media-picker 
-                                            name="featured_image" 
-                                            :value="old('featured_image')" 
-                                            label="Featured Image" 
-                                            accept="image/*" 
-                                            :multiple="false" 
-                                        />
-                                        @error('featured_image')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -122,6 +130,7 @@
                                         </h3>
                                         
                                         <div class="space-y-4">
+                                            @if($currentType === 'berita')
                                             <!-- Category -->
                                             <div>
                                                 <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
@@ -139,22 +148,20 @@
                                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                                 @enderror
                                             </div>
+                                            @endif
 
-                                            <!-- Type -->
+                                            <!-- Type Display -->
                                             <div>
-                                                <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                                                <select id="type" name="type" 
-                                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" 
-                                                        required>
-                                                    <option value="">Select Type</option>
-                                                    <option value="berita" {{ old('type') == 'berita' ? 'selected' : '' }}>Berita</option>
-                                                    <option value="halaman" {{ old('type') == 'halaman' ? 'selected' : '' }}>Halaman</option>
-                                                    <option value="gallery" {{ old('type') == 'gallery' ? 'selected' : '' }}>Gallery</option>
-                                                    <option value="video" {{ old('type') == 'video' ? 'selected' : '' }}>Video</option>
-                                                </select>
-                                                @error('type')
-                                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                                @enderror
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                                                <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700">
+                                                    @if($currentType === 'gallery')
+                                                        <i class="fas fa-images mr-2 text-purple-600"></i>Gallery
+                                                    @elseif($currentType === 'video')
+                                                        <i class="fas fa-video mr-2 text-red-600"></i>Video
+                                                    @else
+                                                        <i class="fas fa-newspaper mr-2 text-blue-600"></i>Berita
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -180,28 +187,76 @@
                                         </div>
                                     </div>
 
-                                    <!-- Quick Tips -->
+                                    <!-- Featured Image -->
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
                                         <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                                            <i class="fas fa-lightbulb mr-2 text-yellow-600"></i>
-                                            Quick Tips
+                                            <i class="fas fa-image mr-2 text-orange-600"></i>
+                                            Featured Image
                                         </h3>
                                         
-                                        <div class="space-y-2 text-sm text-gray-600">
-                                            <div class="flex items-start">
-                                                <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5 text-xs"></i>
-                                                <span>Use descriptive titles for better SEO</span>
+                                        <x-media-picker 
+                                            name="featured_image" 
+                                            :value="old('featured_image')" 
+                                            label="" 
+                                            accept="image/*" 
+                                            :multiple="false" 
+                                        />
+                                        @error('featured_image')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    @if($currentType === 'video')
+                                    <!-- Video URL -->
+                                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                                        <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                                            <i class="fas fa-video mr-2 text-red-600"></i>
+                                            Video URL
+                                        </h3>
+                                        
+                                        <div class="space-y-3">
+                                            <div>
+                                                <label for="video_url" class="block text-sm font-medium text-gray-700 mb-2">Video URL (YouTube, Vimeo, etc.)</label>
+                                                <input type="url" id="video_url" name="video_url" 
+                                                       value="{{ old('video_url') }}"
+                                                       placeholder="https://www.youtube.com/watch?v=..."
+                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+                                                @error('video_url')
+                                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                                @enderror
                                             </div>
-                                            <div class="flex items-start">
-                                                <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5 text-xs"></i>
-                                                <span>Add excerpts to improve readability</span>
-                                            </div>
-                                            <div class="flex items-start">
-                                                <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5 text-xs"></i>
-                                                <span>Choose appropriate categories</span>
-                                            </div>
+                                            <p class="text-sm text-gray-500">
+                                                <i class="fas fa-info-circle mr-1"></i>
+                                                Supported: YouTube, Vimeo, and direct video file URLs
+                                            </p>
                                         </div>
                                     </div>
+                                    @endif
+
+                                    @if($currentType === 'gallery')
+                                    <!-- Gallery Images -->
+                                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                                        <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                                            <i class="fas fa-images mr-2 text-purple-600"></i>
+                                            Gallery Images
+                                        </h3>
+                                        
+                                        <x-media-picker 
+                                            name="gallery_images" 
+                                            :value="old('gallery_images')" 
+                                            label="" 
+                                            accept="image/*" 
+                                            :multiple="true" 
+                                        />
+                                        @error('gallery_images')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                        <p class="text-sm text-gray-500 mt-2">
+                                            <i class="fas fa-info-circle mr-1"></i>
+                                            Select multiple images for your gallery
+                                        </p>
+                                    </div>
+                                    @endif
                                 </div>
                      </div>
                   </div>
@@ -211,7 +266,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/842imvajtzcmmfcf61kux7jyg2lant2sa691sjcoeh8q38cb/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     tinymce.init({
         selector: '#content',

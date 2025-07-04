@@ -19,7 +19,7 @@
                             <i class="fas fa-file-alt text-4xl text-gray-400"></i>
                         </div>
                     </div>
-                    <button type="button" @click="$parent.removeMedia(media.id)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button type="button" @click="removeMedia(media.id)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity">
                         <i class="fas fa-times"></i>
                     </button>
                     <p class="text-xs text-gray-600 mt-1 truncate" x-text="media.filename"></p>

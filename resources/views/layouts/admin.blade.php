@@ -12,7 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('fontawesome-free/css/all.min.css') }}">
     
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -22,21 +22,33 @@
         .sidebar {
             transition: transform 0.3s ease-in-out;
         }
-        .sidebar-collapsed {
-            transform: translateX(-100%);
-        }
-        @media (min-width: 768px) {
-            .sidebar-collapsed {
+        
+        /* Mobile: sidebar hidden by default */
+        @media (max-width: 767px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.sidebar-open {
                 transform: translateX(0);
+            }
+        }
+        
+        /* Desktop: sidebar visible by default */
+        @media (min-width: 768px) {
+            .sidebar {
+                transform: translateX(0);
+            }
+            .sidebar.sidebar-collapsed {
                 width: 4rem;
             }
-            .sidebar-collapsed .sidebar-text {
+            .sidebar.sidebar-collapsed .sidebar-text {
                 display: none;
             }
-            .sidebar-collapsed .sidebar-icon {
+            .sidebar.sidebar-collapsed .sidebar-icon {
                 margin: 0 auto;
             }
         }
+        
         .main-content {
             transition: margin-left 0.3s ease-in-out;
         }
@@ -69,11 +81,30 @@
                         <span class="sidebar-text ml-3">Dashboard</span>
                     </a>
                     
-                    <!-- Posts -->
+                    <!-- Content Management -->
                     <div class="space-y-1">
-                        <a href="{{ route('admin.posts.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.posts.*') ? 'bg-gray-700 text-blue-400' : '' }}">
+                        <!-- Posts (Berita) -->
+                        <a href="{{ route('admin.posts.index', ['type' => 'berita']) }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'berita' ? 'bg-gray-700 text-blue-400' : '' }}">
+                            <i class="sidebar-icon fas fa-newspaper w-5"></i>
+                            <span class="sidebar-text ml-3">Berita</span>
+                        </a>
+                        
+                        <!-- Pages (Halaman) -->
+                        <a href="{{ route('admin.posts.index', ['type' => 'page']) }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'page' ? 'bg-gray-700 text-blue-400' : '' }}">
                             <i class="sidebar-icon fas fa-file-alt w-5"></i>
-                            <span class="sidebar-text ml-3">Posts</span>
+                            <span class="sidebar-text ml-3">Halaman</span>
+                        </a>
+                        
+                        <!-- Gallery -->
+                        <a href="{{ route('admin.posts.index', ['type' => 'gallery']) }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'gallery' ? 'bg-gray-700 text-blue-400' : '' }}">
+                            <i class="sidebar-icon fas fa-images w-5"></i>
+                            <span class="sidebar-text ml-3">Gallery</span>
+                        </a>
+                        
+                        <!-- Video -->
+                        <a href="{{ route('admin.posts.index', ['type' => 'video']) }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'video' ? 'bg-gray-700 text-blue-400' : '' }}">
+                            <i class="sidebar-icon fas fa-video w-5"></i>
+                            <span class="sidebar-text ml-3">Video</span>
                         </a>
                     </div>
                     
@@ -81,6 +112,12 @@
                     <a href="{{ route('admin.categories.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-700 text-blue-400' : '' }}">
                         <i class="sidebar-icon fas fa-tags w-5"></i>
                         <span class="sidebar-text ml-3">Categories</span>
+                    </a>
+                    
+                    <!-- Navigation -->
+                    <a href="{{ route('admin.navigation.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.navigation.*') ? 'bg-gray-700 text-blue-400' : '' }}">
+                        <i class="sidebar-icon fas fa-bars w-5"></i>
+                        <span class="sidebar-text ml-3">Navigation</span>
                     </a>
                     
                     <!-- Media -->
@@ -203,25 +240,45 @@
         
         function toggleSidebar() {
             if (window.innerWidth < 768) {
-                // Mobile behavior
-                sidebar.classList.toggle('sidebar-collapsed');
+                // Mobile behavior: toggle sidebar visibility
+                sidebar.classList.toggle('sidebar-open');
                 sidebarOverlay.classList.toggle('hidden');
             } else {
-                // Desktop behavior
+                // Desktop behavior: toggle sidebar collapse
                 sidebar.classList.toggle('sidebar-collapsed');
                 mainContent.classList.toggle('main-content-expanded');
             }
         }
         
+        function closeMobileSidebar() {
+            if (window.innerWidth < 768) {
+                sidebar.classList.remove('sidebar-open');
+                sidebarOverlay.classList.add('hidden');
+            }
+        }
+        
         sidebarToggle?.addEventListener('click', toggleSidebar);
         sidebarToggleDesktop?.addEventListener('click', toggleSidebar);
-        sidebarOverlay?.addEventListener('click', toggleSidebar);
+        sidebarOverlay?.addEventListener('click', closeMobileSidebar);
         
-        // Close sidebar on window resize
+        // Close sidebar on window resize and ensure proper state
         window.addEventListener('resize', function() {
             if (window.innerWidth >= 768) {
+                // Desktop: hide overlay and remove mobile classes
                 sidebarOverlay.classList.add('hidden');
+                sidebar.classList.remove('sidebar-open');
+            } else {
+                // Mobile: ensure sidebar is hidden and remove desktop classes
                 sidebar.classList.remove('sidebar-collapsed');
+                mainContent.classList.remove('main-content-expanded');
+            }
+        });
+        
+        // Initialize proper state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth < 768) {
+                sidebar.classList.remove('sidebar-open');
+                sidebarOverlay.classList.add('hidden');
             }
         });
     </script>

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class PostRequest extends FormRequest
+class PageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,18 +35,14 @@ class PostRequest extends FormRequest
             ],
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
-            'type' => 'required|in:berita,page,gallery,video',
+            'type' => 'required|in:page',
             'featured_image' => 'nullable|string|max:500',
-            'video_url' => 'nullable|url|max:500',
-            'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'is_slider' => 'boolean',
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
             'published_at' => 'nullable|date',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:255',
-            'category_id' => 'required|exists:categories,id',
             'sort_order' => 'nullable|integer|min:0'
         ];
     }
@@ -63,19 +59,13 @@ class PostRequest extends FormRequest
             'slug.regex' => 'Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung.',
             'content.required' => 'Konten wajib diisi.',
             'excerpt.max' => 'Ringkasan maksimal 500 karakter.',
-            'type.required' => 'Tipe post wajib dipilih.',
-            'type.in' => 'Tipe post tidak valid.',
+            'type.required' => 'Tipe halaman wajib dipilih.',
+            'type.in' => 'Tipe halaman tidak valid.',
             'featured_image.string' => 'Featured image harus berupa string.',
             'featured_image.max' => 'Featured image path maksimal 500 karakter.',
-            'video_url.url' => 'URL video tidak valid.',
-            'gallery_images.*.image' => 'File galeri harus berupa gambar.',
-            'gallery_images.*.mimes' => 'Gambar galeri harus berformat: jpeg, png, jpg, gif, webp.',
-            'gallery_images.*.max' => 'Ukuran gambar galeri maksimal 2MB.',
             'meta_title.max' => 'Meta title maksimal 255 karakter.',
             'meta_description.max' => 'Meta description maksimal 500 karakter.',
             'meta_keywords.max' => 'Meta keywords maksimal 255 karakter.',
-            'category_id.required' => 'Kategori wajib dipilih.',
-            'category_id.exists' => 'Kategori tidak valid.',
             'sort_order.integer' => 'Urutan harus berupa angka.',
             'sort_order.min' => 'Urutan minimal 0.'
         ];
@@ -88,9 +78,9 @@ class PostRequest extends FormRequest
     {
         // Convert checkbox values to boolean
         $this->merge([
-            'is_slider' => $this->boolean('is_slider'),
             'is_featured' => $this->boolean('is_featured'),
             'is_published' => $this->boolean('is_published'),
+            'type' => 'page' // Force type to be 'page'
         ]);
 
         // Set published_at if is_published is true and published_at is not set

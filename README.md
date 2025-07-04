@@ -64,3 +64,70 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Project Features
+
+### Icon Picker with Search
+This project includes a custom icon picker component for navigation menu management with the following features:
+- Visual icon selection from 24 popular Font Awesome icons
+- Real-time search functionality with live filtering
+- Icon preview in form fields
+- Responsive design with modal interface
+
+### Offline Dependencies
+The project is configured to work offline with local assets:
+- **Font Awesome**: Served from `public/fontawesome-free/`
+- **Sortable.js**: Bundled via npm and Vite
+- **Auto-copy script**: Automatically copies Font Awesome files during `npm install`
+
+## Setup Instructions
+
+### Initial Setup
+```bash
+# Install PHP dependencies
+composer install
+
+# Install Node.js dependencies (will auto-copy Font Awesome)
+npm install
+
+# Build assets
+npm run build
+
+# Setup environment
+cp .env.example .env
+php artisan key:generate
+
+# Run migrations
+php artisan migrate
+
+# Seed database (optional)
+php artisan db:seed
+```
+
+### Development
+```bash
+# Start development server
+php artisan serve
+
+# Watch for asset changes
+npm run dev
+```
+
+### Asset Management
+```bash
+# Manually copy Font Awesome files
+npm run copy-fontawesome
+
+# Build for production
+npm run build
+```
+
+### File Structure
+- `public/fontawesome-free/` - Font Awesome assets (auto-generated, ignored by git)
+- `resources/views/admin/navigation/` - Navigation management with icon picker
+- `resources/js/app.js` - Main JavaScript entry point with Sortable.js
+
+### Notes
+- Font Awesome files are automatically copied from `node_modules` during `npm install`
+- The `public/fontawesome-free/` directory is ignored by git via `.gitignore`
+- All dependencies work offline for better performance and reliability

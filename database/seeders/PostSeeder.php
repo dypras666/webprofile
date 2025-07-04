@@ -21,10 +21,10 @@ class PostSeeder extends Seeder
 
         $posts = [
             [
-                'title' => 'Selamat Datang di Universitas Maju Mundur',
-                'slug' => 'selamat-datang-di-universitas-maju-mundur',
-                'content' => '<p>Universitas Maju Mundur adalah institusi pendidikan tinggi yang berkomitmen untuk menghasilkan lulusan berkualitas dan berdaya saing global. Dengan visi menjadi universitas terdepan dalam pengembangan ilmu pengetahuan dan teknologi, kami terus berinovasi dalam memberikan pendidikan terbaik.</p><p>Kampus kami dilengkapi dengan fasilitas modern dan tenaga pengajar yang berpengalaman. Kami menawarkan berbagai program studi dari jenjang sarjana hingga doktor di berbagai bidang ilmu.</p><p>Mari bergabung dengan kami untuk meraih masa depan yang gemilang!</p>',
-                'excerpt' => 'Universitas Maju Mundur berkomitmen menghasilkan lulusan berkualitas dengan fasilitas modern dan tenaga pengajar berpengalaman.',
+                'title' => 'Selamat Datang di LPPM Institut Islam Al-Mujaddid Sabak',
+                'slug' => 'selamat-datang-di-lppm-institut-islam-al-mujaddid-sabak',
+                'content' => '<p>LPPM Institut Islam Al-Mujaddid Sabak adalah lembaga penelitian dan pengabdian masyarakat yang berkomitmen untuk mengembangkan ilmu pengetahuan berbasis nilai-nilai Islam. Dengan visi menjadi pusat penelitian terdepan dalam pengembangan ilmu pengetahuan dan teknologi yang berlandaskan ajaran Islam, kami terus berinovasi dalam memberikan kontribusi terbaik bagi masyarakat.</p><p>Lembaga kami dilengkapi dengan fasilitas penelitian modern dan tenaga peneliti yang berpengalaman. Kami fokus pada penelitian di berbagai bidang ilmu dengan pendekatan Islami yang komprehensif.</p><p>Mari bergabung dengan kami untuk membangun peradaban yang gemilang!</p>',
+                'excerpt' => 'LPPM Institut Islam Al-Mujaddid Sabak berkomitmen mengembangkan ilmu pengetahuan berbasis nilai Islam dengan fasilitas modern dan tenaga peneliti berpengalaman.',
                 'type' => 'berita',
                 'is_slider' => true,
                 'is_featured' => true,
@@ -36,10 +36,10 @@ class PostSeeder extends Seeder
                 'sort_order' => 1
             ],
             [
-                'title' => 'Program Studi Teknik Informatika Meraih Akreditasi A',
-                'slug' => 'program-studi-teknik-informatika-meraih-akreditasi-a',
-                'content' => '<p>Kami dengan bangga mengumumkan bahwa Program Studi Teknik Informatika Universitas Maju Mundur telah meraih akreditasi A dari BAN-PT. Pencapaian ini merupakan hasil dari kerja keras seluruh civitas akademika dalam meningkatkan kualitas pendidikan.</p><p>Akreditasi A ini menunjukkan bahwa program studi kami telah memenuhi standar nasional pendidikan tinggi dan siap menghasilkan lulusan yang kompeten di bidang teknologi informasi.</p><p>Dengan akreditasi ini, lulusan Program Studi Teknik Informatika akan semakin diakui di dunia kerja dan memiliki peluang karir yang lebih luas.</p>',
-                'excerpt' => 'Program Studi Teknik Informatika Universitas Maju Mundur meraih akreditasi A dari BAN-PT, menunjukkan kualitas pendidikan yang unggul.',
+                'title' => 'Program Penelitian Teknologi Islami Meraih Pengakuan Nasional',
+                'slug' => 'program-penelitian-teknologi-islami-meraih-pengakuan-nasional',
+                'content' => '<p>Kami dengan bangga mengumumkan bahwa Program Penelitian Teknologi Islami LPPM Institut Islam Al-Mujaddid Sabak telah meraih pengakuan nasional dari Kemenristekdikti. Pencapaian ini merupakan hasil dari kerja keras seluruh tim peneliti dalam mengintegrasikan teknologi modern dengan nilai-nilai Islam.</p><p>Pengakuan ini menunjukkan bahwa program penelitian kami telah memenuhi standar nasional penelitian dan siap menghasilkan inovasi yang bermanfaat bagi umat.</p><p>Dengan pengakuan ini, hasil penelitian Program Teknologi Islami akan semakin diakui di dunia akademik dan memiliki dampak yang lebih luas bagi masyarakat.</p>',
+                'excerpt' => 'Program Penelitian Teknologi Islami LPPM Institut Islam Al-Mujaddid Sabak meraih pengakuan nasional, menunjukkan kualitas penelitian yang unggul.',
                 'type' => 'berita',
                 'is_featured' => true,
                 'is_published' => true,
@@ -50,10 +50,10 @@ class PostSeeder extends Seeder
                 'sort_order' => 2
             ],
             [
-                'title' => 'Penelitian Dosen UMM Tentang AI Dipublikasikan di Jurnal Internasional',
-                'slug' => 'penelitian-dosen-umm-tentang-ai-dipublikasikan-di-jurnal-internasional',
-                'content' => '<p>Dr. Ahmad Santoso, dosen Fakultas Teknik Universitas Maju Mundur, berhasil mempublikasikan penelitiannya tentang Artificial Intelligence di jurnal internasional bereputasi. Penelitian yang berjudul "Machine Learning Applications in Smart City Development" ini mendapat apresiasi tinggi dari komunitas ilmiah internasional.</p><p>Penelitian ini mengeksplorasi penerapan machine learning dalam pengembangan smart city, khususnya dalam optimalisasi sistem transportasi dan manajemen energi. Hasil penelitian menunjukkan peningkatan efisiensi hingga 30% dalam sistem yang diuji.</p><p>Publikasi ini semakin memperkuat reputasi Universitas Maju Mundur di kancah penelitian internasional.</p>',
-                'excerpt' => 'Dosen UMM berhasil publikasikan penelitian AI di jurnal internasional, memperkuat reputasi universitas di bidang penelitian.',
+                'title' => 'Penelitian LPPM Tentang AI Islami Dipublikasikan di Jurnal Internasional',
+                'slug' => 'penelitian-lppm-tentang-ai-islami-dipublikasikan-di-jurnal-internasional',
+                'content' => '<p>Dr. Ahmad Santoso, peneliti senior LPPM Institut Islam Al-Mujaddid Sabak, berhasil mempublikasikan penelitiannya tentang Artificial Intelligence berbasis nilai Islam di jurnal internasional bereputasi. Penelitian yang berjudul "Islamic Ethics in AI Development for Smart Islamic City" ini mendapat apresiasi tinggi dari komunitas ilmiah internasional.</p><p>Penelitian ini mengeksplorasi penerapan AI dengan prinsip-prinsip Islam dalam pengembangan kota cerdas, khususnya dalam sistem yang sesuai dengan syariah. Hasil penelitian menunjukkan model AI yang lebih etis dan berkelanjutan.</p><p>Publikasi ini semakin memperkuat reputasi LPPM Institut Islam Al-Mujaddid Sabak di kancah penelitian internasional.</p>',
+                'excerpt' => 'Peneliti LPPM berhasil publikasikan penelitian AI Islami di jurnal internasional, memperkuat reputasi lembaga di bidang penelitian.',
                 'type' => 'berita',
                 'is_published' => true,
                 'published_at' => Carbon::now()->subDays(5),
@@ -63,10 +63,10 @@ class PostSeeder extends Seeder
                 'sort_order' => 3
             ],
             [
-                'title' => 'Mahasiswa UMM Juara 1 Kompetisi Robotika Nasional',
-                'slug' => 'mahasiswa-umm-juara-1-kompetisi-robotika-nasional',
-                'content' => '<p>Tim robotika Universitas Maju Mundur yang terdiri dari 5 mahasiswa Teknik Elektro berhasil meraih juara 1 dalam Kompetisi Robotika Nasional 2024. Kompetisi yang diselenggarakan di Jakarta ini diikuti oleh 50 tim dari seluruh Indonesia.</p><p>Robot yang mereka ciptakan mampu menyelesaikan berbagai tantangan dengan tingkat akurasi tinggi. Tim yang dibimbing oleh Dr. Sari Indrawati ini telah mempersiapkan diri selama 6 bulan untuk kompetisi tersebut.</p><p>Prestasi ini menambah koleksi penghargaan yang telah diraih mahasiswa Universitas Maju Mundur di berbagai kompetisi nasional dan internasional.</p>',
-                'excerpt' => 'Tim robotika UMM raih juara 1 kompetisi nasional, menunjukkan keunggulan mahasiswa di bidang teknologi.',
+                'title' => 'Tim Peneliti LPPM Juara 1 Kompetisi Inovasi Teknologi Islami Nasional',
+                'slug' => 'tim-peneliti-lppm-juara-1-kompetisi-inovasi-teknologi-islami-nasional',
+                'content' => '<p>Tim peneliti LPPM Institut Islam Al-Mujaddid Sabak yang terdiri dari 5 peneliti muda berhasil meraih juara 1 dalam Kompetisi Inovasi Teknologi Islami Nasional 2024. Kompetisi yang diselenggarakan di Jakarta ini diikuti oleh 50 tim dari seluruh Indonesia.</p><p>Inovasi teknologi yang mereka ciptakan mampu mengintegrasikan nilai-nilai Islam dalam solusi teknologi modern dengan tingkat efektivitas tinggi. Tim yang dipimpin oleh Dr. Sari Indrawati ini telah mempersiapkan penelitian selama 6 bulan.</p><p>Prestasi ini menambah koleksi penghargaan yang telah diraih LPPM Institut Islam Al-Mujaddid Sabak di berbagai kompetisi nasional dan internasional.</p>',
+                'excerpt' => 'Tim peneliti LPPM raih juara 1 kompetisi inovasi teknologi Islami nasional, menunjukkan keunggulan dalam penelitian berbasis Islam.',
                 'type' => 'berita',
                 'is_featured' => true,
                 'is_published' => true,
@@ -77,10 +77,10 @@ class PostSeeder extends Seeder
                 'sort_order' => 4
             ],
             [
-                'title' => 'Program Pengabdian Masyarakat: Digitalisasi UMKM Desa Sukamaju',
-                'slug' => 'program-pengabdian-masyarakat-digitalisasi-umkm-desa-sukamaju',
-                'content' => '<p>Tim dosen dan mahasiswa Universitas Maju Mundur melaksanakan program pengabdian masyarakat berupa digitalisasi UMKM di Desa Sukamaju. Program ini bertujuan membantu pelaku UMKM memasarkan produknya secara online.</p><p>Selama 3 bulan, tim memberikan pelatihan pembuatan website, penggunaan media sosial untuk pemasaran, dan manajemen keuangan digital. Sebanyak 25 UMKM telah berhasil memiliki platform digital untuk memasarkan produknya.</p><p>Program ini mendapat apresiasi dari pemerintah daerah dan diharapkan dapat direplikasi di desa-desa lainnya.</p>',
-                'excerpt' => 'UMM laksanakan program digitalisasi UMKM di Desa Sukamaju, membantu 25 UMKM go digital.',
+                'title' => 'Program Pengabdian Masyarakat: Pemberdayaan UMKM Syariah Desa Sukamaju',
+                'slug' => 'program-pengabdian-masyarakat-pemberdayaan-umkm-syariah-desa-sukamaju',
+                'content' => '<p>Tim peneliti LPPM Institut Islam Al-Mujaddid Sabak melaksanakan program pengabdian masyarakat berupa pemberdayaan UMKM berbasis syariah di Desa Sukamaju. Program ini bertujuan membantu pelaku UMKM mengembangkan bisnis sesuai prinsip Islam.</p><p>Selama 3 bulan, tim memberikan pelatihan bisnis syariah, manajemen keuangan Islam, dan pemasaran halal. Sebanyak 25 UMKM telah berhasil menerapkan prinsip syariah dalam operasional bisnisnya.</p><p>Program ini mendapat apresiasi dari pemerintah daerah dan MUI setempat, serta diharapkan dapat direplikasi di desa-desa lainnya.</p>',
+                'excerpt' => 'LPPM laksanakan program pemberdayaan UMKM syariah di Desa Sukamaju, membantu 25 UMKM menerapkan prinsip Islam.',
                 'type' => 'berita',
                 'is_published' => true,
                 'published_at' => Carbon::now()->subDays(10),
@@ -90,10 +90,10 @@ class PostSeeder extends Seeder
                 'sort_order' => 5
             ],
             [
-                'title' => 'Kerjasama dengan Universitas Tokyo untuk Program Pertukaran Mahasiswa',
-                'slug' => 'kerjasama-dengan-universitas-tokyo-untuk-program-pertukaran-mahasiswa',
-                'content' => '<p>Universitas Maju Mundur menandatangani MoU dengan Universitas Tokyo untuk program pertukaran mahasiswa dan dosen. Kerjasama ini membuka peluang bagi mahasiswa UMM untuk belajar di Jepang selama satu semester.</p><p>Program pertukaran ini mencakup bidang teknologi, sains, dan budaya. Mahasiswa yang terpilih akan mendapat beasiswa penuh dari kedua universitas. Selain itu, akan ada program penelitian bersama antara dosen dari kedua institusi.</p><p>Rektor UMM menyatakan bahwa kerjasama ini merupakan langkah strategis untuk meningkatkan kualitas pendidikan dan memperluas wawasan global mahasiswa.</p>',
-                'excerpt' => 'UMM jalin kerjasama dengan Universitas Tokyo untuk program pertukaran mahasiswa dan penelitian bersama.',
+                'title' => 'Kerjasama dengan Islamic University of Madinah untuk Program Penelitian Bersama',
+                'slug' => 'kerjasama-dengan-islamic-university-of-madinah-untuk-program-penelitian-bersama',
+                'content' => '<p>LPPM Institut Islam Al-Mujaddid Sabak menandatangani MoU dengan Islamic University of Madinah untuk program penelitian bersama dan pertukaran peneliti. Kerjasama ini membuka peluang bagi peneliti LPPM untuk melakukan riset di Arab Saudi.</p><p>Program kerjasama ini mencakup bidang studi Islam, teknologi Islami, dan pengembangan masyarakat Muslim. Peneliti yang terpilih akan mendapat dukungan penuh dari kedua lembaga. Selain itu, akan ada program publikasi bersama hasil penelitian.</p><p>Direktur LPPM menyatakan bahwa kerjasama ini merupakan langkah strategis untuk meningkatkan kualitas penelitian dan memperluas jaringan akademik internasional.</p>',
+                'excerpt' => 'LPPM jalin kerjasama dengan Islamic University of Madinah untuk program penelitian bersama dan pertukaran peneliti.',
                 'type' => 'berita',
                 'is_published' => true,
                 'published_at' => Carbon::now()->subDays(12),
@@ -103,10 +103,10 @@ class PostSeeder extends Seeder
                 'sort_order' => 6
             ],
             [
-                'title' => 'Alumni UMM Raih Penghargaan Entrepreneur Muda Terbaik',
-                'slug' => 'alumni-umm-raih-penghargaan-entrepreneur-muda-terbaik',
-                'content' => '<p>Budi Hartono, alumni Fakultas Ekonomi Universitas Maju Mundur angkatan 2018, meraih penghargaan Entrepreneur Muda Terbaik 2024 dari Kementerian Koperasi dan UKM. Penghargaan ini diberikan atas keberhasilannya mengembangkan startup teknologi finansial.</p><p>Startup yang didirikan Budi telah membantu lebih dari 10.000 UMKM dalam mengakses pembiayaan. Platform yang dikembangkannya menggunakan teknologi AI untuk analisis risiko kredit mikro.</p><p>Budi mengaku bahwa pendidikan yang diterimanya di UMM, khususnya mata kuliah kewirausahaan dan teknologi, sangat membantu dalam mengembangkan bisnisnya.</p>',
-                'excerpt' => 'Alumni UMM Budi Hartono raih penghargaan Entrepreneur Muda Terbaik 2024 dengan startup fintech-nya.',
+                'title' => 'Alumni Peneliti LPPM Raih Penghargaan Inovator Teknologi Islami Terbaik',
+                'slug' => 'alumni-peneliti-lppm-raih-penghargaan-inovator-teknologi-islami-terbaik',
+                'content' => '<p>Budi Hartono, alumni peneliti LPPM Institut Islam Al-Mujaddid Sabak, meraih penghargaan Inovator Teknologi Islami Terbaik 2024 dari Kementerian Agama. Penghargaan ini diberikan atas keberhasilannya mengembangkan platform teknologi finansial syariah.</p><p>Platform yang didirikan Budi telah membantu lebih dari 10.000 UMKM Muslim dalam mengakses pembiayaan syariah. Teknologi yang dikembangkannya menggunakan AI untuk analisis risiko sesuai prinsip Islam.</p><p>Budi mengaku bahwa pengalaman penelitiannya di LPPM, khususnya dalam bidang ekonomi Islam dan teknologi, sangat membantu dalam mengembangkan inovasinya.</p>',
+                'excerpt' => 'Alumni peneliti LPPM Budi Hartono raih penghargaan Inovator Teknologi Islami Terbaik 2024 dengan platform fintech syariah.',
                 'type' => 'berita',
                 'is_published' => true,
                 'published_at' => Carbon::now()->subDays(15),
@@ -116,10 +116,10 @@ class PostSeeder extends Seeder
                 'sort_order' => 7
             ],
             [
-                'title' => 'Fasilitas Laboratorium Baru untuk Fakultas Sains',
-                'slug' => 'fasilitas-laboratorium-baru-untuk-fakultas-sains',
-                'content' => '<p>Universitas Maju Mundur meresmikan laboratorium baru untuk Fakultas Sains dengan investasi Rp 5 miliar. Laboratorium ini dilengkapi dengan peralatan canggih untuk mendukung penelitian di bidang kimia, biologi, dan fisika.</p><p>Fasilitas baru ini mencakup laboratorium analitik, laboratorium mikrobiologi, dan laboratorium fisika material. Semua peralatan menggunakan teknologi terkini yang memungkinkan penelitian berkualitas internasional.</p><p>Dengan fasilitas ini, diharapkan kualitas penelitian dan pembelajaran di Fakultas Sains akan semakin meningkat dan mampu bersaing di tingkat internasional.</p>',
-                'excerpt' => 'UMM resmikan laboratorium baru senilai Rp 5 miliar untuk Fakultas Sains dengan peralatan canggih.',
+                'title' => 'Fasilitas Laboratorium Penelitian Islami Terbaru untuk LPPM',
+                'slug' => 'fasilitas-laboratorium-penelitian-islami-terbaru-untuk-lppm',
+                'content' => '<p>LPPM Institut Islam Al-Mujaddid Sabak meresmikan laboratorium penelitian Islami terbaru dengan investasi Rp 5 miliar. Laboratorium ini dilengkapi dengan peralatan canggih untuk mendukung penelitian di bidang sains Islam, teknologi halal, dan inovasi berbasis syariah.</p><p>Fasilitas baru ini mencakup laboratorium analisis halal, laboratorium teknologi Islami, dan laboratorium riset sosial keislaman. Semua peralatan menggunakan teknologi terkini yang memungkinkan penelitian berkualitas internasional dengan pendekatan Islam.</p><p>Dengan fasilitas ini, diharapkan kualitas penelitian LPPM akan semakin meningkat dan mampu memberikan kontribusi nyata bagi pengembangan ilmu pengetahuan Islam.</p>',
+                'excerpt' => 'LPPM resmikan laboratorium penelitian Islami senilai Rp 5 miliar dengan peralatan canggih untuk riset berbasis Islam.',
                 'type' => 'berita',
                 'is_slider' => true,
                 'is_published' => true,
