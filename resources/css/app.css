@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* Custom Styles */
+    .prose {
+        @apply max-w-none;
+    }
+
+    .prose h1 {
+        @apply text-3xl font-bold text-gray-900 mb-4;
+    }
+
+    .prose h2 {
+        @apply text-2xl font-semibold text-gray-800 mb-3;
+    }
+
+    .prose h3 {
+        @apply text-xl font-medium text-gray-700 mb-2;
+    }
+
+    .prose p {
+        @apply text-gray-600 mb-4 leading-relaxed;
+    }
+
+    .prose ul {
+        @apply list-disc list-inside mb-4 text-gray-600;
+    }
+
+    .prose ol {
+        @apply list-decimal list-inside mb-4 text-gray-600;
+    }
+
+    .prose blockquote {
+        @apply border-l-4 border-blue-500 pl-4 italic text-gray-700 mb-4;
+    }
+
+    .prose img {
+        @apply rounded-lg shadow-md mb-4;
+    }
+
+    .prose a {
+        @apply text-blue-600 hover:text-blue-800 underline;
+    }
+
+    /* Button Styles */
+    .btn {
+        @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+    }
+
+    .btn-primary {
+        @apply bg-blue-600 text-white hover:bg-blue-700;
+    }
+
+    .btn-secondary {
+        @apply bg-gray-600 text-white hover:bg-gray-700;
+    }
+
+    .btn-outline {
+        @apply border border-gray-300 text-gray-700 hover:bg-gray-50;
+    }
+
+    /* Card Styles */
+    .card {
+        @apply bg-white rounded-lg shadow-md overflow-hidden;
+    }
+
+    .card-header {
+        @apply p-6 border-b border-gray-200;
+    }
+
+    .card-body {
+        @apply p-6;
+    }
+
+    .card-footer {
+        @apply p-6 border-t border-gray-200 bg-gray-50;
+    }
+
+    /* Form Styles */
+    .form-input {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    }
+
+    .form-textarea {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical;
+    }
+
+    .form-select {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    }
+
+    /* Navigation Styles */
+    .nav-link {
+        @apply text-gray-700 hover:text-blue-600 transition-colors duration-200;
+    }
+
+    .nav-link.active {
+        @apply text-blue-600 font-medium;
+    }
+
+    /* Utility Classes */
+    .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .bg-gradient-secondary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    /* Animation Classes */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    .slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+
+    /* Responsive Image Gallery */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .gallery-item {
+        @apply relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300;
+    }
+
+    .gallery-item img {
+        @apply w-full h-full object-cover transition-transform duration-300 hover:scale-105;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+        @apply inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Masonry Layout */
+.masonry {
+    column-count: 3;
+    column-gap: 1rem;
+}
+
+.masonry-item {
+    margin-bottom: 1rem;
+    break-inside: avoid;
+}
+
+@media (max-width: 768px) {
+    .masonry {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .masonry {
+        column-count: 1;
+    }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
