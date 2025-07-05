@@ -201,6 +201,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::get('/{download}/edit', [DownloadController::class, 'edit'])->name('edit');
         Route::put('/{download}', [DownloadController::class, 'update'])->name('update');
         Route::delete('/{download}', [DownloadController::class, 'destroy'])->name('destroy');
+        Route::patch('/{download}/toggle', [DownloadController::class, 'toggleStatus'])->name('toggle');
         Route::patch('/{download}/toggle-status', [DownloadController::class, 'toggleStatus'])->name('toggle-status');
     });
     

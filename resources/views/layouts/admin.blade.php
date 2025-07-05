@@ -126,6 +126,12 @@
                         <span class="sidebar-text ml-3">Media</span>
                     </a>
                     
+                    <!-- Downloads -->
+                    <a href="{{ route('admin.downloads.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.downloads.*') ? 'bg-gray-700 text-blue-400' : '' }}">
+                        <i class="sidebar-icon fas fa-download w-5"></i>
+                        <span class="sidebar-text ml-3">Downloads</span>
+                    </a>
+                    
                     <!-- Users -->
                     <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.users.*') ? 'bg-gray-700 text-blue-400' : '' }}">
                         <i class="sidebar-icon fas fa-users w-5"></i>

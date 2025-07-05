@@ -20,3 +20,4 @@ yarn-error.log
 
 # Font Awesome assets (auto-generated from node_modules)
 /public/fontawesome-free
+public/public.zip
