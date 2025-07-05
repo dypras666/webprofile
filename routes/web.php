@@ -218,5 +218,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     });
 });
 
+
+
 // Redirect /admin to admin dashboard
 // Route::redirect('/admin', '/admin/');

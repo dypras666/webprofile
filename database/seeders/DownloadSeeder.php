@@ -29,6 +29,15 @@ class DownloadSeeder extends Seeder
         // Sample downloads data
         $downloads = [
             [
+                'title' => 'File Test Public dengan Password',
+                'description' => 'File test untuk menguji logika public dengan password - tidak perlu login.',
+                'file_name' => 'test-public-password.txt',
+                'category' => 'Test',
+                'is_public' => true,
+                'password' => 'test123',
+                'sort_order' => 0,
+            ],
+            [
                 'title' => 'Panduan Sistem Penjaminan Mutu Internal',
                 'description' => 'Dokumen panduan lengkap untuk implementasi Sistem Penjaminan Mutu Internal (SPMI) di Institut Islam Al-Mujaddid Sabak.',
                 'file_name' => 'panduan-spmi-2024.pdf',

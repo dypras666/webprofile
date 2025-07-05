@@ -67,23 +67,39 @@ class DownloadController extends Controller
             abort(404);
         }
         
-        // Check if file is protected
-        if (!$download->is_public || $download->password) {
-            // Validate password if required
-            if ($download->password) {
-                $request->validate([
-                    'password' => 'required|string'
-                ]);
-                
-                if (!$download->checkPassword($request->password)) {
-                    return back()->withErrors(['password' => 'Password salah.']);
-                }
-            }
+        // Debug logging
+        \Log::info('Download attempt', [
+            'download_id' => $download->id,
+            'title' => $download->title,
+            'is_public' => $download->is_public,
+            'has_password' => !empty($download->password),
+            'user_authenticated' => auth()->check(),
+            'request_has_password' => $request->has('password')
+        ]);
+        
+        // Check if user is authenticated for private files (non-public files)
+        if (!$download->is_public && !auth()->check()) {
+            \Log::info('Redirecting to login - private file, user not authenticated');
+            return redirect()->route('login')->with('error', 'Anda harus login untuk mengunduh file ini.');
+        }
+        
+        // Validate password if required (for password-protected files)
+        if ($download->password) {
+            $request->validate([
+                'password' => 'required|string'
+            ]);
             
-            // Check if user is authenticated for private files
-            if (!$download->is_public && !auth()->check()) {
-                return redirect()->route('login')->with('error', 'Anda harus login untuk mengunduh file ini.');
+            \Log::info('Password validation details', [
+                'input_password' => $request->password,
+                'stored_hash' => $download->password,
+                'hash_check_result' => \Hash::check($request->password, $download->password)
+            ]);
+            
+            if (!$download->checkPassword($request->password)) {
+                \Log::info('Password check failed');
+                return back()->withErrors(['password' => 'Password salah.']);
             }
+            \Log::info('Password check passed');
         }
         
         // Check if file exists
