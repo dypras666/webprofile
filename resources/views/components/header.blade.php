@@ -64,7 +64,7 @@
                 @endif
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900">{{ $siteSettings['site_name'] ?? config('app.name') }}</h1>
-                        <p class="text-sm text-gray-600">{{ $siteSettings['site_tagline'] ?? 'Your Tagline Here' }}</p>
+                        <p class="text-sm text-gray-600">{{ $siteSettings['site_description'] ?? 'Your Tagline Here' }}</p>
                     </div>
                 </a>
             </div>

@@ -15,65 +15,65 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Berita Kampus',
-                'slug' => 'berita-kampus',
-                'description' => 'Berita terbaru seputar kegiatan dan perkembangan kampus Universitas Maju Mundur',
+                'name' => 'Berita LPM',
+                'slug' => 'berita-lpm',
+                'description' => 'Berita terbaru seputar kegiatan dan perkembangan Lembaga Penjaminan Mutu Institut Islam Al-Mujaddid Sabak',
                 'color' => '#3B82F6',
                 'is_active' => true,
                 'sort_order' => 1
             ],
             [
-                'name' => 'Akademik',
-                'slug' => 'akademik',
-                'description' => 'Informasi akademik, kurikulum, dan program studi',
+                'name' => 'Penjaminan Mutu',
+                'slug' => 'penjaminan-mutu',
+                'description' => 'Informasi sistem penjaminan mutu internal dan eksternal',
                 'color' => '#10B981',
                 'is_active' => true,
                 'sort_order' => 2
             ],
             [
-                'name' => 'Penelitian',
-                'slug' => 'penelitian',
-                'description' => 'Hasil penelitian dan publikasi ilmiah dari dosen dan mahasiswa',
+                'name' => 'Akreditasi',
+                'slug' => 'akreditasi',
+                'description' => 'Informasi dan proses akreditasi program studi dan institusi',
                 'color' => '#8B5CF6',
                 'is_active' => true,
                 'sort_order' => 3
             ],
             [
-                'name' => 'Pengabdian Masyarakat',
-                'slug' => 'pengabdian-masyarakat',
-                'description' => 'Kegiatan pengabdian kepada masyarakat yang dilakukan universitas',
+                'name' => 'Audit Mutu Internal',
+                'slug' => 'audit-mutu-internal',
+                'description' => 'Kegiatan audit mutu internal dan evaluasi diri institusi',
                 'color' => '#F59E0B',
                 'is_active' => true,
                 'sort_order' => 4
             ],
             [
-                'name' => 'Kemahasiswaan',
-                'slug' => 'kemahasiswaan',
-                'description' => 'Kegiatan dan prestasi mahasiswa Universitas Maju Mundur',
+                'name' => 'Standar Mutu',
+                'slug' => 'standar-mutu',
+                'description' => 'Dokumen standar mutu dan kebijakan penjaminan mutu',
                 'color' => '#EF4444',
                 'is_active' => true,
                 'sort_order' => 5
             ],
             [
-                'name' => 'Alumni',
-                'slug' => 'alumni',
-                'description' => 'Berita dan kegiatan alumni Universitas Maju Mundur',
+                'name' => 'Pelatihan & Workshop',
+                'slug' => 'pelatihan-workshop',
+                'description' => 'Kegiatan pelatihan dan workshop terkait penjaminan mutu',
                 'color' => '#6B7280',
                 'is_active' => true,
                 'sort_order' => 6
             ],
             [
-                'name' => 'Kerjasama',
-                'slug' => 'kerjasama',
-                'description' => 'Kerjasama dengan institusi dalam dan luar negeri',
+                'name' => 'Monitoring & Evaluasi',
+                'slug' => 'monitoring-evaluasi',
+                'description' => 'Kegiatan monitoring dan evaluasi pelaksanaan penjaminan mutu',
                 'color' => '#14B8A6',
                 'is_active' => true,
                 'sort_order' => 7
             ],
             [
-                'name' => 'Galeri',
-                'slug' => 'galeri',
-                'description' => 'Dokumentasi kegiatan dan fasilitas kampus',
+                'name' => 'Dokumentasi',
+                'slug' => 'dokumentasi',
+                'description' => 'Dokumentasi kegiatan dan pencapaian LPM',
                 'color' => '#F97316',
                 'is_active' => true,
                 'sort_order' => 8

@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Admin\NavigationController;
+use App\Http\Controllers\DownloadController;
 
 // Debug route for media
 Route::get('/debug-media', function() {
@@ -126,6 +127,12 @@ Route::get('/contact', [FrontendController::class, 'contact'])->name('frontend.c
 Route::post('/contact', [FrontendController::class, 'contactSubmit'])->name('frontend.contact.submit');
 Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
 
+// Download Routes
+Route::get('/downloads', [DownloadController::class, 'index'])->name('frontend.downloads');
+Route::get('/downloads/{download}', [DownloadController::class, 'show'])->name('frontend.downloads.show');
+Route::get('/downloads/{download}/password', [DownloadController::class, 'showPasswordForm'])->name('frontend.downloads.password');
+Route::post('/downloads/{download}/download', [DownloadController::class, 'download'])->name('frontend.downloads.download');
+
 // API Routes for Frontend
 Route::get('/api/posts/type/{type}', [FrontendController::class, 'getPostsByType'])->name('api.posts.type');
 Route::post('/api/posts/{post}/view', [FrontendController::class, 'updatePostView'])->name('api.posts.view');
@@ -184,6 +191,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::patch('/{menu}/toggle-active', [NavigationController::class, 'toggleActive'])->name('toggle-active');
         Route::get('/posts', [NavigationController::class, 'getPosts'])->name('posts');
         Route::get('/categories', [NavigationController::class, 'getCategories'])->name('categories');
+    });
+    
+    // Downloads Management
+    Route::prefix('downloads')->name('downloads.')->group(function () {
+        Route::get('/', [DownloadController::class, 'adminIndex'])->name('index');
+        Route::get('/create', [DownloadController::class, 'create'])->name('create');
+        Route::post('/', [DownloadController::class, 'store'])->name('store');
+        Route::get('/{download}/edit', [DownloadController::class, 'edit'])->name('edit');
+        Route::put('/{download}', [DownloadController::class, 'update'])->name('update');
+        Route::delete('/{download}', [DownloadController::class, 'destroy'])->name('destroy');
+        Route::patch('/{download}/toggle-status', [DownloadController::class, 'toggleStatus'])->name('toggle-status');
     });
     
     // Site Settings

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($siteSettings['site_name'] ?? 'Home') . ' - ' . ($siteSettings['site_tagline'] ?? 'Latest News & Updates'))
+@section('title', ($siteSettings['site_name'] ?? 'Home') . ' - ' . ($siteSettings['site_description'] ?? 'Latest News & Updates'))
 @section('meta_description', $siteSettings['seo_meta_description'] ?? 'Stay updated with the latest news, featured articles, and trending stories. Your trusted source for comprehensive news coverage and insights.')
 @section('meta_keywords', $siteSettings['seo_meta_keywords'] ?? 'news, latest news, featured articles, breaking news, updates, current events')
 

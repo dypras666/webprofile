@@ -17,8 +17,8 @@ class AdminSeeder extends Seeder
         // Delete existing users first to avoid conflicts
         User::whereIn('email', [
             'admin@webprofile.com',
-            'admin@umm.ac.id', 
-            'editor@umm.ac.id'
+            'admin@iimsabak.ac.id', 
+            'editor@iimsabak.ac.id'
         ])->delete();
 
         // Create Super Admin user
@@ -40,13 +40,13 @@ class AdminSeeder extends Seeder
 
         // Create Admin user
         $admin = User::create([
-            'name' => 'Admin UMM',
-            'email' => 'admin@umm.ac.id',
+            'name' => 'Admin LPM IIMS',
+            'email' => 'admin@iimsabak.ac.id',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'is_active' => true,
-            'bio' => 'Administrator Universitas Muhammadiyah Malang',
-            'phone' => '+62341464318',
+            'bio' => 'Administrator Lembaga Penjaminan Mutu Institut Islam Al-Mujaddid Sabak',
+            'phone' => '+62282113175',
         ]);
         
         // Assign Admin role if exists
@@ -57,13 +57,13 @@ class AdminSeeder extends Seeder
 
         // Create Editor user
         $editor = User::create([
-            'name' => 'Editor UMM',
-            'email' => 'editor@umm.ac.id',
+            'name' => 'Editor LPM IIMS',
+            'email' => 'editor@iimsabak.ac.id',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'is_active' => true,
-            'bio' => 'Editor konten website UMM',
-            'phone' => '+62341464319',
+            'bio' => 'Editor konten website LPM Institut Islam Al-Mujaddid Sabak',
+            'phone' => '+62282113176',
         ]);
         
         // Assign Editor role if exists
@@ -78,12 +78,12 @@ class AdminSeeder extends Seeder
         $this->command->info('  Email: admin@webprofile.com');
         $this->command->info('  Password: password');
         $this->command->info('');
-        $this->command->info('Admin UMM:');
-        $this->command->info('  Email: admin@umm.ac.id');
+        $this->command->info('Admin LPM IIMS:');
+        $this->command->info('  Email: admin@iimsabak.ac.id');
         $this->command->info('  Password: password');
         $this->command->info('');
-        $this->command->info('Editor UMM:');
-        $this->command->info('  Email: editor@umm.ac.id');
+        $this->command->info('Editor LPM IIMS:');
+        $this->command->info('  Email: editor@iimsabak.ac.id');
         $this->command->info('  Password: password');
         $this->command->info('========================');
     }

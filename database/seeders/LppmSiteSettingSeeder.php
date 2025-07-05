@@ -16,28 +16,28 @@ class LppmSiteSettingSeeder extends Seeder
             // General Settings
             [
                 'key' => 'site_name',
-                'value' => 'Website LPPM Institut Islam Al-Mujaddid Sabak',
+                'value' => 'Website LPM Institut Islam Al-Mujaddid Sabak',
                 'type' => 'text',
                 'group' => 'general',
                 'description' => 'The name of your website'
             ],
             [
                 'key' => 'site_description',
-                'value' => 'Lembaga Penelitian dan Pengabdian kepada Masyarakat Institut Islam Al-Mujaddid Sabak',
+                'value' => 'Lembaga Penjaminan Mutu Institut Islam Al-Mujaddid Sabak',
                 'type' => 'textarea',
                 'group' => 'general',
                 'description' => 'A brief description of your website'
             ],
             [
                 'key' => 'site_url',
-                'value' => 'https://lppm.iimsabak.ac.id',
+                'value' => 'https://lpm.iimsabak.ac.id',
                 'type' => 'url',
                 'group' => 'general',
                 'description' => 'The main URL of your website'
             ],
             [
                 'key' => 'admin_email',
-                'value' => 'lppm@iimsabak.ac.id',
+                'value' => 'lpm@iimsabak.ac.id',
                 'type' => 'email',
                 'group' => 'general',
                 'description' => 'Primary email address for administration'
@@ -74,7 +74,7 @@ class LppmSiteSettingSeeder extends Seeder
             ],
             [
                 'key' => 'contact_email',
-                'value' => 'lppm@iimsabak.ac.id',
+                'value' => 'lpm@iimsabak.ac.id',
                 'type' => 'email',
                 'group' => 'contact',
                 'description' => 'Primary contact email address'
@@ -83,21 +83,21 @@ class LppmSiteSettingSeeder extends Seeder
             // SEO Settings
             [
                 'key' => 'meta_title',
-                'value' => 'LPPM Institut Islam Al-Mujaddid Sabak - Lembaga Penelitian dan Pengabdian Masyarakat',
+                'value' => 'LPM Institut Islam Al-Mujaddid Sabak - Lembaga Penjaminan Mutu',
                 'type' => 'text',
                 'group' => 'seo',
                 'description' => 'Default meta title for SEO'
             ],
             [
                 'key' => 'meta_description',
-                'value' => 'Lembaga Penelitian dan Pengabdian kepada Masyarakat Institut Islam Al-Mujaddid Sabak, Tanjung Jabung Timur, Jambi. Melayani penelitian dan pengabdian masyarakat untuk kemajuan pendidikan Islam.',
+                'value' => 'Lembaga Penjaminan Mutu Institut Islam Al-Mujaddid Sabak, Tanjung Jabung Timur, Jambi. Melayani penjaminan mutu pendidikan dan akreditasi untuk kemajuan pendidikan Islam.',
                 'type' => 'textarea',
                 'group' => 'seo',
                 'description' => 'Default meta description for SEO'
             ],
             [
                 'key' => 'meta_keywords',
-                'value' => 'LPPM, Institut Islam Al-Mujaddid Sabak, penelitian, pengabdian masyarakat, pendidikan Islam, Jambi, Tanjung Jabung Timur',
+                'value' => 'LPM, Institut Islam Al-Mujaddid Sabak, penjaminan mutu, akreditasi, pendidikan Islam, Jambi, Tanjung Jabung Timur',
                 'type' => 'text',
                 'group' => 'seo',
                 'description' => 'Default meta keywords for SEO'
@@ -222,14 +222,14 @@ class LppmSiteSettingSeeder extends Seeder
             ],
             [
                 'key' => 'from_email',
-                'value' => 'lppm@iimsabak.ac.id',
+                'value' => 'lpm@iimsabak.ac.id',
                 'type' => 'email',
                 'group' => 'email',
                 'description' => 'Default from email address'
             ],
             [
                 'key' => 'from_name',
-                'value' => 'LPPM Institut Islam Al-Mujaddid Sabak',
+                'value' => 'LPM Institut Islam Al-Mujaddid Sabak',
                 'type' => 'text',
                 'group' => 'email',
                 'description' => 'Default from name'

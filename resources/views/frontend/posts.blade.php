@@ -117,7 +117,8 @@
                 </p>
             @elseif(request('category') && isset($category))
                 <p class="text-xl text-blue-100 mb-6">
-                    {{ $category->description ?? 'Explore @switch(request('type'))
+                    {{ $category->description ?? 'Explore ' }}
+                    @switch(request('type'))
                         @case('page')
                             pages
                             @break
@@ -129,7 +130,8 @@
                             @break
                         @default
                             articles
-                    @endswitch in this category' }}
+                    @endswitch
+                    {{ $category->description ? '' : ' in this category' }}
                 </p>
             @else
                 <p class="text-xl text-blue-100 mb-6">

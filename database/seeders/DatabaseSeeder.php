@@ -21,6 +21,11 @@ class DatabaseSeeder extends Seeder
             LppmSiteSettingSeeder::class,
             CategorySeeder::class,
             PostSeeder::class,
+            PageSeeder::class,
+            GallerySeeder::class,
+            VideoSeeder::class,
+            NavigationSeeder::class,
+            DownloadSeeder::class,
         ]);
     }
 }
