@@ -5,7 +5,9 @@
         "dev": "vite",
         "build": "vite build",
         "copy-fontawesome": "mkdir -p public && cp -r node_modules/@fortawesome/fontawesome-free public/",
-        "postinstall": "npm run copy-fontawesome"
+        "copy-datatables": "mkdir -p public/datatables && cp -r node_modules/datatables.net/js public/datatables/ && cp -r node_modules/datatables.net-dt/css public/datatables/ && cp -r node_modules/jquery/dist public/jquery",
+        "copy-assets": "npm run copy-fontawesome && npm run copy-datatables",
+        "postinstall": "npm run copy-assets"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.21",
@@ -17,6 +19,9 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.7.2",
+        "datatables.net": "^2.3.2",
+        "datatables.net-dt": "^2.3.2",
+        "jquery": "^3.7.1",
         "sortablejs": "^1.15.6"
     }
 }

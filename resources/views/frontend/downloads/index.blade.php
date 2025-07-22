@@ -8,7 +8,7 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.tailwindcss.min.css">
+<link rel="stylesheet" href="{{ asset('datatables/css/dataTables.dataTables.min.css') }}">
 <style>
     .line-clamp-2 {
         display: -webkit-box;
@@ -399,9 +399,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwindcss.min.js"></script>
+<script src="{{ asset('jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('datatables/js/dataTables.min.js') }}"></script>
 
 <script>
 $(document).ready(function() {
