@@ -60,7 +60,7 @@
                             
                             <div class="flex items-center">
                                 <i class="fas fa-calendar mr-2"></i>
-                                <span>{{ $download->created_at->format('d F Y') }}</span>
+                                <span>{{ ($download->published_at ?? $download->created_at)->format('d F Y') }}</span>
                             </div>
                             
                             <div class="flex items-center">
@@ -111,7 +111,7 @@
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500">Tanggal upload:</span>
-                                        <p class="text-gray-900">{{ $download->created_at->format('d F Y, H:i') }}</p>
+                                        <p class="text-gray-900">{{ ($download->published_at ?? $download->created_at)->format('d F Y, H:i') }}</p>
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500">Terakhir diperbarui:</span>

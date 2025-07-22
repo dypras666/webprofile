@@ -65,7 +65,7 @@ class PostController extends Controller
             });
         }
 
-        $posts = $query->orderBy('created_at', 'desc')->paginate(15);
+        $posts = $query->orderByRaw('COALESCE(published_at, created_at) DESC')->paginate(15);
         $categories = Category::active()->ordered()->get();
 
         return view('admin.posts.index', compact('posts', 'categories'));

@@ -18,7 +18,7 @@
   "headline": "{{ $post->title }}",
   "description": "{{ $post->excerpt ?: Str::limit(strip_tags($post->content), 160) }}",
   "url": "{{ route('frontend.post', $post->slug) }}",
-  "datePublished": "{{ $post->created_at->toISOString() }}",
+  "datePublished": "{{ ($post->published_at ?? $post->created_at)->toISOString() }}",
   "dateModified": "{{ $post->updated_at->toISOString() }}",
   "author": {
     "@type": "Person",
@@ -161,8 +161,8 @@
                             <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
                         </svg>
                         <div>
-                            <p class="font-medium">{{ $post->created_at->format('F d, Y') }}</p>
-                            <p class="text-sm text-gray-500">{{ $post->created_at->diffForHumans() }}</p>
+                            <p class="font-medium">{{ ($post->published_at ?? $post->created_at)->format('F d, Y') }}</p>
+                            <p class="text-sm text-gray-500">{{ ($post->published_at ?? $post->created_at)->diffForHumans() }}</p>
                         </div>
                     </div>
                 </div>
@@ -355,7 +355,7 @@
                                 </p>
                                 
                                 <div class="flex items-center justify-between text-sm text-gray-500">
-                                    <span>{{ $relatedPost->created_at->format('M d, Y') }}</span>
+                                    <span>{{ ($relatedPost->published_at ?? $relatedPost->created_at)->format('M d, Y') }}</span>
                                     <span>{{ $relatedPost->views ?? 0 }} views</span>
                                 </div>
                             </div>

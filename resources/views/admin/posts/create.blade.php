@@ -105,6 +105,23 @@
                                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                                 </div>
 
+                                                <!-- Publish Date -->
+                                                <div class="p-3 bg-gray-50 rounded-lg">
+                                                    <label for="published_at" class="block text-sm font-medium text-gray-700 mb-2">
+                                                        <i class="fas fa-calendar-alt mr-1 text-blue-600"></i>
+                                                        Publish Date
+                                                    </label>
+                                                    <input type="datetime-local" 
+                                                           id="published_at" 
+                                                           name="published_at" 
+                                                           value="{{ old('published_at', now()->format('Y-m-d\TH:i')) }}"
+                                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-sm">
+                                                    <p class="mt-1 text-xs text-gray-500">Set when this post should be published. Leave as current time for immediate publishing.</p>
+                                                    @error('published_at')
+                                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+
                                                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                                     <label for="is_featured" class="text-sm font-medium text-gray-700">Featured</label>
                                                     <input type="checkbox" id="is_featured" name="is_featured" value="1" 

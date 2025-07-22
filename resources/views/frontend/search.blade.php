@@ -37,7 +37,7 @@
                     "headline": "{{ $post->title }}",
                     "description": "{{ $post->excerpt }}",
                     "url": "{{ route('frontend.post', $post->slug) }}",
-                    "datePublished": "{{ $post->created_at->toISOString() }}",
+                    "datePublished": "{{ ($post->published_at ?? $post->created_at)->toISOString() }}",
                     "author": {
                         "@type": "Person",
                         "name": "{{ $post->user->name ?? 'Admin' }}"
@@ -156,7 +156,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            {{ $post->created_at->format('M d, Y') }}
+                                            {{ ($post->published_at ?? $post->created_at)->format('M d, Y') }}
                                         </span>
                                         <span class="flex items-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -249,7 +249,7 @@
                                     </a>
                                 </h4>
                                 <div class="flex items-center text-xs text-gray-500">
-                                    <span>{{ $popularPost->created_at->format('M d') }}</span>
+                                    <span>{{ ($popularPost->published_at ?? $popularPost->created_at)->format('M d') }}</span>
                                     <span class="mx-1">•</span>
                                     <span>{{ number_format($popularPost->views) }} views</span>
                                 </div>

@@ -20,7 +20,7 @@ class FrontendController extends Controller
         $sliderPosts = Post::published()
             ->where('is_slider', true)
             ->with(['category', 'user'])
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->limit(5)
             ->get();
 
@@ -28,14 +28,14 @@ class FrontendController extends Controller
         $featuredPosts = Post::published()
             ->where('is_featured', true)
             ->with(['category', 'user'])
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->limit(6)
             ->get();
 
         // Get latest posts
         $latestPosts = Post::published()
             ->with(['category', 'user'])
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->limit(8)
             ->get();
 
@@ -56,7 +56,7 @@ class FrontendController extends Controller
         // Get recent gallery images from posts
         $galleryImages = Post::published()
             ->where('type', 'gallery')
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->limit(12)
             ->get();
 
@@ -100,7 +100,7 @@ class FrontendController extends Controller
             });
         }
 
-        $posts = $query->orderBy('created_at', 'desc')
+        $posts = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
                       ->paginate(SiteSetting::getValue('posts_per_page', 12));
 
         $categories = Category::active()->withCount('posts')->ordered()->get();
@@ -127,19 +127,19 @@ class FrontendController extends Controller
             ->where('category_id', $post->category_id)
             ->where('id', '!=', $post->id)
             ->with(['category', 'user'])
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->limit(4)
             ->get();
 
         // Get previous and next posts
         $previousPost = Post::published()
-            ->where('created_at', '<', $post->created_at)
-            ->orderBy('created_at', 'desc')
+            ->whereRaw('COALESCE(published_at, created_at) < ?', [$post->published_at ?? $post->created_at])
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->first();
 
         $nextPost = Post::published()
-            ->where('created_at', '>', $post->created_at)
-            ->orderBy('created_at', 'asc')
+            ->whereRaw('COALESCE(published_at, created_at) > ?', [$post->published_at ?? $post->created_at])
+            ->orderByRaw('COALESCE(published_at, created_at) ASC')
             ->first();
 
         return view('frontend.post', compact(
@@ -162,7 +162,7 @@ class FrontendController extends Controller
         $posts = Post::published()
             ->where('category_id', $category->id)
             ->with(['category', 'user'])
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->paginate(SiteSetting::getValue('posts_per_page', 12));
 
         $categories = Category::active()->withCount('posts')->ordered()->get();
@@ -191,7 +191,7 @@ class FrontendController extends Controller
             }
         }
         
-        $images = $query->orderBy('created_at', 'desc')
+        $images = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
                        ->paginate(SiteSetting::getValue('gallery_images_per_page', 24));
 
         $categories = Category::active()->withCount('posts')->ordered()->get();
@@ -260,7 +260,7 @@ class FrontendController extends Controller
                   ->orWhere('content', 'like', "%{$query}%")
                   ->orWhere('excerpt', 'like', "%{$query}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->paginate(12);
 
         $categories = Category::active()->withCount('posts')->ordered()->get();
@@ -277,7 +277,7 @@ class FrontendController extends Controller
         $posts = Post::published()
             ->byType($type)
             ->with(['category', 'user'])
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->limit(12)
             ->get();
 

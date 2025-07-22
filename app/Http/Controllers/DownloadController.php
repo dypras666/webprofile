@@ -157,7 +157,7 @@ class DownloadController extends Controller
             }
         }
         
-        $downloads = $query->orderBy('sort_order')->orderBy('created_at', 'desc')->paginate(15);
+        $downloads = $query->orderBy('sort_order')->orderBy('updated_at', 'desc')->paginate(15);
         $categories = Download::getCategories();
         
         return view('admin.downloads.index', compact('downloads', 'categories'));

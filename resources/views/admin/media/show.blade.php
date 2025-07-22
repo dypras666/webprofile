@@ -195,7 +195,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-sm font-medium text-gray-900">{{ $post->title }}</p>
-                                        <p class="text-xs text-gray-500">{{ $post->created_at->format('M d, Y') }}</p>
+                                        <p class="text-xs text-gray-500">{{ ($post->published_at ?? $post->created_at)->format('M d, Y') }}</p>
                                     </div>
                                     <a href="{{ route('admin.posts.edit', $post->id) }}" class="text-blue-600 hover:text-blue-800 text-xs">
                                         <i class="fas fa-external-link-alt"></i>

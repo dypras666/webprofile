@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "copy-fontawesome": "xcopy /E /I /Y node_modules\\@fortawesome\\fontawesome-free public\\fontawesome-free",
+        "copy-fontawesome": "mkdir -p public && cp -r node_modules/@fortawesome/fontawesome-free public/",
         "postinstall": "npm run copy-fontawesome"
     },
     "devDependencies": {

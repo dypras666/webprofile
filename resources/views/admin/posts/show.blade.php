@@ -160,8 +160,8 @@
                         @endif
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Created</label>
-                            <p class="text-sm text-gray-900">{{ $post->created_at->format('M d, Y g:i A') }}</p>
+                            <label class="block text-sm font-medium text-gray-700">Date</label>
+                            <p class="text-sm text-gray-900">{{ ($post->published_at ?? $post->created_at)->format('M d, Y g:i A') }}</p>
                         </div>
 
                         <div>

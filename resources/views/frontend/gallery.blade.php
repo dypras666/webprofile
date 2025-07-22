@@ -117,7 +117,7 @@
                             {{-- Image Info --}}
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <h3 class="text-white font-semibold text-sm mb-1">{{ $post->title }}</h3>
-                                <p class="text-white/80 text-xs">{{ $post->created_at->format('M d, Y') }}</p>
+                                <p class="text-white/80 text-xs">{{ ($post->published_at ?? $post->created_at)->format('M d, Y') }}</p>
                                 @if($post->category)
                                     <span class="inline-block bg-purple-600 text-white text-xs px-2 py-1 rounded mt-1">{{ $post->category->name }}</span>
                                 @endif
@@ -141,7 +141,7 @@
                             {{-- Image Info --}}
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <h3 class="text-white font-semibold text-sm mb-1">{{ $post->title }}</h3>
-                                <p class="text-white/80 text-xs">{{ $post->created_at->format('M d, Y') }}</p>
+                                <p class="text-white/80 text-xs">{{ ($post->published_at ?? $post->created_at)->format('M d, Y') }}</p>
                                 @if($post->category)
                                     <span class="inline-block bg-purple-600 text-white text-xs px-2 py-1 rounded mt-1">{{ $post->category->name }}</span>
                                 @endif
