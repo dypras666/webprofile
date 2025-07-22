@@ -47,6 +47,60 @@ class DownloadController extends Controller
     }
 
     /**
+     * Get downloads data as JSON for AJAX requests
+     */
+    public function getDownloadsJson(Request $request)
+    {
+        $query = Download::active()->ordered();
+        
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->byCategory($request->category);
+        }
+        
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
+        // Filter by type (public/protected)
+        if ($request->filled('type')) {
+            if ($request->type === 'public') {
+                $query->public()->whereNull('password');
+            } elseif ($request->type === 'protected') {
+                $query->protected();
+            }
+        }
+        
+        // Sorting
+        $sortBy = $request->get('sort', 'created_at');
+        $sortOrder = $request->get('order', 'desc');
+        
+        if (in_array($sortBy, ['title', 'created_at', 'download_count', 'file_size'])) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+        
+        $perPage = $request->get('per_page', 12);
+        $downloads = $query->with('user')->paginate($perPage);
+        
+        return response()->json([
+            'data' => $downloads->items(),
+            'pagination' => [
+                'current_page' => $downloads->currentPage(),
+                'last_page' => $downloads->lastPage(),
+                'per_page' => $downloads->perPage(),
+                'total' => $downloads->total(),
+                'from' => $downloads->firstItem(),
+                'to' => $downloads->lastItem(),
+            ]
+        ]);
+    }
+
+    /**
      * Show download details
      */
     public function show(Download $download)

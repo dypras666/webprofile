@@ -129,6 +129,7 @@ Route::get('/search', [FrontendController::class, 'search'])->name('frontend.sea
 
 // Download Routes
 Route::get('/downloads', [DownloadController::class, 'index'])->name('frontend.downloads');
+Route::get('/downloads/json', [DownloadController::class, 'getDownloadsJson'])->name('frontend.downloads.json');
 Route::get('/downloads/{download}', [DownloadController::class, 'show'])->name('frontend.downloads.show');
 Route::get('/downloads/{download}/password', [DownloadController::class, 'showPasswordForm'])->name('frontend.downloads.password');
 Route::post('/downloads/{download}/download', [DownloadController::class, 'download'])->name('frontend.downloads.download');
