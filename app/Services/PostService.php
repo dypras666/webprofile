@@ -141,8 +141,10 @@ class PostService
                     $media = \App\Models\Media::find($data['featured_image']);
                     if ($media) {
                         $data['featured_image'] = $media->file_path;
+                        $data['featured_image_id'] = $media->id;
                     } else {
                         $data['featured_image'] = null; // Or handle error
+                        $data['featured_image_id'] = null;
                     }
                 } elseif (is_string($data['featured_image']) && !empty($data['featured_image'])) {
                     // Keep the media library path as is
@@ -279,6 +281,7 @@ class PostService
                             $this->fileUploadService->delete($post->featured_image);
                         }
                         $data['featured_image'] = $media->file_path;
+                        $data['featured_image_id'] = $media->id;
                     }
                 } elseif (is_string($data['featured_image']) && !empty($data['featured_image'])) {
                     // Only delete old image if we're changing to a different one
