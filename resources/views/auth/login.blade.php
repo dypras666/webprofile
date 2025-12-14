@@ -37,13 +37,20 @@
                                         class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>
                             @enderror
                         </div>
-                        <div>
+                        <div x-data="{ showPassword: false }">
                             <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-lock mr-2 text-blue-600"></i>Password
                             </label>
-                            <input id="password" name="password" type="password" autocomplete="current-password" required
-                                class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                                placeholder="Masukkan password Anda">
+                            <div class="relative">
+                                <input id="password" name="password" :type="showPassword ? 'text' : 'password'"
+                                    autocomplete="current-password" required
+                                    class="appearance-none block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 pr-10"
+                                    placeholder="Masukkan password Anda">
+                                <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                    <i class="fas" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                </button>
+                            </div>
                             @error('password')
                                 <p class="mt-2 text-sm text-red-600"><i
                                         class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>

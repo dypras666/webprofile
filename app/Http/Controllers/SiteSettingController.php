@@ -158,6 +158,11 @@ class SiteSettingController extends Controller
                     $value = json_encode($value);
                 }
 
+                // Trim string values to remove accidental whitespace (especially for API keys)
+                if (is_string($value)) {
+                    $value = trim($value);
+                }
+
                 // Save individual setting
                 $setting->value = $value;
                 $setting->save();
