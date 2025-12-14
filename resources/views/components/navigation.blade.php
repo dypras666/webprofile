@@ -10,13 +10,20 @@
             {{-- Logo --}}
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('frontend.index') }}" class="flex items-center space-x-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}"
-                        class="h-10 w-auto rounded-full p-1">
-                    <div class="hidden lg:block">
-                        <h1 class="text-lg font-bold text-white leading-tight">
+                    @if(isset($siteSettings['logo']) && $siteSettings['logo'])
+                        <img src="{{ Str::startsWith($siteSettings['logo'], 'http') ? $siteSettings['logo'] : Storage::disk('public')->url($siteSettings['logo']) }}" 
+                             alt="{{ $siteSettings['site_name'] ?? config('app.name') }}"
+                             class="h-10 w-auto rounded-full p-1">
+                    @else
+                        <img src="{{ asset('images/logo.png') }}" 
+                             alt="{{ $siteSettings['site_name'] ?? config('app.name') }}"
+                             class="h-10 w-auto rounded-full p-1">
+                    @endif
+                    <div class="hidden md:block">
+                        <span class="text-white font-bold text-lg leading-tight block">
                             {{ $siteSettings['site_name'] ?? config('app.name') }}
-                        </h1>
-                        <p class="text-xs text-blue-100 uppercase tracking-wider">
+                        </span>
+                        <p class="text-blue-200 text-xs font-medium">
                             {{ $siteSettings['site_description'] ?? 'Lembaga Penjaminan Mutu' }}
                         </p>
                     </div>
@@ -70,8 +77,15 @@
                 {{-- Mobile Logo --}}
                 <div class="flex items-center">
                     <a href="{{ route('frontend.index') }}" class="flex items-center space-x-2">
-                        <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}"
-                            class="h-8 w-auto rounded-full p-0.5">
+                        @if(isset($siteSettings['logo']) && $siteSettings['logo'])
+                            <img src="{{ Str::startsWith($siteSettings['logo'], 'http') ? $siteSettings['logo'] : Storage::disk('public')->url($siteSettings['logo']) }}" 
+                                 alt="{{ $siteSettings['site_name'] ?? config('app.name') }}"
+                                 class="h-8 w-auto rounded-full p-0.5">
+                        @else
+                            <img src="{{ asset('images/logo.png') }}" 
+                                 alt="{{ $siteSettings['site_name'] ?? config('app.name') }}"
+                                 class="h-8 w-auto rounded-full p-0.5">
+                        @endif
                         <span class="text-white font-bold text-sm leading-tight max-w-[150px]">
                             {{ $siteSettings['site_name'] ?? config('app.name') }}
                         </span>
