@@ -179,6 +179,14 @@
                         <span class="sidebar-text ml-3 font-medium">Downloads</span>
                     </a>
 
+                    <!-- Download Categories -->
+                    <a href="{{ route('admin.download-categories.index') }}"
+                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.download-categories.*') ? 'bg-gray-700 text-blue-400' : '' }}"
+                        title="Download Categories">
+                        <i class="sidebar-icon fas fa-folder w-5 text-center"></i>
+                        <span class="sidebar-text ml-3 font-medium">DL Categories</span>
+                    </a>
+
                     <!-- Users -->
                     <a href="{{ route('admin.users.index') }}"
                         class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-gray-700 text-blue-400' : '' }}"

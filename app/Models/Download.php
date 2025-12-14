@@ -21,6 +21,7 @@ class Download extends Model
         'is_public',
         'password',
         'category',
+        'category_id',
         'download_count',
         'is_active',
         'sort_order',
@@ -45,6 +46,14 @@ class Download extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relationship with DownloadCategory
+     */
+    public function downloadCategory()
+    {
+        return $this->belongsTo(DownloadCategory::class, 'category_id');
     }
 
     /**
@@ -80,11 +89,11 @@ class Download extends Model
     {
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
+
         return round($bytes, 2) . ' ' . $units[$i];
     }
 
@@ -133,6 +142,18 @@ class Download extends Model
      */
     public function scopeByCategory($query, $category)
     {
+        if (is_numeric($category)) {
+            return $query->where('category_id', $category);
+        }
+
+        $cat = \App\Models\DownloadCategory::where('slug', $category)
+            ->orWhere('name', $category)
+            ->first();
+
+        if ($cat) {
+            return $query->where('category_id', $cat->id);
+        }
+
         return $query->where('category', $category);
     }
 
@@ -149,11 +170,14 @@ class Download extends Model
      */
     public static function getCategories()
     {
-        return self::whereNotNull('category')
-                   ->where('category', '!=', '')
-                   ->distinct()
-                   ->pluck('category')
-                   ->sort()
-                   ->values();
+        return \App\Models\DownloadCategory::orderBy('name')->get();
+    }
+
+    /**
+     * Get category name (accessor for backward compatibility)
+     */
+    public function getCategoryNameAttribute()
+    {
+        return $this->downloadCategory ? $this->downloadCategory->name : $this->category;
     }
 }

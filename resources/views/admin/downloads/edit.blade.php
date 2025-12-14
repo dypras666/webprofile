@@ -162,20 +162,18 @@
                         
                         {{-- Category --}}
                         <div>
-                            <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                            <input type="text" 
-                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('category') border-red-300 focus:ring-red-500 focus:border-red-500 @enderror" 
-                                   id="category" 
-                                   name="category" 
-                                   value="{{ old('category', $download->category) }}"
-                                   placeholder="Masukkan kategori (opsional)"
-                                   list="category-suggestions">
-                            <datalist id="category-suggestions">
+                            <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                            <select class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('category_id') border-red-300 @enderror" 
+                                    id="category_id" 
+                                    name="category_id">
+                                <option value="">Pilih Kategori (Opsional)</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category }}">{{ $category }}</option>
+                                    <option value="{{ $category->id }}" {{ old('category_id', $download->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
                                 @endforeach
-                            </datalist>
-                            @error('category')
+                            </select>
+                            @error('category_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

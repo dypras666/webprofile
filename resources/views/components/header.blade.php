@@ -35,7 +35,7 @@
                                 x-transition:enter="transition ease-out duration-200"
                                 x-transition:enter-start="opacity-0 translate-y-1"
                                 x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                                class="absolute top-full left-0 mt-2 w-72 bg-white text-gray-800 rounded-lg shadow-xl p-4 z-50 border border-gray-100">
+                                class="absolute top-full left-0 mt-2 w-72 bg-white text-gray-800 rounded-lg shadow-xl p-4 z-[60] border border-gray-100">
                                 <h4 class="font-bold text-gray-900 border-b pb-2 mb-2">Alamat Lengkap</h4>
                                 <p class="text-sm leading-relaxed">{{ $siteSettings['contact_address'] }}</p>
                                 <a href="https://maps.google.com/?q={{ urlencode($siteSettings['contact_address']) }}"

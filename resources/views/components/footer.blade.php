@@ -199,14 +199,6 @@
                 </div>
             </div>
 
-            {{-- Additional SEO Info --}}
-            <div class="mt-4 pt-4 border-t border-gray-800 text-center">
-                <p class="text-xs text-gray-500">
-                    Powered by Laravel {{ app()->version() }} |
-                    <a href="https://laravel.com" class="hover:text-gray-400 transition-colors" target="_blank"
-                        rel="noopener">Built with Laravel</a>
-                </p>
-            </div>
         </div>
     </div>
 </footer>

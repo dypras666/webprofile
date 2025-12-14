@@ -197,6 +197,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::get('/categories', [NavigationController::class, 'getCategories'])->name('categories');
     });
 
+    // Download Categories
+    Route::resource('download-categories', \App\Http\Controllers\DownloadCategoryController::class);
+
     // Downloads Management
     Route::prefix('downloads')->name('downloads.')->group(function () {
         Route::get('/', [DownloadController::class, 'adminIndex'])->name('index');

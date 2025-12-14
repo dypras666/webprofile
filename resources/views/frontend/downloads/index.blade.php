@@ -99,10 +99,10 @@
                     <div>
                         <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
                         <select id="category"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Semua Kategori</option>
-                            @foreach($categories as $cat)
-                                <option value="{{ $cat }}">{{ ucfirst($cat) }}</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->slug }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -320,34 +320,34 @@
                 const isProtected = download.password ? true : false;
 
                 return `
-                    <div class="download-card bg-white rounded-lg p-6 fade-in">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="file-icon ${fileIcon.color}">
-                                <i class="${fileIcon.icon}"></i>
+                        <div class="download-card bg-white rounded-lg p-6 fade-in">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="file-icon ${fileIcon.color}">
+                                    <i class="${fileIcon.icon}"></i>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    ${!download.is_public ? '<span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">Private</span>' : ''}
+                                    ${isProtected ? '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"><i class="fas fa-lock mr-1"></i>Protected</span>' : ''}
+                                </div>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                ${!download.is_public ? '<span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">Private</span>' : ''}
-                                ${isProtected ? '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"><i class="fas fa-lock mr-1"></i>Protected</span>' : ''}
+
+                            <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">${download.title}</h3>
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3">${download.description || 'Tidak ada deskripsi'}</p>
+
+                            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                <span><i class="fas fa-download mr-1"></i>${download.download_count} downloads</span>
+                                <span><i class="fas fa-hdd mr-1"></i>${fileSize}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">${this.formatDate(download.created_at)}</span>
+                                <a href="${this.getDownloadUrl(download)}" 
+                                   class="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                                    <i class="fas fa-download mr-2"></i>Download
+                                </a>
                             </div>
                         </div>
-
-                        <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">${download.title}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-3">${download.description || 'Tidak ada deskripsi'}</p>
-
-                        <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                            <span><i class="fas fa-download mr-1"></i>${download.download_count} downloads</span>
-                            <span><i class="fas fa-hdd mr-1"></i>${fileSize}</span>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs text-gray-400">${this.formatDate(download.created_at)}</span>
-                            <a href="${this.getDownloadUrl(download)}" 
-                               class="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
-                                <i class="fas fa-download mr-2"></i>Download
-                            </a>
-                        </div>
-                    </div>
-                `;
+                    `;
             }
 
             renderListCard(download) {
@@ -356,37 +356,37 @@
                 const isProtected = download.password ? true : false;
 
                 return `
-                    <div class="download-card bg-white rounded-lg p-6 fade-in">
-                        <div class="flex items-center space-x-4">
-                            <div class="file-icon ${fileIcon.color} flex-shrink-0">
-                                <i class="${fileIcon.icon}"></i>
-                            </div>
+                        <div class="download-card bg-white rounded-lg p-6 fade-in">
+                            <div class="flex items-center space-x-4">
+                                <div class="file-icon ${fileIcon.color} flex-shrink-0">
+                                    <i class="${fileIcon.icon}"></i>
+                                </div>
 
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <h3 class="font-semibold text-gray-900 mb-1">${download.title}</h3>
-                                        <p class="text-gray-600 text-sm mb-2 line-clamp-2">${download.description || 'Tidak ada deskripsi'}</p>
-                                        <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                            <span><i class="fas fa-download mr-1"></i>${download.download_count} downloads</span>
-                                            <span><i class="fas fa-hdd mr-1"></i>${fileSize}</span>
-                                            <span><i class="fas fa-calendar mr-1"></i>${this.formatDate(download.created_at)}</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h3 class="font-semibold text-gray-900 mb-1">${download.title}</h3>
+                                            <p class="text-gray-600 text-sm mb-2 line-clamp-2">${download.description || 'Tidak ada deskripsi'}</p>
+                                            <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                                <span><i class="fas fa-download mr-1"></i>${download.download_count} downloads</span>
+                                                <span><i class="fas fa-hdd mr-1"></i>${fileSize}</span>
+                                                <span><i class="fas fa-calendar mr-1"></i>${this.formatDate(download.created_at)}</span>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="flex items-center space-x-2 ml-4">
-                                        ${!download.is_public ? '<span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">Private</span>' : ''}
-                                        ${isProtected ? '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"><i class="fas fa-lock mr-1"></i>Protected</span>' : ''}
-                                        <a href="${this.getDownloadUrl(download)}" 
-                                           class="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
-                                            <i class="fas fa-download mr-2"></i>Download
-                                        </a>
+                                        <div class="flex items-center space-x-2 ml-4">
+                                            ${!download.is_public ? '<span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">Private</span>' : ''}
+                                            ${isProtected ? '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"><i class="fas fa-lock mr-1"></i>Protected</span>' : ''}
+                                            <a href="${this.getDownloadUrl(download)}" 
+                                               class="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                                                <i class="fas fa-download mr-2"></i>Download
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
             }
 
             renderPagination() {
@@ -398,9 +398,9 @@
                 }
 
                 let paginationHTML = `
-                <div class="flex flex-col items-center">
-                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-            `;
+                    <div class="flex flex-col items-center">
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                `;
 
                 // Helper specifically for icons since FontAwesome is not available
                 const icons = {
@@ -411,20 +411,20 @@
                 // Previous button
                 if (this.pagination.current_page > 1) {
                     paginationHTML += `
-                    <button onclick="downloadsManager.goToPage(${this.pagination.current_page - 1})" 
-                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20">
-                        <span class="sr-only">Previous</span>
-                        ${icons.prev}
-                    </button>
-                `;
+                        <button onclick="downloadsManager.goToPage(${this.pagination.current_page - 1})" 
+                                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20">
+                            <span class="sr-only">Previous</span>
+                            ${icons.prev}
+                        </button>
+                    `;
                 } else {
                     paginationHTML += `
-                    <button disabled 
-                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed">
-                        <span class="sr-only">Previous</span>
-                        ${icons.prev}
-                    </button>
-                `;
+                        <button disabled 
+                                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed">
+                            <span class="sr-only">Previous</span>
+                            ${icons.prev}
+                        </button>
+                    `;
                 }
 
                 // Page numbers
@@ -458,51 +458,51 @@
                 for (let page of rangeWithDots) {
                     if (page === '...') {
                         paginationHTML += `
-                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                            ...
-                        </span>
-                    `;
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                ...
+                            </span>
+                        `;
                     } else {
                         const isActive = page === this.pagination.current_page;
                         // Add -ml-px to prevent double borders
                         paginationHTML += `
-                        <button onclick="downloadsManager.goToPage(${page})" 
-                                class="relative inline-flex items-center px-4 py-2 border text-sm font-medium ${isActive
+                            <button onclick="downloadsManager.goToPage(${page})" 
+                                    class="relative inline-flex items-center px-4 py-2 border text-sm font-medium ${isActive
                                 ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
                                 : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
                             } ${page !== 1 ? '-ml-px' : ''}">
-                            ${page}
-                        </button>
-                    `;
+                                ${page}
+                            </button>
+                        `;
                     }
                 }
 
                 // Next button
                 if (this.pagination.current_page < this.pagination.last_page) {
                     paginationHTML += `
-                    <button onclick="downloadsManager.goToPage(${this.pagination.current_page + 1})" 
-                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 -ml-px">
-                        <span class="sr-only">Next</span>
-                        ${icons.next}
-                    </button>
-                `;
+                        <button onclick="downloadsManager.goToPage(${this.pagination.current_page + 1})" 
+                                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 -ml-px">
+                            <span class="sr-only">Next</span>
+                            ${icons.next}
+                        </button>
+                    `;
                 } else {
                     paginationHTML += `
-                    <button disabled 
-                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed -ml-px">
-                        <span class="sr-only">Next</span>
-                        ${icons.next}
-                    </button>
-                `;
+                        <button disabled 
+                                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed -ml-px">
+                            <span class="sr-only">Next</span>
+                            ${icons.next}
+                        </button>
+                    `;
                 }
 
                 paginationHTML += `
-                    </nav>
-                    <div class="mt-4 text-sm text-gray-700 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-200">
-                        Menampilkan <span class="font-bold text-gray-900">${this.pagination.from}</span> sampai <span class="font-bold text-gray-900">${this.pagination.to}</span> dari <span class="font-bold text-gray-900">${this.pagination.total}</span> file
+                        </nav>
+                        <div class="mt-4 text-sm text-gray-700 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-200">
+                            Menampilkan <span class="font-bold text-gray-900">${this.pagination.from}</span> sampai <span class="font-bold text-gray-900">${this.pagination.to}</span> dari <span class="font-bold text-gray-900">${this.pagination.total}</span> file
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
                 paginationContainer.innerHTML = paginationHTML;
             }

@@ -675,7 +675,7 @@ class PostService
     /**
      * Calculate reading time
      */
-    protected function calculateReadingTime($content): int
+    public function calculateReadingTime($content): int
     {
         $wordCount = str_word_count(strip_tags($content));
         $wordsPerMinute = 200; // Average reading speed
