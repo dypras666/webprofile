@@ -3,7 +3,8 @@
     $navigationMenus = \App\Models\NavigationMenu::getMenuTree('top');
 @endphp
 
-<nav class="bg-blue-600 shadow-lg sticky top-0 z-50 w-full" x-data="{ mobileMenuOpen: false, searchOpen: false }">
+<nav class="bg-blue-600 shadow-lg sticky top-0 z-[9999] w-full min-h-[64px] border-b-2 border-yellow-400"
+    style="background-color: #2563eb;" x-data="{ mobileMenuOpen: false, searchOpen: false }">
     <div class="container mx-auto px-4">
         {{-- Desktop Navigation --}}
         <div class="hidden md:flex items-center justify-between h-16">
@@ -111,7 +112,9 @@
 
             {{-- Mobile Navigation --}}
             <div class="md:hidden">
-                <div class="flex items-center justify-between h-16">
+                <div class="flex items-center justify-between h-16 text-white">
+                    {{-- DEBUG TEXT TO VERIFY RENDERING --}}
+                    <!-- <span class="fixed top-20 left-0 bg-red-500 z-[9999]">MOBILE NAV RENDERED</span> -->
                     {{-- Mobile Logo --}}
                     <div class="flex items-center">
                         <a href="{{ route('frontend.index') }}" class="flex items-center space-x-2">
@@ -256,5 +259,8 @@
 
 {{-- Alpine.js for mobile menu functionality --}}
 @push('scripts')
+    <!-- Alpine Plugins -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine Core -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 @endpush

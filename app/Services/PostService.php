@@ -674,6 +674,7 @@ class PostService
 
     /**
      * Calculate reading time
+     * Ensure this method is public for controller access
      */
     public function calculateReadingTime($content): int
     {
