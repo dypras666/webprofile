@@ -44,6 +44,8 @@
         @endphp
         <link rel="icon" type="image/png" sizes="16x16" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-16x16.png' }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-32x32.png' }}">
+        <link rel="icon" type="image/png" sizes="48x48" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-48x48.png' }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-96x96.png' }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ $storageUrl . '/' . $faviconDir . '/apple-touch-icon.png' }}">
         <link rel="manifest" href="{{ $storageUrl . '/' . $faviconDir . '/site.webmanifest' }}">
         <link rel="shortcut icon" href="{{ $storageUrl . '/' . $faviconDir . '/favicon.ico' }}">

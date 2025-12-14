@@ -182,6 +182,8 @@ class FileUploadService
         $sizes = [
             ['width' => 16, 'height' => 16, 'name' => 'favicon-16x16.png'],
             ['width' => 32, 'height' => 32, 'name' => 'favicon-32x32.png'],
+            ['width' => 48, 'height' => 48, 'name' => 'favicon-48x48.png'],
+            ['width' => 96, 'height' => 96, 'name' => 'favicon-96x96.png'],
             ['width' => 180, 'height' => 180, 'name' => 'apple-touch-icon.png'],
             ['width' => 192, 'height' => 192, 'name' => 'android-chrome-192x192.png'],
             ['width' => 512, 'height' => 512, 'name' => 'android-chrome-512x512.png'],
