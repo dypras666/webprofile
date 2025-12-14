@@ -183,7 +183,9 @@ class NavigationController extends Controller
             ->select('id', 'title', 'slug', 'type');
 
         if ($type !== 'all') {
-            $query->where('type', $type);
+            // Map 'post' request to 'berita' database type
+            $searchType = $type === 'post' ? 'berita' : $type;
+            $query->where('type', $searchType);
         }
 
         if ($search) {

@@ -785,14 +785,19 @@
         function handleTypeChange() {
             const type = document.getElementById('menu-type').value;
             const customField = document.getElementById('custom-url-field');
+            const urlInput = document.getElementById('menu-url');
             const referenceField = document.getElementById('reference-field');
             const referenceSelect = document.getElementById('menu-reference');
 
             if (type === 'custom') {
                 customField.classList.remove('hidden');
+                urlInput.disabled = false; // Enable input for custom links
+                urlInput.required = true; // Make it required
                 referenceField.classList.add('hidden');
             } else {
                 customField.classList.add('hidden');
+                urlInput.disabled = true; // Disable input for other types to prevent validation error
+                urlInput.required = false;
                 referenceField.classList.remove('hidden');
                 loadReferenceOptions(type);
             }

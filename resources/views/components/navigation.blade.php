@@ -73,15 +73,13 @@
                 {{-- Search Button --}}
                 {{-- Desktop Animated Search --}}
                 <div class="relative ml-4 hidden md:block" x-data="{ expanded: false }">
-                    <form action="{{ route('frontend.search') }}" method="GET"
-                        @submit.prevent="if(!expanded) { expanded = true; $nextTick(() => $refs.desktopSearchInput.focus()); } else if($refs.desktopSearchInput.value) { $el.submit(); } else { expanded = false; }">
-
+                    <form action="{{ route('frontend.search') }}" method="GET">
                         <div class="flex items-center rounded-full transition-all duration-300 ease-in-out border"
                             :class="expanded ? 'w-[450px] bg-white border-white shadow-lg' : 'w-10 bg-transparent border-transparent hover:bg-white/10'">
 
                             <button type="button"
                                 @click="expanded = !expanded; if(expanded) $nextTick(() => $refs.desktopSearchInput.focus())"
-                                class="p-2 rounded-full flex-shrink-0 transition-colors duration-300 focus:outline-none"
+                                class="p-2 rounded-full flex-shrink-0 transition-colors duration-300 focus:outline-none z-10"
                                 :class="expanded ? 'text-blue-600' : 'text-white'">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -89,13 +87,13 @@
                                 </svg>
                             </button>
 
-                            <input type="text" name="search" x-ref="desktopSearchInput"
+                            <input type="text" name="search" x-ref="desktopSearchInput" x-cloak
                                 class="w-full bg-transparent border-none text-gray-800 placeholder-gray-500 focus:ring-0 focus:outline-none px-2 h-10 transition-opacity duration-200"
                                 :class="expanded ? 'opacity-100' : 'opacity-0 w-0 p-0 overflow-hidden'"
                                 placeholder="Cari berita, agenda, galeri, atau dokumen..."
                                 @click.away="if($el.value === '') expanded = false" @keydown.escape="expanded = false">
 
-                            <button type="submit" x-show="expanded"
+                            <button type="submit" x-show="expanded" x-cloak
                                 x-transition:enter="transition ease-out duration-200"
                                 x-transition:enter-start="opacity-0 transform scale-90"
                                 x-transition:enter-end="opacity-100 transform scale-100"
@@ -255,14 +253,10 @@
     </div>
 </nav>
 
-{{-- Alpine.js for mobile menu functionality --}}
+{{-- Alpine.js for navigation functionality --}}
 @push('scripts')
-        <!-- Alpine Plugins -->
-        <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-        <!-- Alpine Core -->
-        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-        <!-- Alpine Plugins -->
-        <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-        <!-- Alpine Core -->
-        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    @endpush
+    <!-- Alpine Collapse Plugin (must load before Alpine Core) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine Core -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+@endpush
