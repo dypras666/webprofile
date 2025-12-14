@@ -155,6 +155,7 @@ class SiteSettingController extends Controller
                 Cache::forget("site_settings_{$group}");
             }
             Cache::forget('all_site_settings');
+            Cache::forget('site_settings_frontend');
 
             DB::commit();
             Log::info('Settings updated successfully');
