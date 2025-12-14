@@ -74,54 +74,67 @@
 
 @section('content')
     {{-- Welcome & Slider Section --}}
-    <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {{-- Welcome Section (1/3) --}}
-            <div class="lg:col-span-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
-                
-                {{-- Label --}}
-                <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 text-xs font-bold tracking-wider mb-4">
-                    {{ $siteSettings['welcome_label'] ?? 'SAMBUTAN' }}
-                </span>
-                
-                {{-- Leader Photo --}}
-                <div class="relative w-32 h-32 mb-4 rounded-full overflow-hidden border-4 border-blue-50 shadow-md">
-                    @if($siteSettings['leader_photo'] ?? false)
-                        <img src="{{ Str::startsWith($siteSettings['leader_photo'], 'http') ? $siteSettings['leader_photo'] : Storage::disk('public')->url($siteSettings['leader_photo']) }}" 
-                             alt="{{ $siteSettings['leader_name'] ?? 'Leader' }}" 
-                             class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
-                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
+    @php
+        $showWelcome = ($siteSettings['enable_welcome_section'] ?? '1') == '1';
+    @endphp
+
+    @if($showWelcome)
+        <div class="container mx-auto px-4 py-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {{-- Slider Section (2/3) - DOM 1st for SEO/Mobile --}}
+                <div class="lg:col-span-2 lg:order-2">
+                    @if($sliderPosts->count() > 0)
+                        @include('components.slider', ['posts' => $sliderPosts])
                     @endif
                 </div>
-                
-                {{-- Leader Name & Title --}}
-                <h3 class="text-xl font-bold text-gray-900 mb-1 leading-tight">
-                    {{ $siteSettings['leader_name'] ?? 'Nama Pimpinan' }}
-                </h3>
-                <p class="text-sm text-blue-600 font-semibold mb-4 uppercase tracking-wide">
-                    {{ $siteSettings['leader_title'] ?? 'Ketua' }}
-                </p>
-                
-                {{-- Welcome Text --}}
-                <div class="prose prose-sm text-gray-600 leading-relaxed text-justify px-2 w-full">
-                    <p>{!! nl2br(e($siteSettings['welcome_text'] ?? 'Selamat datang di website kami.')) !!}</p>
+
+                {{-- Welcome Section (1/3) - DOM 2nd for SEO/Mobile --}}
+                <div class="lg:col-span-1 lg:order-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
+                    
+                    {{-- Label --}}
+                    <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 text-xs font-bold tracking-wider mb-4">
+                        {{ $siteSettings['welcome_label'] ?? 'SAMBUTAN' }}
+                    </span>
+                    
+                    {{-- Leader Photo --}}
+                    <div class="relative w-32 h-32 mb-4 rounded-full overflow-hidden border-4 border-blue-50 shadow-md">
+                        @if($siteSettings['leader_photo'] ?? false)
+                            <img src="{{ Str::startsWith($siteSettings['leader_photo'], 'http') ? $siteSettings['leader_photo'] : Storage::disk('public')->url($siteSettings['leader_photo']) }}" 
+                                 alt="{{ $siteSettings['leader_name'] ?? 'Leader' }}" 
+                                 class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                        @endif
+                    </div>
+                    
+                    {{-- Leader Name & Title --}}
+                    <h3 class="text-xl font-bold text-gray-900 mb-1 leading-tight">
+                        {{ $siteSettings['leader_name'] ?? 'Nama Pimpinan' }}
+                    </h3>
+                    <p class="text-sm text-blue-600 font-semibold mb-4 uppercase tracking-wide">
+                        {{ $siteSettings['leader_title'] ?? 'Ketua' }}
+                    </p>
+                    
+                    {{-- Welcome Text --}}
+                    <div class="prose prose-sm text-gray-600 leading-relaxed text-justify px-2 w-full">
+                        <p>{!! nl2br(e($siteSettings['welcome_text'] ?? 'Selamat datang di website kami.')) !!}</p>
+                    </div>
                 </div>
             </div>
-
-            {{-- Slider Section (2/3) --}}
-            <div class="lg:col-span-2">
-                @if($sliderPosts->count() > 0)
-                    @include('components.slider', ['posts' => $sliderPosts])
-                @endif
-            </div>
         </div>
-    </div>
+    @else
+        {{-- Full Width Slider (Edge-to-Edge) --}}
+        <div class="w-full">
+            @if($sliderPosts->count() > 0)
+                @include('components.slider', ['posts' => $sliderPosts])
+            @endif
+        </div>
+    @endif
 
     {{-- Featured Posts Section --}}
     @if($featuredPosts->count() > 0)
