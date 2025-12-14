@@ -5,23 +5,14 @@
     $pageTitle = match($currentType) {
         'gallery' => 'Create Gallery',
         'video' => 'Create Video',
+        'partner' => 'Tambah Partner (Kerja Sama)',
         default => 'Create Post'
     };
 @endphp
 
 @section('title', $pageTitle)
 
-@push('styles')
-<style>
-    .tox-tinymce {
-        border-radius: 0.5rem !important;
-        border: 1px solid #d1d5db !important;
-    }
-    .tox .tox-editor-header {
-        border-radius: 0.5rem 0.5rem 0 0 !important;
-    }
-</style>
-@endpush
+
 
 @section('content')
 <div class="w-full">
@@ -38,6 +29,8 @@
                                      Create a new gallery with multiple images.
                                  @elseif($currentType === 'video')
                                      Create a new video post with video content.
+                                 @elseif($currentType === 'partner')
+                                     Tambahkan partner kerja sama baru (Logo dan Link).
                                  @else
                                      Fill in the post information below.
                                  @endif
@@ -52,7 +45,7 @@
                                 <div class="space-y-6">
                                     <!-- Title -->
                                     <div>
-                                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">{{ $currentType === 'partner' ? 'Nama Partner *' : 'Title *' }}</label>
                                         <input type="text" id="title" name="title" value="{{ old('title') }}" 
                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-lg" 
                                                required>
@@ -61,18 +54,28 @@
                                         @enderror
                                     </div>
 
-                                    <!-- Content -->
+                                    <!-- Content/Link -->
                                     <div class="flex-1">
-                                        <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                                        <textarea id="content" name="content" 
-                                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" 
-                                                  style="min-height: 500px;"
-                                                  required>{{ old('content') }}</textarea>
+                                        @if($currentType === 'partner')
+                                            <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Link Website (URL)</label>
+                                            <input type="url" id="content" name="content" value="{{ old('content') }}" 
+                                                   placeholder="https://example.com"
+                                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                                   required>
+                                            <p class="text-xs text-gray-500 mt-1">Masukkan URL website partner (contoh: https://google.com)</p>
+                                        @else
+                                            <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                                            <textarea id="content" name="content" 
+                                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" 
+                                                      style="min-height: 500px;"
+                                                      required>{{ old('content') }}</textarea>
+                                        @endif
                                         @error('content')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
 
+                                    @if($currentType !== 'partner')
                                     <!-- Excerpt -->
                                     <div>
                                         <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
@@ -82,13 +85,13 @@
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
+                                    @endif
                                 </div>
                             </div>
 
                             <!-- Right Column - Settings & Metadata -->
                             <div class="xl:col-span-1 bg-gray-50 p-6">
                                 <div class="space-y-6 sticky top-6">
-                                    <!-- Publish Settings -->
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
                                         <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
                                             <i class="fas fa-cog mr-2 text-blue-600"></i>
@@ -101,10 +104,11 @@
                                                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                                     <label for="is_published" class="text-sm font-medium text-gray-700">Published</label>
                                                     <input type="checkbox" id="is_published" name="is_published" value="1" 
-                                                           {{ old('is_published') ? 'checked' : '' }}
+                                                           {{ old('is_published', true) ? 'checked' : '' }}
                                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                                 </div>
 
+                                                @if($currentType !== 'partner')
                                                 <!-- Publish Date -->
                                                 <div class="p-3 bg-gray-50 rounded-lg">
                                                     <label for="published_at" class="block text-sm font-medium text-gray-700 mb-2">
@@ -135,11 +139,13 @@
                                                            {{ old('is_slider') ? 'checked' : '' }}
                                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                                 </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- Category & Type -->
+                                    @if($currentType !== 'partner')
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
                                         <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
                                             <i class="fas fa-tags mr-2 text-green-600"></i>
@@ -182,6 +188,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
 
                                     <!-- Action Buttons -->
                                     <div class="bg-white rounded-lg p-4 shadow-sm">
@@ -196,8 +203,8 @@
                                                 <i class="fas fa-save mr-2"></i>
                                                 Create Post
                                             </button>
-                                            <a href="{{ route('admin.posts.index') }}" 
-                                               class="w-full px-4 py-3 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors text-center block">
+                                            <a href="{{ route('admin.posts.index', ['type' => $currentType]) }}" 
+                                               class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center">
                                                 <i class="fas fa-arrow-left mr-2"></i>
                                                 Back to Posts
                                             </a>
@@ -283,117 +290,60 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/842imvajtzcmmfcf61kux7jyg2lant2sa691sjcoeh8q38cb/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: '#content',
-        height: 450,
-        menubar: false,
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
-        ],
-        toolbar: 'undo redo | blocks fontfamily fontsize | ' +
-            'bold italic underline strikethrough | forecolor backcolor | ' +
-            'alignleft aligncenter alignright alignjustify | ' +
-            'bullist numlist outdent indent | ' +
-            'table link image media | ' +
-            'code preview fullscreen | help',
-        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333; }',
-        skin: 'oxide',
-        content_css: 'default',
-        branding: false,
-        promotion: false,
-        resize: true,
-        statusbar: true,
-        elementpath: false,
-        image_advtab: true,
-        image_caption: true,
-        image_title: true,
-        automatic_uploads: true,
-        file_picker_types: 'image',
-        file_picker_callback: function(callback, value, meta) {
-            // Create a temporary media picker for TinyMCE
-            if (meta.filetype === 'image') {
-                // Create modal backdrop
-                const backdrop = document.createElement('div');
-                backdrop.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
-                backdrop.innerHTML = `
-                    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <h3 class="text-lg font-semibold">Select Image from Media Library</h3>
-                            <button type="button" class="text-gray-400 hover:text-gray-600" onclick="this.closest('.fixed').remove()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="p-4">
-                            <div id="tinymce-media-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto">
-                                <div class="text-center py-8 col-span-full">
-                                    <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
-                                    <p class="text-gray-500 mt-2">Loading media...</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(backdrop);
-                
-                // Load media from API
-                fetch('/admin/media/api?type=image&per_page=50')
-                    .then(response => response.json())
-                    .then(data => {
-                        const grid = document.getElementById('tinymce-media-grid');
-                        if (data.data && data.data.length > 0) {
-                            grid.innerHTML = data.data.map(media => `
-                                <div class="relative group cursor-pointer border-2 border-transparent hover:border-blue-500 rounded-lg overflow-hidden" 
-                                     onclick="selectTinyMCEMedia('${media.url}', '${media.alt || media.title}')">
-                                    <img src="${media.url}" alt="${media.alt || media.title}" 
-                                         class="w-full h-24 object-cover">
-                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
-                                        <i class="fas fa-check text-white opacity-0 group-hover:opacity-100 text-xl"></i>
-                                    </div>
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-                                        <p class="text-white text-xs truncate">${media.title}</p>
-                                    </div>
-                                </div>
-                            `).join('');
-                        } else {
-                            grid.innerHTML = `
-                                <div class="text-center py-8 col-span-full">
-                                    <i class="fas fa-images text-4xl text-gray-400 mb-2"></i>
-                                    <p class="text-gray-500">No images found</p>
-                                </div>
-                            `;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading media:', error);
-                        document.getElementById('tinymce-media-grid').innerHTML = `
-                            <div class="text-center py-8 col-span-full">
-                                <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-2"></i>
-                                <p class="text-red-500">Error loading media</p>
-                            </div>
-                        `;
-                    });
-                
-                // Global function to select media
-                window.selectTinyMCEMedia = function(url, alt) {
-                    callback(url, { alt: alt });
-                    backdrop.remove();
-                    delete window.selectTinyMCEMedia;
-                };
-            }
-        },
-        setup: function (editor) {
-            editor.on('change', function () {
-                editor.save();
+<script type="module">
+    $(document).ready(function() {
+        // Defined custom button for Media Picker
+        var MediaPickerButton = function (context) {
+            var ui = $.summernote.ui;
+            var button = ui.button({
+                contents: '<i class="nav-icon fas fa-image"></i>',
+                tooltip: 'Insert Image from Media Library',
+                click: function () {
+                    if (window.mainMediaPicker) {
+                        window.mainMediaPicker.openMediaPicker(function(selectedMedia) {
+                            if (selectedMedia && selectedMedia.length > 0) {
+                                selectedMedia.forEach(media => {
+                                    if (media.type === 'image') {
+                                        context.invoke('editor.insertImage', media.url);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        console.error('Media Picker instance not found');
+                        // Fallback to default if needed, or show alert
+                        alert('Media Picker not available');
+                    }
+                }
             });
-            editor.on('init', function () {
-                editor.getContainer().style.transition = 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out';
-            });
+
+            return button.render();
         }
+
+        @if($currentType !== 'partner')
+        $('#content').summernote({
+            placeholder: 'Write your content here...',
+            tabsize: 2,
+            height: 450,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'mediaPicker', 'video']], // Replaced 'picture' with 'mediaPicker'
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            buttons: {
+                mediaPicker: MediaPickerButton
+            },
+            callbacks: {
+                onImageUpload: function(files) {
+                    // Logic for image upload if needed, for now we use base64 default
+                }
+            }
+        });
+        @endif
     });
 </script>
 @endpush

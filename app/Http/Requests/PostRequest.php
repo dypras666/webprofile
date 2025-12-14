@@ -24,7 +24,7 @@ class PostRequest extends FormRequest
     {
         $postId = $this->route('post') ? $this->route('post')->id : null;
         $type = $this->input('type', 'berita');
-        
+
         $rules = [
             'title' => 'required|string|max:255',
             'slug' => [
@@ -36,7 +36,7 @@ class PostRequest extends FormRequest
             ],
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
-            'type' => 'required|in:berita,page,gallery,video',
+            'type' => 'required|in:berita,page,gallery,video,partner',
             'featured_image' => 'nullable|string|max:500',
             'video_url' => 'nullable|url|max:500',
             'gallery_images' => 'nullable|string|max:5000', // JSON string of media IDs from media picker
@@ -49,14 +49,14 @@ class PostRequest extends FormRequest
             'meta_keywords' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0'
         ];
-        
+
         // Category is only required for 'berita' type
         if ($type === 'berita') {
             $rules['category_id'] = 'required|exists:categories,id';
         } else {
             $rules['category_id'] = 'nullable|exists:categories,id';
         }
-        
+
         return $rules;
     }
 

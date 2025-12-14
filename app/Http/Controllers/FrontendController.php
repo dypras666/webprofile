@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Media;
+use App\Models\Download;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -18,6 +19,7 @@ class FrontendController extends Controller
     {
         // Get slider posts
         $sliderPosts = Post::published()
+            ->where('type', 'berita')
             ->where('is_slider', true)
             ->with(['category', 'user'])
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
@@ -26,6 +28,7 @@ class FrontendController extends Controller
 
         // Get featured posts
         $featuredPosts = Post::published()
+            ->where('type', 'berita')
             ->where('is_featured', true)
             ->with(['category', 'user'])
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
@@ -34,6 +37,7 @@ class FrontendController extends Controller
 
         // Get latest posts
         $latestPosts = Post::published()
+            ->where('type', 'berita')
             ->with(['category', 'user'])
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->limit(8)
@@ -41,6 +45,7 @@ class FrontendController extends Controller
 
         // Get popular posts (by views)
         $popularPosts = Post::published()
+            ->where('type', 'berita')
             ->with(['category', 'user'])
             ->orderBy('views', 'desc')
             ->limit(6)
@@ -60,13 +65,49 @@ class FrontendController extends Controller
             ->limit(12)
             ->get();
 
+        // Get partners
+        $partners = Post::where('type', 'partner')
+            ->published()
+            ->orderBy('title', 'asc')
+            ->get();
+
+        // Get announcements
+        // Get announcements
+        $announcements = Post::published()
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'pengumuman')
+                    ->orWhere('name', 'Pengumuman');
+            })
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->limit(5)
+            ->get();
+
+        // Get latest downloads
+        $latestDownloads = Download::active()
+            ->public()
+            ->ordered()
+            ->limit(5)
+            ->get();
+
+        // Get latest video
+        $latestVideo = Post::published()
+            ->where('type', 'video')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->first();
+
+
+
         return view('frontend.index', compact(
             'sliderPosts',
-            'featuredPosts', 
+            'featuredPosts',
             'latestPosts',
             'popularPosts',
             'categories',
-            'galleryImages'
+            'galleryImages',
+            'announcements',
+            'partners',
+            'latestDownloads',
+            'latestVideo'
         ));
     }
 
@@ -88,20 +129,23 @@ class FrontendController extends Controller
         // Filter by type
         if ($request->filled('type')) {
             $query->byType($request->type);
+        } else {
+            // Default to 'berita' if no type specified
+            $query->where('type', 'berita');
         }
 
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%")
-                  ->orWhere('excerpt', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%");
             });
         }
 
         $posts = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
-                      ->paginate(SiteSetting::getValue('posts_per_page', 12));
+            ->paginate(SiteSetting::getValue('posts_per_page', 12));
 
         $categories = Category::active()->withCount('posts')->ordered()->get();
         $popularPosts = Post::published()->orderBy('views', 'desc')->limit(5)->get();
@@ -126,9 +170,10 @@ class FrontendController extends Controller
         $relatedPosts = Post::published()
             ->where('category_id', $post->category_id)
             ->where('id', '!=', $post->id)
+            ->where('type', 'berita')
             ->with(['category', 'user'])
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
-            ->limit(4)
+            ->limit(9)
             ->get();
 
         // Get previous and next posts
@@ -190,9 +235,9 @@ class FrontendController extends Controller
                 $query->where('category_id', $category->id);
             }
         }
-        
+
         $images = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
-                       ->paginate(SiteSetting::getValue('gallery_images_per_page', 24));
+            ->paginate(SiteSetting::getValue('gallery_images_per_page', 24));
 
         $categories = Category::active()->withCount('posts')->ordered()->get();
 
@@ -206,7 +251,7 @@ class FrontendController extends Controller
     {
         $aboutContent = SiteSetting::getValue('about_content', '');
         $teamMembers = []; // You can add team members data here if needed
-        
+
         return view('frontend.about', compact('aboutContent', 'teamMembers'));
     }
 
@@ -238,7 +283,7 @@ class FrontendController extends Controller
 
         // Here you can add logic to send email or save to database
         // For now, we'll just return success message
-        
+
         return back()->with('success', 'Pesan Anda berhasil dikirim. Terima kasih!');
     }
 
@@ -252,13 +297,13 @@ class FrontendController extends Controller
         ]);
 
         $query = $request->q;
-        
+
         $posts = Post::published()
             ->with(['category', 'user'])
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('content', 'like', "%{$query}%")
-                  ->orWhere('excerpt', 'like', "%{$query}%");
+                    ->orWhere('content', 'like', "%{$query}%")
+                    ->orWhere('excerpt', 'like', "%{$query}%");
             })
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->paginate(12);
@@ -283,7 +328,7 @@ class FrontendController extends Controller
 
         return response()->json([
             'success' => true,
-            'posts' => $posts->map(function($post) {
+            'posts' => $posts->map(function ($post) {
                 return [
                     'id' => $post->id,
                     'title' => $post->title,
@@ -303,7 +348,7 @@ class FrontendController extends Controller
      */
     public function getStats()
     {
-        $stats = Cache::remember('site_stats', 3600, function() {
+        $stats = Cache::remember('site_stats', 3600, function () {
             return [
                 'total_posts' => Post::published()->count(),
                 'total_categories' => Category::active()->count(),
@@ -322,7 +367,7 @@ class FrontendController extends Controller
     {
         try {
             $post->incrementViews();
-            
+
             return response()->json([
                 'success' => true,
                 'views' => $post->views

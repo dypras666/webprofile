@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Edit Download - ' . $download->title)
-@section('page-title', 'Edit Download' ' . $download->title)
+@section('page-title', 'Edit Download' . $download->title)
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {{-- Header --}}

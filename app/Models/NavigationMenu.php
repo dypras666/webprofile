@@ -15,6 +15,7 @@ class NavigationMenu extends Model
         'title',
         'url',
         'type',
+        'position',
         'reference_id',
         'parent_id',
         'sort_order',
@@ -43,7 +44,7 @@ class NavigationMenu extends Model
     public function children(): HasMany
     {
         return $this->hasMany(NavigationMenu::class, 'parent_id')
-                    ->orderBy('sort_order');
+            ->orderBy('sort_order');
     }
 
     /**
@@ -79,6 +80,14 @@ class NavigationMenu extends Model
     }
 
     /**
+     * Scope to get menu items by position
+     */
+    public function scopePosition($query, $position = 'top')
+    {
+        return $query->where('position', $position);
+    }
+
+    /**
      * Get the final URL for this menu item
      */
     public function getFinalUrlAttribute(): string
@@ -105,14 +114,17 @@ class NavigationMenu extends Model
     /**
      * Get hierarchical menu structure
      */
-    public static function getMenuTree()
+    public static function getMenuTree($position = 'top')
     {
-        return self::with(['children' => function ($query) {
-            $query->active()->orderBy('sort_order');
-        }])
-        ->active()
-        ->roots()
-        ->get();
+        return self::with([
+            'children' => function ($query) {
+                $query->active()->orderBy('sort_order');
+            }
+        ])
+            ->position($position)
+            ->active()
+            ->roots()
+            ->get();
     }
 
     /**

@@ -2,17 +2,7 @@
 
 @section('title', 'Create Page')
 
-@push('styles')
-<style>
-    .tox-tinymce {
-        border-radius: 0.5rem !important;
-        border: 1px solid #d1d5db !important;
-    }
-    .tox .tox-editor-header {
-        border-radius: 0.5rem 0.5rem 0 0 !important;
-    }
-</style>
-@endpush
+
 
 @section('content')
 <div class="w-full">
@@ -194,117 +184,57 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/842imvajtzcmmfcf61kux7jyg2lant2sa691sjcoeh8q38cb/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: '#content',
-        height: 450,
-        menubar: false,
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
-        ],
-        toolbar: 'undo redo | blocks fontfamily fontsize | ' +
-            'bold italic underline strikethrough | forecolor backcolor | ' +
-            'alignleft aligncenter alignright alignjustify | ' +
-            'bullist numlist outdent indent | ' +
-            'table link image media | ' +
-            'code preview fullscreen | help',
-        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333; }',
-        skin: 'oxide',
-        content_css: 'default',
-        branding: false,
-        promotion: false,
-        resize: true,
-        statusbar: true,
-        elementpath: false,
-        image_advtab: true,
-        image_caption: true,
-        image_title: true,
-        automatic_uploads: true,
-        file_picker_types: 'image',
-        file_picker_callback: function(callback, value, meta) {
-            // Create a temporary media picker for TinyMCE
-            if (meta.filetype === 'image') {
-                // Create modal backdrop
-                const backdrop = document.createElement('div');
-                backdrop.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
-                backdrop.innerHTML = `
-                    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <h3 class="text-lg font-semibold">Select Image from Media Library</h3>
-                            <button type="button" class="text-gray-400 hover:text-gray-600" onclick="this.closest('.fixed').remove()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="p-4">
-                            <div id="tinymce-media-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto">
-                                <div class="text-center py-8 col-span-full">
-                                    <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
-                                    <p class="text-gray-500 mt-2">Loading media...</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(backdrop);
-                
-                // Load media from API
-                fetch('/admin/media/api?type=image&per_page=50')
-                    .then(response => response.json())
-                    .then(data => {
-                        const grid = document.getElementById('tinymce-media-grid');
-                        if (data.data && data.data.length > 0) {
-                            grid.innerHTML = data.data.map(media => `
-                                <div class="relative group cursor-pointer border-2 border-transparent hover:border-blue-500 rounded-lg overflow-hidden" 
-                                     onclick="selectTinyMCEMedia('${media.url}', '${media.alt || media.title}')">
-                                    <img src="${media.url}" alt="${media.alt || media.title}" 
-                                         class="w-full h-24 object-cover">
-                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
-                                        <i class="fas fa-check text-white opacity-0 group-hover:opacity-100 text-xl"></i>
-                                    </div>
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-                                        <p class="text-white text-xs truncate">${media.title}</p>
-                                    </div>
-                                </div>
-                            `).join('');
+<script type="module">
+    $(document).ready(function() {            // Defined custom button for Media Picker
+            var MediaPickerButton = function (context) {
+                var ui = $.summernote.ui;
+                var button = ui.button({
+                    contents: '<i class="nav-icon fas fa-image"></i>',
+                    tooltip: 'Insert Image from Media Library',
+                    click: function () {
+                        if (window.mainMediaPicker) {
+                            window.mainMediaPicker.openMediaPicker(function(selectedMedia) {
+                                if (selectedMedia && selectedMedia.length > 0) {
+                                    selectedMedia.forEach(media => {
+                                        if (media.type === 'image') {
+                                            context.invoke('editor.insertImage', media.url);
+                                        }
+                                    });
+                                }
+                            });
                         } else {
-                            grid.innerHTML = `
-                                <div class="text-center py-8 col-span-full">
-                                    <i class="fas fa-images text-4xl text-gray-400 mb-2"></i>
-                                    <p class="text-gray-500">No images found</p>
-                                </div>
-                            `;
+                            console.error('Media Picker instance not found');
+                            // Fallback to default if needed, or show alert
+                            alert('Media Picker not available');
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error loading media:', error);
-                        document.getElementById('tinymce-media-grid').innerHTML = `
-                            <div class="text-center py-8 col-span-full">
-                                <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-2"></i>
-                                <p class="text-red-500">Error loading media</p>
-                            </div>
-                        `;
-                    });
-                
-                // Global function to select media
-                window.selectTinyMCEMedia = function(url, alt) {
-                    callback(url, { alt: alt });
-                    backdrop.remove();
-                    delete window.selectTinyMCEMedia;
-                };
+                    }
+                });
+
+                return button.render();
             }
-        },
-        setup: function (editor) {
-            editor.on('change', function () {
-                editor.save();
+
+            $('#content').summernote({
+                placeholder: 'Write your page content here...',
+                tabsize: 2,
+                height: 500,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'mediaPicker', 'video']], // Replaced 'picture' with 'mediaPicker'
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                buttons: {
+                    mediaPicker: MediaPickerButton
+                },
+                callbacks: {
+                    onImageUpload: function(files) {
+                        // Logic for image upload if needed, for now we use base64 default
+                    }
+                }
             });
-            editor.on('init', function () {
-                editor.getContainer().style.transition = 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out';
-            });
-        }
     });
 </script>
 @endpush

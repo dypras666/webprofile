@@ -58,10 +58,10 @@ class PostController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%")
-                  ->orWhere('excerpt', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%");
             });
         }
 
@@ -78,12 +78,12 @@ class PostController extends Controller
     {
         $type = $request->get('type', 'berita');
         $categories = Category::active()->ordered()->get();
-        
+
         // Redirect to specific create view based on type
         if ($type === 'page') {
             return view('admin.posts.create-page');
         }
-        
+
         return view('admin.posts.create', compact('categories', 'type'));
     }
 
@@ -98,28 +98,13 @@ class PostController extends Controller
 
             // Redirect based on post type
             $redirectRoute = 'admin.posts.index';
-            $redirectParams = [];
-            
-            switch ($post->type) {
-                case 'page':
-                    $redirectParams['type'] = 'page';
-                    break;
-                case 'video':
-                    $redirectParams['type'] = 'video';
-                    break;
-                case 'gallery':
-                    $redirectParams['type'] = 'gallery';
-                    break;
-                default:
-                    // For 'berita' or other types, no additional params needed
-                    break;
-            }
+            $redirectParams = ['type' => $post->type];
 
             return redirect()->route($redirectRoute, $redirectParams)
-                           ->with('success', 'Post berhasil dibuat.');
+                ->with('success', 'Post berhasil dibuat.');
         } catch (\Exception $e) {
             return back()->withInput()
-                        ->with('error', 'Gagal membuat post: ' . $e->getMessage());
+                ->with('error', 'Gagal membuat post: ' . $e->getMessage());
         }
     }
 
@@ -130,7 +115,7 @@ class PostController extends Controller
     {
         $post->load(['category', 'user']);
         $post->incrementViews();
-        
+
         return view('admin.posts.show', compact('post'));
     }
 
@@ -150,38 +135,23 @@ class PostController extends Controller
     {
         try {
             $data = $request->validated();
-            
+
             \Log::info('=== CONTROLLER DEBUG START ===');
             \Log::info('Request data received in controller', ['data' => $data]);
             \Log::info('Gallery images in request', ['gallery_images' => $request->input('gallery_images')]);
             \Log::info('All request data', ['all' => $request->all()]);
-            
+
             $updatedPost = $this->postService->updatePost($post->id, $data);
 
             // Redirect based on post type
             $redirectRoute = 'admin.posts.index';
-            $redirectParams = [];
-            
-            switch ($updatedPost->type) {
-                case 'page':
-                    $redirectParams['type'] = 'page';
-                    break;
-                case 'video':
-                    $redirectParams['type'] = 'video';
-                    break;
-                case 'gallery':
-                    $redirectParams['type'] = 'gallery';
-                    break;
-                default:
-                    // For 'berita' or other types, no additional params needed
-                    break;
-            }
+            $redirectParams = ['type' => $updatedPost->type];
 
             return redirect()->route($redirectRoute, $redirectParams)
-                           ->with('success', 'Post berhasil diperbarui.');
+                ->with('success', 'Post berhasil diperbarui.');
         } catch (\Exception $e) {
             return back()->withInput()
-                        ->with('error', 'Gagal memperbarui post: ' . $e->getMessage());
+                ->with('error', 'Gagal memperbarui post: ' . $e->getMessage());
         }
     }
 
@@ -194,7 +164,7 @@ class PostController extends Controller
             $this->postService->deletePost($post->id);
 
             return redirect()->route('admin.posts.index')
-                           ->with('success', 'Post berhasil dihapus.');
+                ->with('success', 'Post berhasil dihapus.');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menghapus post: ' . $e->getMessage());
         }
@@ -236,11 +206,11 @@ class PostController extends Controller
             DB::commit();
 
             return redirect()->route('admin.posts.index', ['type' => 'page'])
-                           ->with('success', 'Page berhasil dibuat.');
+                ->with('success', 'Page berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withInput()
-                        ->with('error', 'Gagal membuat page: ' . $e->getMessage());
+                ->with('error', 'Gagal membuat page: ' . $e->getMessage());
         }
     }
 
@@ -254,7 +224,7 @@ class PostController extends Controller
             return redirect()->route('admin.posts.edit', $post->id)
                 ->with('info', 'This post is not a page type. Redirected to regular edit form.');
         }
-        
+
         return view('admin.posts.edit-page', compact('post'));
     }
 
@@ -295,11 +265,11 @@ class PostController extends Controller
             DB::commit();
 
             return redirect()->route('admin.posts.index', ['type' => 'page'])
-                           ->with('success', 'Page berhasil diperbarui.');
+                ->with('success', 'Page berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withInput()
-                        ->with('error', 'Gagal memperbarui page: ' . $e->getMessage());
+                ->with('error', 'Gagal memperbarui page: ' . $e->getMessage());
         }
     }
 
@@ -323,7 +293,7 @@ class PostController extends Controller
     public function toggleSlider(Post $post)
     {
         $post->update(['is_slider' => !$post->is_slider]);
-        
+
         $status = $post->is_slider ? 'ditambahkan ke slider' : 'dihapus dari slider';
         return back()->with('success', "Post berhasil {$status}.");
     }
@@ -334,7 +304,7 @@ class PostController extends Controller
     public function toggleFeatured(Post $post)
     {
         $post->update(['is_featured' => !$post->is_featured]);
-        
+
         $status = $post->is_featured ? 'dijadikan unggulan' : 'dihapus dari unggulan';
         return back()->with('success', "Post berhasil {$status}.");
     }

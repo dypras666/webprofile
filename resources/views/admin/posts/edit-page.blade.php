@@ -2,17 +2,7 @@
 
 @section('title', 'Edit Page')
 
-@push('styles')
-<style>
-    .tox-tinymce {
-        border-radius: 0.5rem !important;
-        border: 1px solid #d1d5db !important;
-    }
-    .tox .tox-editor-header {
-        border-radius: 0.5rem 0.5rem 0 0 !important;
-    }
-</style>
-@endpush
+
 
 @section('content')
 <div class="w-full">
@@ -232,38 +222,58 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/842imvajtzcmmfcf61kux7jyg2lant2sa691sjcoeh8q38cb/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: '#content',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        mergetags_list: [
-            { value: 'First.Name', title: 'First Name' },
-            { value: 'Email', title: 'Email' },
-        ],
-        ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
-        height: 450,
-        menubar: false,
-        branding: false,
-        promotion: false,
-        file_picker_callback: function(callback, value, meta) {
-            // Custom media picker integration
-            window.mediaPicker({
-                multiple: false,
-                onSelect: function(media) {
-                    if (media && media.length > 0) {
-                        const selectedMedia = media[0];
-                        callback(selectedMedia.url, {
-                            alt: selectedMedia.alt_text || selectedMedia.title,
-                            title: selectedMedia.title
-                        });
+@push('scripts')
+<script type="module">
+    $(document).ready(function() {            // Defined custom button for Media Picker
+            var MediaPickerButton = function (context) {
+                var ui = $.summernote.ui;
+                var button = ui.button({
+                    contents: '<i class="nav-icon fas fa-image"></i>',
+                    tooltip: 'Insert Image from Media Library',
+                    click: function () {
+                        if (window.mainMediaPicker) {
+                            window.mainMediaPicker.openMediaPicker(function(selectedMedia) {
+                                if (selectedMedia && selectedMedia.length > 0) {
+                                    selectedMedia.forEach(media => {
+                                        if (media.type === 'image') {
+                                            context.invoke('editor.insertImage', media.url);
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            console.error('Media Picker instance not found');
+                            // Fallback to default if needed, or show alert
+                            alert('Media Picker not available');
+                        }
+                    }
+                });
+
+                return button.render();
+            }
+
+            $('#content').summernote({
+                placeholder: 'Write your page content here...',
+                tabsize: 2,
+                height: 500,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'mediaPicker', 'video']], // Replaced 'picture' with 'mediaPicker'
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                buttons: {
+                    mediaPicker: MediaPickerButton
+                },
+                callbacks: {
+                    onImageUpload: function(files) {
+                        // Logic for image upload if needed, for now we use base64 default
                     }
                 }
-            }).open();
-        }
+            });
     });
 </script>
 @endpush

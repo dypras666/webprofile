@@ -57,6 +57,50 @@ class LppmSiteSettingSeeder extends Seeder
                 'description' => 'Default language for the website'
             ],
 
+            // Welcome Section
+            [
+                'key' => 'enable_welcome_section',
+                'value' => '1',
+                'type' => 'boolean',
+                'group' => 'welcome',
+                'description' => 'Enable or disable the welcome section on homepage'
+            ],
+            [
+                'key' => 'welcome_label',
+                'value' => 'SAMBUTAN',
+                'type' => 'text',
+                'group' => 'welcome',
+                'description' => 'Label for the welcome section'
+            ],
+            [
+                'key' => 'leader_title',
+                'value' => 'K E T U A',
+                'type' => 'text',
+                'group' => 'welcome',
+                'description' => 'Title of the leader (e.g. Ketua)'
+            ],
+            [
+                'key' => 'leader_name',
+                'value' => 'Dr. H. M. ZUHRI, S.Ag., M.Ag.',
+                'type' => 'text',
+                'group' => 'welcome',
+                'description' => 'Name of the leader'
+            ],
+            [
+                'key' => 'leader_photo',
+                'value' => '',
+                'type' => 'file',
+                'group' => 'welcome',
+                'description' => 'Photo of the leader'
+            ],
+            [
+                'key' => 'welcome_text',
+                'value' => 'Selamat datang di website resmi Lembaga Penjaminan Mutu (LPM) Institut Islam Al-Mujaddid Sabak. Kami berkomitmen untuk terus meningkatkan mutu pendidikan dan pelayanan demi terwujudnya visi dan misi institusi.',
+                'type' => 'textarea',
+                'group' => 'welcome',
+                'description' => 'Welcome message text'
+            ],
+
             // Contact Information
             [
                 'key' => 'contact_address',

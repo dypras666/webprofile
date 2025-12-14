@@ -15,8 +15,8 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest')->except(['logout', 'dashboard']);
-        $this->middleware('auth')->only(['logout', 'dashboard']);
+        $this->middleware('guest')->except(['logout', 'dashboard', 'profile', 'updateProfile']);
+        $this->middleware('auth')->only(['logout', 'dashboard', 'profile', 'updateProfile']);
     }
 
     /**
@@ -46,7 +46,7 @@ class AuthController extends Controller
 
         // Check if user exists and is active
         $user = User::where('email', $credentials['email'])->first();
-        
+
         if (!$user) {
             throw ValidationException::withMessages([
                 'email' => 'Email tidak terdaftar.',
@@ -70,7 +70,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return redirect()->intended(route('admin.dashboard'))
-                        ->with('success', 'Selamat datang, ' . $user->name . '!');
+            ->with('success', 'Selamat datang, ' . $user->name . '!');
     }
 
     /**
@@ -84,7 +84,7 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login')
-                        ->with('success', 'Anda berhasil logout.');
+            ->with('success', 'Anda berhasil logout.');
     }
 
     /**
@@ -93,7 +93,7 @@ class AuthController extends Controller
     public function dashboard()
     {
         $user = auth()->user();
-        
+
         // Get statistics
         $stats = [
             'total_posts' => Post::count(),
@@ -108,36 +108,36 @@ class AuthController extends Controller
 
         // Get recent posts
         $recentPosts = Post::with(['category', 'user'])
-                          ->latest()
-                          ->limit(5)
-                          ->get();
+            ->latest()
+            ->limit(5)
+            ->get();
 
         // Get popular posts (by views)
         $popularPosts = Post::published()
-                           ->with(['category', 'user'])
-                           ->orderBy('views', 'desc')
-                           ->limit(5)
-                           ->get();
+            ->with(['category', 'user'])
+            ->orderBy('views', 'desc')
+            ->limit(5)
+            ->get();
 
         // Get recent media
         $recentMedia = Media::with('user')
-                           ->latest()
-                           ->limit(5)
-                           ->get();
+            ->latest()
+            ->limit(5)
+            ->get();
 
         // Get posts by type for chart
         $postsByType = Post::selectRaw('type, COUNT(*) as count')
-                          ->groupBy('type')
-                          ->pluck('count', 'type')
-                          ->toArray();
+            ->groupBy('type')
+            ->pluck('count', 'type')
+            ->toArray();
 
         // Get posts by month for chart (last 6 months)
         $postsByMonth = Post::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-                           ->where('created_at', '>=', now()->subMonths(6))
-                           ->groupBy('month')
-                           ->orderBy('month')
-                           ->pluck('count', 'month')
-                           ->toArray();
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')
+            ->toArray();
 
         return view('admin.dashboard', compact(
             'stats',
@@ -164,7 +164,7 @@ class AuthController extends Controller
     public function updateProfile(Request $request)
     {
         $user = auth()->user();
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -202,7 +202,7 @@ class AuthController extends Controller
         // Handle profile photo upload
         if ($request->hasFile('profile_photo')) {
             $fileUploadService = app(\App\Services\FileUploadService::class);
-            
+
             // Delete old profile photo
             if ($user->profile_photo) {
                 \Storage::disk('public')->delete($user->profile_photo);
@@ -224,6 +224,6 @@ class AuthController extends Controller
 
         $user->update($data);
 
-        return back()->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui.');
     }
 }

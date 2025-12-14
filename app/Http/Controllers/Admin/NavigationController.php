@@ -19,17 +19,17 @@ class NavigationController extends Controller
     public function index(): View
     {
         $menus = NavigationMenu::with(['children', 'referencedPost', 'referencedCategory'])
-                              ->roots()
-                              ->get();
-        
+            ->roots()
+            ->get();
+
         $posts = Post::where('is_published', true)
-                    ->select('id', 'title', 'slug', 'type')
-                    ->orderBy('title')
-                    ->get();
-        
+            ->select('id', 'title', 'slug', 'type')
+            ->orderBy('title')
+            ->get();
+
         $categories = Category::select('id', 'name', 'slug')
-                             ->orderBy('name')
-                             ->get();
+            ->orderBy('name')
+            ->get();
 
         return view('admin.navigation.index', compact('menus', 'posts', 'categories'));
     }
@@ -48,17 +48,19 @@ class NavigationController extends Controller
             'target' => 'in:_self,_blank',
             'css_class' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'position' => 'required|in:top,bottom,quicklink'
         ]);
 
         // Get the next sort order
         $maxOrder = NavigationMenu::where('parent_id', $validated['parent_id'] ?? null)
-                                 ->max('sort_order');
+            ->max('sort_order');
         $validated['sort_order'] = ($maxOrder ?? 0) + 1;
 
         // Set defaults
         $validated['target'] = $validated['target'] ?? '_self';
         $validated['is_active'] = $validated['is_active'] ?? true;
+        $validated['position'] = $validated['position'] ?? 'top';
 
         $menu = NavigationMenu::create($validated);
         $menu->load(['referencedPost', 'referencedCategory']);
@@ -84,7 +86,8 @@ class NavigationController extends Controller
             'target' => 'in:_self,_blank',
             'css_class' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'position' => 'required|in:top,bottom,quicklink'
         ]);
 
         // Prevent setting self as parent
@@ -136,10 +139,10 @@ class NavigationController extends Controller
         try {
             foreach ($validated['menus'] as $menuData) {
                 NavigationMenu::where('id', $menuData['id'])
-                             ->update([
-                                 'parent_id' => $menuData['parent_id'],
-                                 'sort_order' => $menuData['sort_order']
-                             ]);
+                    ->update([
+                        'parent_id' => $menuData['parent_id'],
+                        'sort_order' => $menuData['sort_order']
+                    ]);
             }
 
             return response()->json([
@@ -177,7 +180,7 @@ class NavigationController extends Controller
         $search = $request->get('search', '');
 
         $query = Post::where('is_published', true)
-                    ->select('id', 'title', 'slug', 'type');
+            ->select('id', 'title', 'slug', 'type');
 
         if ($type !== 'all') {
             $query->where('type', $type);
@@ -188,8 +191,8 @@ class NavigationController extends Controller
         }
 
         $posts = $query->orderBy('title')
-                      ->limit(20)
-                      ->get();
+            ->limit(20)
+            ->get();
 
         return response()->json($posts);
     }
@@ -208,8 +211,8 @@ class NavigationController extends Controller
         }
 
         $categories = $query->orderBy('name')
-                           ->limit(20)
-                           ->get();
+            ->limit(20)
+            ->get();
 
         return response()->json($categories);
     }

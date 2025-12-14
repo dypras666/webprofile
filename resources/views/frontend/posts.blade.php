@@ -192,34 +192,44 @@
     </div>
 </div>
 
-{{-- Filters & Sorting --}}
-<div class="bg-white border-b">
-    <div class="container mx-auto px-4 py-6">
-        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+<div class="bg-white border-b sticky top-0 z-30 shadow-sm">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {{-- Category Filter --}}
-            <div class="flex flex-wrap items-center space-x-2">
-                <span class="text-gray-600 font-medium mr-4">Categories:</span>
-                <a href="{{ route('frontend.posts') }}" 
-                   class="px-4 py-2 rounded-full text-sm font-medium transition-colors {{ !request('category') ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                    All
-                </a>
-                @foreach($categories as $cat)
-                    <a href="{{ route('frontend.posts', ['category' => $cat->slug]) }}" 
-                       class="px-4 py-2 rounded-full text-sm font-medium transition-colors {{ request('category') == $cat->slug ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                        {{ $cat->name }}
-                        <span class="ml-1 text-xs opacity-75">({{ $cat->posts_count }})</span>
+            <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar mask-linear-fade flex-1">
+                <span class="text-gray-500 text-sm font-medium mr-2 whitespace-nowrap">Categories:</span>
+                <div class="flex space-x-2">
+                    <a href="{{ route('frontend.posts') }}" 
+                       class="px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap {{ !request('category') ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-600 ring-offset-1' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-600 border border-gray-200' }}">
+                        All
                     </a>
-                @endforeach
+                    @foreach($categories as $cat)
+                        <a href="{{ route('frontend.posts', ['category' => $cat->slug]) }}" 
+                           class="px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap flex items-center {{ request('category') == $cat->slug ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-600 ring-offset-1' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-600 border border-gray-200' }}">
+                            {{ $cat->name }}
+                            <span class="ml-2 text-xs {{ request('category') == $cat->slug ? 'text-blue-100' : 'text-gray-400' }}">
+                                {{ $cat->posts_count }}
+                            </span>
+                        </a>
+                    @endforeach
+                </div>
             </div>
             
             {{-- Sort Options --}}
-            <div class="flex items-center space-x-4">
-                <span class="text-gray-600 font-medium">Sort by:</span>
-                <select onchange="updateSort(this.value)" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="latest" {{ request('sort') == 'latest' || !request('sort') ? 'selected' : '' }}>Latest</option>
-                    <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
-                    <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title A-Z</option>
-                </select>
+            <div class="flex items-center space-x-3 flex-shrink-0 border-l pl-0 md:pl-4 border-gray-200 pt-2 md:pt-0">
+                <span class="text-gray-500 text-sm font-medium whitespace-nowrap">Sort by:</span>
+                <div class="relative">
+                    <select onchange="updateSort(this.value)" class="appearance-none pl-4 pr-10 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow cursor-pointer hover:bg-white">
+                        <option value="latest" {{ request('sort') == 'latest' || !request('sort') ? 'selected' : '' }}>Latest</option>
+                        <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
+                        <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title A-Z</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
