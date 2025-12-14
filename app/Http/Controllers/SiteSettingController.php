@@ -104,12 +104,12 @@ class SiteSettingController extends Controller
                     if (in_array($key, ['recaptcha_site_key', 'recaptcha_secret_key'])) {
                         $setting->group = 'security';
                         $setting->type = 'text';
-                        $setting->label = ucwords(str_replace('_', ' ', $key));
+                        // $setting->label = ucwords(str_replace('_', ' ', $key)); // Column 'label' does not exist
                     } else {
                         // Default fallback for other potential new keys
                         $setting->group = 'general';
                         $setting->type = 'text';
-                        $setting->label = ucwords(str_replace('_', ' ', $key));
+                        // $setting->label = ucwords(str_replace('_', ' ', $key)); // Column 'label' does not exist
                     }
                 }
 
