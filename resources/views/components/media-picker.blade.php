@@ -81,8 +81,9 @@
                 </div>
             </div>
 
-            <!-- Modal Content -->
+            <!-- Match existing structure -->
             <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <!-- Ensure this matches the container targeted by scroll listener -->
                 <!-- Upload Area (Hidden by default) -->
                 <div id="modal-upload-area" class="hidden mb-6">
                     <div
@@ -125,7 +126,13 @@
                     <!-- Media items will be loaded here -->
                 </div>
 
-                <!-- Loading State -->
+                <!-- Load More Spinner -->
+                <div id="modal-loading-more" class="text-center py-4 hidden">
+                    <i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                    <span class="ml-2 text-sm text-gray-600">Loading more...</span>
+                </div>
+
+                <!-- Main Loading State -->
                 <div id="modal-loading" class="text-center py-12">
                     <i class="fas fa-spinner fa-spin text-4xl text-gray-400 mb-4"></i>
                     <p class="text-lg font-medium text-gray-900">Loading media...</p>
@@ -170,9 +177,14 @@
             isMultiple: isMultiple,
             tempSelection: new Set(),
 
+            // Pagination & Filter State
+            currentPage: 1,
+            lastPage: 1,
+            currentSearch: '',
+            currentType: '',
+            isFetching: false,
+
             init() {
-                // Expose this instance globally if it's the main media picker on the page
-                // We'll trust that the first one initialized is the "main" one or we can check a prop
                 window.mainMediaPicker = this;
 
                 if (initialValue) {
@@ -182,6 +194,38 @@
                         this.loadInitialMedia([initialValue]);
                     }
                 }
+
+                // Setup event delegation for the grid
+                this.setupGridEventDelegation();
+
+                // Setup scroll listener for infinite scroll
+                this.setupScrollListener();
+            },
+
+            setupGridEventDelegation() {
+                const grid = document.getElementById('modal-media-grid');
+                if (!grid) return;
+
+                grid.addEventListener('click', (e) => {
+                    const item = e.target.closest('.media-picker-item');
+                    if (item) {
+                        const mediaId = item.dataset.id;
+                        this.toggleMediaSelection(mediaId, item);
+                    }
+                });
+            },
+
+            setupScrollListener() {
+                const container = document.querySelector('.max-h-\\[60vh\\]');
+                if (!container) return;
+
+                container.addEventListener('scroll', () => {
+                    const { scrollTop, scrollHeight, clientHeight } = container;
+                    // Trigger when within 100px of bottom
+                    if (scrollTop + clientHeight >= scrollHeight - 100) {
+                        this.loadNextPage();
+                    }
+                });
             },
 
             async loadInitialMedia(mediaIds) {
@@ -208,14 +252,11 @@
             openMediaPicker(callback = null) {
                 const modal = document.getElementById('media-picker-modal');
                 modal.classList.remove('hidden');
-                // Store reference for global access
                 window.currentMediaPicker = this;
 
-                // Set external callback if provided
                 if (callback && typeof callback === 'function') {
                     this.externalCallback = callback;
-                    this.isMultiple = false; // Force single selection for editor insertion usually
-                    // Reset selection for external mode
+                    this.isMultiple = false;
                     this.tempSelection.clear();
                     document.querySelectorAll('.media-picker-item').forEach(item => {
                         item.classList.remove('border-blue-500', 'bg-blue-50');
@@ -227,7 +268,8 @@
                     this.tempSelection = new Set(this.selectedMedia.map(m => m.id.toString()));
                 }
 
-                this.loadMediaLibrary();
+                // Initial load: reset filters and page
+                this.loadMediaLibrary('', '', false);
             },
 
             closeMediaPicker() {
@@ -235,100 +277,135 @@
                 modal.classList.add('hidden');
                 this.tempSelection.clear();
                 this.externalCallback = null;
-                // Clear global reference
                 window.currentMediaPicker = null;
             },
 
-            async loadMediaLibrary(search = '', type = '') {
-                const loading = document.getElementById('modal-loading');
-                const grid = document.getElementById('modal-media-grid');
-                const empty = document.getElementById('modal-empty');
+            loadNextPage() {
+                if (this.currentPage < this.lastPage) {
+                    this.loadMediaLibrary(this.currentSearch, this.currentType, true);
+                }
+            },
 
-                loading.classList.remove('hidden');
-                grid.innerHTML = '';
-                empty.classList.add('hidden');
+            async loadMediaLibrary(search = null, type = null, append = false) {
+                if (this.isFetching) return;
+
+                // Update state based on logic
+                if (search !== null) this.currentSearch = search;
+                if (type !== null) this.currentType = type;
+
+                if (!append) {
+                    this.currentPage = 1;
+                    document.getElementById('modal-media-grid').innerHTML = ''; // Clear grid
+                    document.getElementById('modal-loading').classList.remove('hidden');
+                    document.getElementById('modal-empty').classList.add('hidden');
+                } else {
+                    this.currentPage++;
+                    document.getElementById('modal-loading-more').classList.remove('hidden');
+                }
+
+                this.isFetching = true;
 
                 try {
                     const params = new URLSearchParams({
-                        search: search,
-                        type: type,
-                        per_page: 50
+                        search: this.currentSearch,
+                        type: this.currentType,
+                        per_page: 24, // Reasonable chunk size
+                        page: this.currentPage
                     });
 
                     const response = await fetch(`/admin/media/api?${params}`);
                     const data = await response.json();
 
-                    loading.classList.add('hidden');
+                    document.getElementById('modal-loading').classList.add('hidden');
+                    document.getElementById('modal-loading-more').classList.add('hidden');
 
                     if (data.media && data.media.length > 0) {
-                        this.renderMediaGrid(data.media);
-                    } else {
-                        empty.classList.remove('hidden');
+                        this.lastPage = data.pagination.last_page;
+                        this.renderMediaGrid(data.media, append);
+                    } else if (!append) {
+                        document.getElementById('modal-empty').classList.remove('hidden');
                     }
                 } catch (error) {
                     console.error('Error loading media:', error);
-                    loading.classList.add('hidden');
-                    empty.classList.remove('hidden');
+                    document.getElementById('modal-loading').classList.add('hidden');
+                    document.getElementById('modal-loading-more').classList.add('hidden');
+                    if (!append) document.getElementById('modal-empty').classList.remove('hidden');
+                } finally {
+                    this.isFetching = false;
                 }
             },
 
-            renderMediaGrid(mediaItems) {
+            renderMediaGrid(mediaItems, append) {
                 const grid = document.getElementById('modal-media-grid');
 
-                grid.innerHTML = mediaItems.map(media => `
+                const html = mediaItems.map(media => `
                 <div class="media-picker-item cursor-pointer border-2 border-transparent rounded-lg overflow-hidden hover:border-blue-300 transition-colors ${this.tempSelection.has(media.id.toString()) ? 'border-blue-500 bg-blue-50' : ''
                     }" data-id="${media.id}">
-                    <div class="aspect-square bg-gray-100">
+                    <div class="aspect-square bg-gray-100 relative">
                         ${media.type === 'image' ?
                         `<img src="${media.url}" alt="${media.filename}" class="w-full h-full object-cover">` :
                         `<div class="w-full h-full flex items-center justify-center">
                                 <i class="fas fa-file-${media.type === 'pdf' ? 'pdf' : 'alt'} text-3xl text-gray-400"></i>
                             </div>`
                     }
-                    </div>
-                    <div class="p-2">
-                        <p class="text-xs font-medium text-gray-900 truncate">${media.filename}</p>
-                        <p class="text-xs text-gray-500">${media.type.toUpperCase()}</p>
-                    </div>
                     ${this.tempSelection.has(media.id.toString()) ?
                         '<div class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center"><i class="fas fa-check text-xs"></i></div>' : ''
                     }
+                    </div>
+                    <div class="p-2">
+                        <p class="text-xs font-medium text-gray-900 truncate" title="${media.filename}">${media.filename}</p>
+                        <p class="text-xs text-gray-500">${media.type.toUpperCase()}</p>
+                    </div>
                 </div>
             `).join('');
 
-                // Add click handlers
-                grid.querySelectorAll('.media-picker-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const mediaId = item.dataset.id;
-                        this.toggleMediaSelection(mediaId, item);
-                    });
-                });
+                if (append) {
+                    grid.insertAdjacentHTML('beforeend', html);
+                } else {
+                    grid.innerHTML = html;
+                }
 
                 this.updateSelectionCount();
             },
 
             toggleMediaSelection(mediaId, element) {
+                const imgContainer = element.querySelector('.aspect-square');
+
+                // Helper to update UI
+                const updateUI = (isSelected) => {
+                    if (isSelected) {
+                        element.classList.add('border-blue-500', 'bg-blue-50');
+                        if (!imgContainer.querySelector('.fa-check')) {
+                            imgContainer.insertAdjacentHTML('beforeend', '<div class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center"><i class="fas fa-check text-xs"></i></div>');
+                        }
+                    } else {
+                        element.classList.remove('border-blue-500', 'bg-blue-50');
+                        const checkmark = imgContainer.querySelector('.absolute.top-2.right-2');
+                        if (checkmark) checkmark.remove();
+                    }
+                };
+
                 if (this.isMultiple) {
                     if (this.tempSelection.has(mediaId)) {
                         this.tempSelection.delete(mediaId);
-                        element.classList.remove('border-blue-500', 'bg-blue-50');
-                        element.querySelector('.absolute')?.remove();
+                        updateUI(false);
                     } else {
                         this.tempSelection.add(mediaId);
-                        element.classList.add('border-blue-500', 'bg-blue-50');
-                        element.innerHTML += '<div class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center"><i class="fas fa-check text-xs"></i></div>';
+                        updateUI(true);
                     }
                 } else {
                     // Single selection
+                    // Deselect all others visually
                     document.querySelectorAll('.media-picker-item').forEach(item => {
+                        const iContainer = item.querySelector('.aspect-square');
                         item.classList.remove('border-blue-500', 'bg-blue-50');
-                        item.querySelector('.absolute')?.remove();
+                        const existingCheck = iContainer.querySelector('.absolute.top-2.right-2');
+                        if (existingCheck) existingCheck.remove();
                     });
 
                     this.tempSelection.clear();
                     this.tempSelection.add(mediaId);
-                    element.classList.add('border-blue-500', 'bg-blue-50');
-                    element.innerHTML += '<div class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center"><i class="fas fa-check text-xs"></i></div>';
+                    updateUI(true);
                 }
 
                 this.updateSelectionCount();
@@ -357,7 +434,6 @@
 
                     const data = await response.json();
 
-                    // Handle external callback first
                     if (this.externalCallback) {
                         this.externalCallback(data.media);
                         this.closeMediaPicker();
@@ -390,13 +466,14 @@
                 const mediaGrid = document.getElementById('modal-media-grid');
                 const loading = document.getElementById('modal-loading');
                 const empty = document.getElementById('modal-empty');
+                const loadMore = document.getElementById('modal-loading-more');
 
                 uploadArea.classList.remove('hidden');
                 mediaGrid.classList.add('hidden');
                 loading.classList.add('hidden');
                 empty.classList.add('hidden');
+                if (loadMore) loadMore.classList.add('hidden');
 
-                // Setup upload handlers
                 this.setupUploadHandlers();
             },
 
@@ -407,22 +484,19 @@
                 uploadArea.classList.add('hidden');
                 mediaGrid.classList.remove('hidden');
 
-                // Reload media library to show newly uploaded files
-                this.loadMediaLibrary();
+                this.loadMediaLibrary(null, null, false); // Reload from scratch
             },
 
             setupUploadHandlers() {
                 const fileInput = document.getElementById('modal-file-input');
                 const uploadArea = document.querySelector('#modal-upload-area .border-dashed');
 
-                // File input change handler
                 fileInput.addEventListener('change', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     this.handleModalFileUpload(e);
                 });
 
-                // Drag and drop handlers
                 uploadArea.addEventListener('dragover', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -477,9 +551,7 @@
 
                             setTimeout(() => {
                                 progressContainer.classList.add('hidden');
-                                // Reset file input
                                 document.getElementById('modal-file-input').value = '';
-                                // Show success message
                                 statusText.textContent = 'Files uploaded successfully! Click "Back to Library" to see them.';
                             }, 1000);
                         } else {
@@ -517,11 +589,8 @@
                 searchTimeout = setTimeout(() => {
                     // Trigger search in active media picker
                     const activeModal = document.querySelector('#media-picker-modal:not(.hidden)');
-                    if (activeModal) {
-                        // This would need to be connected to the Alpine.js component
-                        window.dispatchEvent(new CustomEvent('media-search', {
-                            detail: { search: this.value, type: typeFilter.value }
-                        }));
+                    if (activeModal && window.currentMediaPicker) {
+                        window.currentMediaPicker.loadMediaLibrary(this.value, null, false);
                     }
                 }, 300);
             });
@@ -530,19 +599,11 @@
         if (typeFilter) {
             typeFilter.addEventListener('change', function () {
                 const activeModal = document.querySelector('#media-picker-modal:not(.hidden)');
-                if (activeModal) {
-                    window.dispatchEvent(new CustomEvent('media-search', {
-                        detail: { search: searchInput.value, type: this.value }
-                    }));
+                if (activeModal && window.currentMediaPicker) {
+                    window.currentMediaPicker.loadMediaLibrary(null, this.value, false);
                 }
             });
         }
-
-        // Listen for search events
-        window.addEventListener('media-search', function (event) {
-            // This would trigger the search in the active media picker component
-            console.log('Search triggered:', event.detail);
-        });
     });
 </script>
 <script>

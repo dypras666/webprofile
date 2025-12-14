@@ -513,6 +513,26 @@
                                 <label for="moderate_comments" class="ml-2 text-sm text-gray-700">Moderate comments before
                                     publishing</label>
                             </div>
+
+                            <div class="border-t border-gray-200 pt-6 mt-6">
+                                <h3 class="text-md font-medium text-gray-900 mb-4">Google Recaptcha Settings</h3>
+                                
+                                <!-- Recaptcha Site Key -->
+                                <div class="mb-4">
+                                    <label for="recaptcha_site_key" class="block text-sm font-medium text-gray-700 mb-2">Recaptcha Site Key</label>
+                                    <input type="text" id="recaptcha_site_key" name="recaptcha_site_key"
+                                        value="{{ $settings['recaptcha_site_key'] ?? '' }}"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+
+                                <!-- Recaptcha Secret Key -->
+                                <div>
+                                    <label for="recaptcha_secret_key" class="block text-sm font-medium text-gray-700 mb-2">Recaptcha Secret Key</label>
+                                    <input type="text" id="recaptcha_secret_key" name="recaptcha_secret_key"
+                                        value="{{ $settings['recaptcha_secret_key'] ?? '' }}"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                            </div>
                         </div>
                     </div>
 

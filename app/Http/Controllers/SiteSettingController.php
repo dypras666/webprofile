@@ -96,57 +96,73 @@ class SiteSettingController extends Controller
             ]);
 
             foreach ($formData as $key => $value) {
-                $setting = SiteSetting::where('key', $key)->first();
+                // Find or create the setting
+                $setting = SiteSetting::firstOrNew(['key' => $key]);
 
-                if ($setting) {
-                    // Handle file uploads
-                    if ($request->hasFile($key)) {
-                        $file = $request->file($key);
-
-                        // Log file upload attempt (INSTEAD OF dd())
-                        Log::info("Processing file upload for: {$key}", [
-                            'file_name' => $file->getClientOriginalName(),
-                            'file_size' => $file->getSize(),
-                            'mime_type' => $file->getMimeType(),
-                            'is_valid' => $file->isValid(),
-                        ]);
-
-                        // Delete old file if exists
-                        if ($setting->value && Storage::disk('public')->exists($setting->value)) {
-                            Storage::disk('public')->delete($setting->value);
-                            Log::info("Deleted old file: {$setting->value}");
-                        }
-
-                        try {
-                            if (in_array($key, ['logo', 'favicon', 'hero_image', 'og_image'])) {
-                                $uploadedMedia = $this->fileUploadService->uploadImage($file, 'settings');
-                            } else {
-                                $uploadedMedia = $this->fileUploadService->upload($file, 'settings');
-                            }
-
-                            $value = $uploadedMedia->file_path;
-                            Log::info("File uploaded successfully for {$key}: {$value}");
-
-                        } catch (\Exception $e) {
-                            Log::error("File upload failed for {$key}", [
-                                'error' => $e->getMessage(),
-                                'trace' => $e->getTraceAsString()
-                            ]);
-                            throw $e;
-                        }
+                // If it's a new setting, set default attributes based on key
+                if (!$setting->exists) {
+                    if (in_array($key, ['recaptcha_site_key', 'recaptcha_secret_key'])) {
+                        $setting->group = 'security';
+                        $setting->type = 'text';
+                        $setting->label = ucwords(str_replace('_', ' ', $key));
+                    } else {
+                        // Default fallback for other potential new keys
+                        $setting->group = 'general';
+                        $setting->type = 'text';
+                        $setting->label = ucwords(str_replace('_', ' ', $key));
                     }
-                    // Handle boolean values (checkboxes)
-                    elseif ($setting->type === 'boolean') {
-                        $value = filter_var($request->input($key), FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
-                    }
-                    // Handle JSON arrays
-                    elseif ($setting->type === 'json' && is_array($value)) {
-                        $value = json_encode($value);
-                    }
-
-                    $setting->update(['value' => $value]);
-                    Log::info("Updated setting: {$key} = {$value}");
                 }
+
+                // Handle file uploads
+                if ($request->hasFile($key)) {
+                    $file = $request->file($key);
+
+                    // Log file upload attempt (INSTEAD OF dd())
+                    Log::info("Processing file upload for: {$key}", [
+                        'file_name' => $file->getClientOriginalName(),
+                        'file_size' => $file->getSize(),
+                        'mime_type' => $file->getMimeType(),
+                        'is_valid' => $file->isValid(),
+                    ]);
+
+                    // Delete old file if exists
+                    if ($setting->value && Storage::disk('public')->exists($setting->value)) {
+                        Storage::disk('public')->delete($setting->value);
+                        Log::info("Deleted old file: {$setting->value}");
+                    }
+
+                    try {
+                        if (in_array($key, ['logo', 'favicon', 'hero_image', 'og_image'])) {
+                            $uploadedMedia = $this->fileUploadService->uploadImage($file, 'settings');
+                        } else {
+                            $uploadedMedia = $this->fileUploadService->upload($file, 'settings');
+                        }
+
+                        $value = $uploadedMedia->file_path;
+                        Log::info("File uploaded successfully for {$key}: {$value}");
+
+                    } catch (\Exception $e) {
+                        Log::error("File upload failed for {$key}", [
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString()
+                        ]);
+                        throw $e;
+                    }
+                }
+                // Handle boolean values (checkboxes)
+                elseif ($setting->type === 'boolean') {
+                    $value = filter_var($request->input($key), FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
+                }
+                // Handle JSON arrays
+                elseif ($setting->type === 'json' && is_array($value)) {
+                    $value = json_encode($value);
+                }
+
+                // Save individual setting
+                $setting->value = $value;
+                $setting->save();
+
+                Log::info("Updated setting: {$key} = {$value}");
             }
 
             // Clear cache for all groups
