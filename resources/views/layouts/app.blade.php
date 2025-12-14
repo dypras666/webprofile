@@ -35,8 +35,21 @@
     <link rel="canonical" href="@yield('canonical', url()->current())">
 
     {{-- Favicon --}}
-    <link rel="icon" type="image/x-icon"
-        href="{{ $siteSettings['favicon'] ? asset('storage/' . $siteSettings['favicon']) : asset('favicon.ico') }}">
+    {{-- Favicon --}}
+    @if(isset($siteSettings['favicon']) && $siteSettings['favicon'])
+        @php
+            $faviconPath = $siteSettings['favicon'];
+            $faviconDir = dirname($faviconPath) . '/favicons';
+            $storageUrl = asset('storage');
+        @endphp
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-16x16.png' }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-32x32.png' }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ $storageUrl . '/' . $faviconDir . '/apple-touch-icon.png' }}">
+        <link rel="manifest" href="{{ $storageUrl . '/' . $faviconDir . '/site.webmanifest' }}">
+        <link rel="shortcut icon" href="{{ $storageUrl . '/' . $faviconDir . '/favicon.ico' }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
 
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.bunny.net">

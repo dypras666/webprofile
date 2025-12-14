@@ -8,6 +8,23 @@
 
     <title>@yield('title', 'Admin Panel') - {{ config('app.name', 'Laravel') }}</title>
 
+    {{-- Favicon --}}
+    @php
+        $faviconPath = \App\Models\SiteSetting::where('key', 'favicon')->value('value');
+    @endphp
+    @if($faviconPath)
+        @php
+            $faviconDir = dirname($faviconPath) . '/favicons';
+            $storageUrl = asset('storage');
+        @endphp
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-16x16.png' }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ $storageUrl . '/' . $faviconDir . '/favicon-32x32.png' }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ $storageUrl . '/' . $faviconDir . '/apple-touch-icon.png' }}">
+        <link rel="shortcut icon" href="{{ $storageUrl . '/' . $faviconDir . '/favicon.ico' }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />

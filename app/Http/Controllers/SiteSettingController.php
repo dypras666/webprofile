@@ -141,6 +141,16 @@ class SiteSettingController extends Controller
                         $value = $uploadedMedia->file_path;
                         Log::info("File uploaded successfully for {$key}: {$value}");
 
+                        // Generate favicon variations if this is the favicon
+                        if ($key === 'favicon') {
+                            try {
+                                $this->fileUploadService->generateFavicons($value);
+                                Log::info("Favicons generated successfully.");
+                            } catch (\Exception $e) {
+                                Log::error("Failed to generate favicons: " . $e->getMessage());
+                            }
+                        }
+
                     } catch (\Exception $e) {
                         Log::error("File upload failed for {$key}", [
                             'error' => $e->getMessage(),
@@ -228,6 +238,16 @@ class SiteSettingController extends Controller
                         $uploadedMedia = $this->fileUploadService->upload($file, 'settings');
                     }
                     $value = $uploadedMedia->file_path;
+
+                    // Generate favicon variations if this is the favicon
+                    if ($setting->key === 'favicon') {
+                        try {
+                            $this->fileUploadService->generateFavicons($value);
+                            Log::info("Favicons generated successfully via updateGroup.");
+                        } catch (\Exception $e) {
+                            Log::error("Failed to generate favicons in updateGroup: " . $e->getMessage());
+                        }
+                    }
                 }
 
                 // Handle boolean values

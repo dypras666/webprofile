@@ -1,2 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /storage/*.zip
+Sitemap: http://localhost:8000/sitemap.xml
