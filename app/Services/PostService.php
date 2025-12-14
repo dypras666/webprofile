@@ -148,7 +148,7 @@ class PostService
                     }
                 } elseif (is_string($data['featured_image']) && !empty($data['featured_image'])) {
                     // Keep the media library path as is
-                    $data['featured_image'] = $data['featured_image'];
+                    // $data['featured_image'] = $data['featured_image'];
                 } else {
                     // Remove featured image if empty
                     $data['featured_image'] = null;
@@ -289,7 +289,7 @@ class PostService
                         $this->fileUploadService->delete($post->featured_image);
                     }
                     // Keep the media library path as is
-                    $data['featured_image'] = $data['featured_image'];
+                    // $data['featured_image'] = $data['featured_image'];
                 } elseif ($data['featured_image'] === '' || $data['featured_image'] === null) {
                     // Remove featured image
                     if ($post->featured_image) {
@@ -692,7 +692,8 @@ class PostService
      */
     public function getTrendingPosts($days = 7, $limit = 10): Collection
     {
-        return $this->postRepository->where('created_at', '>=', now()->subDays($days))
+        return $this->postRepository->getModel()
+            ->where('created_at', '>=', now()->subDays($days))
             ->published()
             ->orderBy('views', 'desc')
             ->limit($limit)
@@ -702,7 +703,7 @@ class PostService
     /**
      * Schedule post publication
      */
-    public function schedulePost($id, $publishAt): bool
+    public function schedulePost($id, $publishAt): Post
     {
         return $this->postRepository->update($id, [
             'is_published' => false,
@@ -716,7 +717,8 @@ class PostService
      */
     public function getScheduledPosts(): Collection
     {
-        return $this->postRepository->where('is_published', false)
+        return $this->postRepository->getModel()
+            ->where('is_published', false)
             ->where('published_at', '>', now())
             ->orderBy('published_at')
             ->get();

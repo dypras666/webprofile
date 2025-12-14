@@ -199,6 +199,15 @@ class PostController extends Controller
                     ['width' => 1200, 'height' => 630]
                 );
                 $data['featured_image'] = $media->file_path;
+                $data['featured_image_id'] = $media->id;
+            }
+            // Handle media picker selection (Media ID)
+            elseif ($request->filled('featured_image') && is_numeric($request->featured_image)) {
+                $media = \App\Models\Media::find($request->featured_image);
+                if ($media) {
+                    $data['featured_image'] = $media->file_path;
+                    $data['featured_image_id'] = $media->id;
+                }
             }
 
             $post = Post::create($data);
@@ -258,6 +267,15 @@ class PostController extends Controller
                     ['width' => 1200, 'height' => 630]
                 );
                 $data['featured_image'] = $media->file_path;
+                $data['featured_image_id'] = $media->id;
+            }
+            // Handle media picker selection (Media ID)
+            elseif ($request->filled('featured_image') && is_numeric($request->featured_image)) {
+                $media = \App\Models\Media::find($request->featured_image);
+                if ($media) {
+                    $data['featured_image'] = $media->file_path;
+                    $data['featured_image_id'] = $media->id;
+                }
             }
 
             $post->update($data);

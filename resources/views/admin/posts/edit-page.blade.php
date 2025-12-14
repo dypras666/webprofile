@@ -176,7 +176,7 @@
                                 
                                 <x-media-picker 
                                     name="featured_image" 
-                                    :value="old('featured_image', $post->featured_image_id)" 
+                                    :value="old('featured_image', $post->resolved_featured_image_id)" 
                                     label="" 
                                     accept="image/*" 
                                     :multiple="false" 
