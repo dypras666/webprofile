@@ -85,6 +85,17 @@
                         Advanced
                     </a>
                 </nav>
+
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">System</h4>
+                    <form action="{{ route('admin.settings.clear.cache') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear the system cache? This might slow down the site temporarily.');">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors group">
+                            <i class="fas fa-trash-alt w-5 mr-2 group-hover:text-red-800"></i>
+                            Clear System Cache
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Settings Content -->

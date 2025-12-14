@@ -319,25 +319,40 @@ class SiteSettingController extends Controller
     /**
      * Clear all settings cache
      */
-    public function clearCache()
+    /**
+     * Clear all settings cache
+     */
+    public function clearCache(Request $request)
     {
         try {
-            $groups = SiteSetting::distinct('group')->pluck('group');
+            // Clear system cache (View, Config, Route, Cache)
+            \Illuminate\Support\Facades\Artisan::call('optimize:clear');
 
+            // Clear specific settings cache
+            $groups = SiteSetting::distinct('group')->pluck('group');
             foreach ($groups as $group) {
                 Cache::forget("site_settings_{$group}");
             }
             Cache::forget('all_site_settings');
+            Cache::forget('site_settings_frontend');
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cache pengaturan berhasil dibersihkan.'
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cache sistem dan pengaturan berhasil dibersihkan.'
+                ]);
+            }
+
+            return back()->with('success', 'Cache sistem dan pengaturan berhasil dibersihkan.');
+
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal membersihkan cache: ' . $e->getMessage()
-            ], 500);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal membersihkan cache: ' . $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', 'Gagal membersihkan cache: ' . $e->getMessage());
         }
     }
 
