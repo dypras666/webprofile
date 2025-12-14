@@ -39,7 +39,36 @@ class AuthController extends Controller
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'password.required' => 'Password wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
         ]);
+
+        // Google Recaptcha Validation
+        $recaptchaSiteKey = \App\Models\SiteSetting::getValue('recaptcha_site_key');
+        $recaptchaSecretKey = \App\Models\SiteSetting::getValue('recaptcha_secret_key');
+
+        if (!empty($recaptchaSiteKey) && !empty($recaptchaSecretKey)) {
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+
+            if (empty($recaptchaResponse)) {
+                throw ValidationException::withMessages([
+                    'g-recaptcha-response' => 'Silakan selesaikan validasi Recaptcha.',
+                ]);
+            }
+
+            $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $recaptchaSecretKey,
+                'response' => $recaptchaResponse,
+                'remoteip' => $request->ip(),
+            ]);
+
+            $result = $response->json();
+
+            if (!$result['success']) {
+                throw ValidationException::withMessages([
+                    'g-recaptcha-response' => 'Validasi Recaptcha gagal. Silakan coba lagi.',
+                ]);
+            }
+        }
 
         $credentials = $request->only('email', 'password');
         $remember = $request->boolean('remember');
