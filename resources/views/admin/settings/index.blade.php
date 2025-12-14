@@ -163,24 +163,20 @@
 
                         <div class="space-y-6">
                             <!-- Enable Welcome Section -->
-                            <div class="flex items-center justify-between bg-blue-50 p-4 rounded-lg border border-blue-100">
-                                <div>
-                                    <label for="enable_welcome_section"
-                                        class="block text-sm font-medium text-gray-900">Enable Welcome Section</label>
-                                    <p class="text-sm text-gray-500">Show or hide the Chairman's welcome section on the
-                                        homepage.</p>
-                                </div>
-                                <div class="flex items-center">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <div class="flex items-start">
+                                <div class="flex h-5 items-center">
                                     <input type="hidden" name="enable_welcome_section" value="0">
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" name="enable_welcome_section" value="1" class="sr-only peer"
-                                            {{ ($settings['enable_welcome_section'] ?? '1') == '1' ? 'checked' : '' }}>
-                                        <div
-                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
+                                    <input id="enable_welcome_section" name="enable_welcome_section" type="checkbox" value="1"
+                                           class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                           {{ ($settings['enable_welcome_section'] ?? '1') == '1' ? 'checked' : '' }}>
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <label for="enable_welcome_section" class="font-medium text-gray-900">Enable Welcome Section</label>
+                                    <p class="text-gray-500">Show or hide the Chairman's welcome section on the homepage.</p>
                                 </div>
                             </div>
+                        </div>
 
                             <!-- Welcome Label -->
                             <div>

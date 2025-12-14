@@ -10,9 +10,9 @@
                     x-transition:leave-end="opacity-0">
 
                     {{-- Background Image --}}
-                    @if($post->featured_image)
+                    @if($post->featured_image_url)
                         <div class="absolute inset-0">
-                            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                            <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black bg-opacity-50"></div>
                         </div>
                     @else

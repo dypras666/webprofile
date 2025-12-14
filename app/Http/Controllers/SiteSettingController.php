@@ -29,20 +29,20 @@ class SiteSettingController extends Controller
     public function index()
     {
         $settingsGrouped = SiteSetting::all()->groupBy('group');
-        
+
         // Create a flat array for easy access in view
         $settings = [];
         foreach (SiteSetting::all() as $setting) {
             $value = $setting->value;
-            
+
             // Convert file paths to URLs for image settings
             if (in_array($setting->key, ['logo', 'favicon', 'hero_image', 'og_image']) && $value) {
                 $value = Storage::disk('public')->url($value);
             }
-            
+
             $settings[$setting->key] = $value;
         }
-        
+
         return view('admin.settings.index', compact('settings', 'settingsGrouped'));
     }
 
@@ -52,14 +52,14 @@ class SiteSettingController extends Controller
     public function edit($group)
     {
         $settings = SiteSetting::where('group', $group)->get();
-        
+
         if ($settings->isEmpty()) {
             abort(404, 'Setting group not found');
         }
 
         return view('admin.settings.edit', compact('settings', 'group'));
     }
- 
+
     public function updateAll(Request $request)
     {
         // Validate file uploads
@@ -88,21 +88,21 @@ class SiteSettingController extends Controller
 
             // Get all form data except CSRF token
             $formData = $request->except(['_token', '_method']);
-            
+
             // Log for debugging (REPLACE dd() with Log::info())
             Log::info('Settings update started', [
                 'form_keys' => array_keys($formData),
                 'has_files' => !empty($request->allFiles())
             ]);
-            
+
             foreach ($formData as $key => $value) {
                 $setting = SiteSetting::where('key', $key)->first();
-                
+
                 if ($setting) {
                     // Handle file uploads
                     if ($request->hasFile($key)) {
                         $file = $request->file($key);
-                        
+
                         // Log file upload attempt (INSTEAD OF dd())
                         Log::info("Processing file upload for: {$key}", [
                             'file_name' => $file->getClientOriginalName(),
@@ -110,23 +110,23 @@ class SiteSettingController extends Controller
                             'mime_type' => $file->getMimeType(),
                             'is_valid' => $file->isValid(),
                         ]);
-                        
+
                         // Delete old file if exists
                         if ($setting->value && Storage::disk('public')->exists($setting->value)) {
                             Storage::disk('public')->delete($setting->value);
                             Log::info("Deleted old file: {$setting->value}");
                         }
-                        
+
                         try {
                             if (in_array($key, ['logo', 'favicon', 'hero_image', 'og_image'])) {
                                 $uploadedMedia = $this->fileUploadService->uploadImage($file, 'settings');
                             } else {
                                 $uploadedMedia = $this->fileUploadService->upload($file, 'settings');
                             }
-                            
+
                             $value = $uploadedMedia->file_path;
                             Log::info("File uploaded successfully for {$key}: {$value}");
-                            
+
                         } catch (\Exception $e) {
                             Log::error("File upload failed for {$key}", [
                                 'error' => $e->getMessage(),
@@ -137,7 +137,7 @@ class SiteSettingController extends Controller
                     }
                     // Handle boolean values (checkboxes)
                     elseif ($setting->type === 'boolean') {
-                        $value = $request->has($key) ? true : false;
+                        $value = filter_var($request->input($key), FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
                     }
                     // Handle JSON arrays
                     elseif ($setting->type === 'json' && is_array($value)) {
@@ -160,17 +160,17 @@ class SiteSettingController extends Controller
             Log::info('Settings updated successfully');
 
             return redirect()->route('admin.settings.index')
-                        ->with('success', 'Settings updated successfully.');
-                        
+                ->with('success', 'Settings updated successfully.');
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Settings update failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return back()->withInput()
-                        ->with('error', 'Failed to update settings: ' . $e->getMessage());
+                ->with('error', 'Failed to update settings: ' . $e->getMessage());
         }
     }
 
@@ -183,21 +183,21 @@ class SiteSettingController extends Controller
             DB::beginTransaction();
 
             $settings = SiteSetting::where('group', $group)->get();
-            
+
             if ($settings->isEmpty()) {
                 abort(404, 'Setting group not found');
             }
 
             foreach ($settings as $setting) {
                 $value = $request->input($setting->key);
-                
+
                 // Handle file uploads
                 if ($request->hasFile($setting->key)) {
                     // Delete old file if exists
                     if ($setting->value && $setting->type === 'file') {
                         $this->fileUploadService->delete($setting->value);
                     }
-                    
+
                     // Upload new file
                     $file = $request->file($setting->key);
                     if (in_array($setting->key, ['logo', 'favicon', 'hero_image', 'og_image'])) {
@@ -207,12 +207,12 @@ class SiteSettingController extends Controller
                     }
                     $value = $uploadedMedia->file_path;
                 }
-                
+
                 // Handle boolean values
                 if ($setting->type === 'boolean') {
                     $value = $request->boolean($setting->key);
                 }
-                
+
                 // Handle array values (like social media links)
                 if ($setting->type === 'json' && is_array($value)) {
                     $value = json_encode($value);
@@ -228,11 +228,11 @@ class SiteSettingController extends Controller
             DB::commit();
 
             return redirect()->route('admin.settings.index')
-                           ->with('success', 'Pengaturan berhasil diperbarui.');
+                ->with('success', 'Pengaturan berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withInput()
-                        ->with('error', 'Gagal memperbarui pengaturan: ' . $e->getMessage());
+                ->with('error', 'Gagal memperbarui pengaturan: ' . $e->getMessage());
         }
     }
 
@@ -242,7 +242,7 @@ class SiteSettingController extends Controller
     public function getValue($key)
     {
         $setting = SiteSetting::where('key', $key)->first();
-        
+
         if (!$setting) {
             return response()->json(['error' => 'Setting not found'], 404);
         }
@@ -273,7 +273,7 @@ class SiteSettingController extends Controller
 
         try {
             $setting = SiteSetting::where('key', $request->key)->first();
-            
+
             if (!$setting) {
                 return response()->json([
                     'success' => false,
@@ -282,15 +282,15 @@ class SiteSettingController extends Controller
             }
 
             $value = $request->value;
-            
+
             // Handle boolean values
             if ($setting->type === 'boolean') {
                 $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
             }
-            
+
             // Handle numeric values
             if ($setting->type === 'number') {
-                $value = is_numeric($value) ? (int)$value : 0;
+                $value = is_numeric($value) ? (int) $value : 0;
             }
 
             $setting->update(['value' => $value]);
@@ -322,7 +322,7 @@ class SiteSettingController extends Controller
     {
         try {
             $groups = SiteSetting::distinct('group')->pluck('group');
-            
+
             foreach ($groups as $group) {
                 Cache::forget("site_settings_{$group}");
             }
@@ -348,7 +348,7 @@ class SiteSettingController extends Controller
         try {
             $settings = SiteSetting::all();
             $exportData = [];
-            
+
             foreach ($settings as $setting) {
                 $exportData[$setting->key] = [
                     'value' => $setting->value,
@@ -360,9 +360,9 @@ class SiteSettingController extends Controller
             }
 
             $filename = 'site_settings_' . date('Y-m-d_H-i-s') . '.json';
-            
+
             return response()->json($exportData)
-                           ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal mengekspor pengaturan: ' . $e->getMessage());
         }
@@ -390,7 +390,7 @@ class SiteSettingController extends Controller
 
             foreach ($importData as $key => $data) {
                 $setting = SiteSetting::where('key', $key)->first();
-                
+
                 if ($setting) {
                     $setting->update([
                         'value' => $data['value'] ?? $setting->value,
@@ -421,7 +421,7 @@ class SiteSettingController extends Controller
             DB::commit();
 
             return redirect()->route('admin.settings.index')
-                           ->with('success', 'Pengaturan berhasil diimpor.');
+                ->with('success', 'Pengaturan berhasil diimpor.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Gagal mengimpor pengaturan: ' . $e->getMessage());

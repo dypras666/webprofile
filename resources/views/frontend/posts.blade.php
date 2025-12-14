@@ -196,18 +196,26 @@
     <div class="container mx-auto px-4 py-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {{-- Category Filter --}}
-            <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar mask-linear-fade flex-1">
-                <span class="text-gray-500 text-sm font-medium mr-2 whitespace-nowrap">Categories:</span>
-                <div class="flex space-x-2">
+            <div class="flex-1 overflow-x-auto pb-2 md:pb-0 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+                <div class="flex items-center space-x-3">
                     <a href="{{ route('frontend.posts') }}" 
-                       class="px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap {{ !request('category') ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-600 ring-offset-1' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-600 border border-gray-200' }}">
+                       class="px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap border shadow-sm
+                       {{ !request('category') 
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white border-transparent shadow-blue-500/30 ring-2 ring-blue-500/20' 
+                          : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400 hover:text-blue-600 hover:shadow-md hover:-translate-y-0.5' }}">
                         All
                     </a>
                     @foreach($categories as $cat)
                         <a href="{{ route('frontend.posts', ['category' => $cat->slug]) }}" 
-                           class="px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap flex items-center {{ request('category') == $cat->slug ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-600 ring-offset-1' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-600 border border-gray-200' }}">
+                           class="group px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap border shadow-sm flex items-center
+                           {{ request('category') == $cat->slug 
+                              ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white border-transparent shadow-blue-500/30 ring-2 ring-blue-500/20' 
+                              : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400 hover:text-blue-600 hover:shadow-md hover:-translate-y-0.5' }}">
                             {{ $cat->name }}
-                            <span class="ml-2 text-xs {{ request('category') == $cat->slug ? 'text-blue-100' : 'text-gray-400' }}">
+                            <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-bold transition-colors
+                                {{ request('category') == $cat->slug 
+                                   ? 'bg-white/20 text-white' 
+                                   : 'bg-gray-100 text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-600' }}">
                                 {{ $cat->posts_count }}
                             </span>
                         </a>
