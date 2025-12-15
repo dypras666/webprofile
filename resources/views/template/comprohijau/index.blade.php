@@ -48,7 +48,7 @@
                     {{-- Only First Slider Item as Main Highlight --}}
                     @php $mainPost = $sliderPosts->first(); @endphp
                     <div class="relative rounded-2xl overflow-hidden shadow-lg group aspect-w-16 aspect-h-10 md:aspect-h-9">
-                        <img src="{{ $mainPost->featured_image ? Storage::url($mainPost->featured_image) : asset('images/default-hero.jpg') }}"
+                        <img src="{{ $mainPost->featured_image_url ? $mainPost->featured_image_url : asset('images/default-hero.jpg') }}"
                              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-secondary/90 via-secondary/20 to-transparent"></div>
 
@@ -76,7 +76,7 @@
                         <div class="grid grid-cols-2 gap-4 mt-4">
                             @foreach($sliderPosts->skip(1)->take(2) as $subPost)
                                 <article class="relative rounded-xl overflow-hidden group aspect-[16/9]">
-                                     <img src="{{ $subPost->featured_image ? Storage::url($subPost->featured_image) : asset('images/default-post.jpg') }}"
+                                     <img src="{{ $subPost->featured_image_url ? $subPost->featured_image_url : asset('images/default-post.jpg') }}"
                                           class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-secondary/90 to-transparent"></div>
                                     <div class="absolute bottom-0 p-4">
@@ -183,7 +183,7 @@
                     <article class="group">
                         <a href="{{ route('frontend.post', $post->slug) }}"
                             class="block relative aspect-video rounded-xl overflow-hidden mb-3">
-                            <img src="{{ $post->featured_image ? Storage::url($post->featured_image) : asset('images/default-post.jpg') }}"
+                            <img src="{{ $post->featured_image_url ? $post->featured_image_url : asset('images/default-post.jpg') }}"
                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                             <div class="absolute bottom-2 left-2">
                                 <span class="bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
