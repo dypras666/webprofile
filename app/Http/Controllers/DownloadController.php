@@ -141,6 +141,10 @@ class DownloadController extends Controller
 
         // Validate password if required (for password-protected files)
         if ($download->password) {
+            if (!$request->has('password')) {
+                return redirect()->route('frontend.downloads.password', $download);
+            }
+
             $request->validate([
                 'password' => 'required|string'
             ]);

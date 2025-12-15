@@ -36,10 +36,11 @@
 
             <form action="{{ route('frontend.downloads.download', $download) }}" method="POST">
                 @csrf
-                <div class="mb-6">
-                    <input type="password" name="password" required autofocus
-                        class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors outline-none text-center text-lg tracking-widest placeholder:tracking-normal"
-                        placeholder="Kata Sandi">
+                <div class="mb-6 text-left">
+                    <label for="password" class="block text-sm font-bold text-gray-700 mb-2">Password Dokumen</label>
+                    <input type="password" name="password" id="password" required autofocus
+                        class="w-full px-4 py-3 rounded-lg bg-white border-2 border-gray-300 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-gray-900 text-lg shadow-sm"
+                        placeholder="Masukkan Kata Sandi...">
                 </div>
 
                 <div class="flex gap-3">
