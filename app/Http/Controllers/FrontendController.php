@@ -301,7 +301,7 @@ class FrontendController extends Controller
     public function search(Request $request)
     {
         $request->validate([
-            'q' => 'required|string|min:3|max:255'
+            'q' => 'required|string|min:1|max:255'
         ]);
 
         $query = $request->q;

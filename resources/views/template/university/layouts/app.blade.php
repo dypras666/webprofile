@@ -85,7 +85,7 @@
     @stack('head')
 </head>
 
-<body class="font-sans antialiased text-gray-800 bg-gray-50 flex flex-col min-h-screen">
+<body class="font-sans antialiased text-gray-800 bg-gray-50 flex flex-col min-h-screen" x-data="{ searchOpen: false }">
 
     {{-- Header (University Style) --}}
     <header class="fixed w-full top-0 z-50 transition-all duration-300">
@@ -191,9 +191,9 @@
 
                         {{-- Search Icon --}}
                         <div class="h-24 flex items-center px-4 hover:bg-white/5 border-t-4 border-transparent hover:border-cyan-500 transition-colors cursor-pointer relative group z-30">
-                            <a href="{{ route('frontend.search') }}" class="flex items-center justify-center w-full h-full text-white hover:text-cyan-300 relative z-50">
+                            <button @click.prevent="searchOpen = true" class="flex items-center justify-center w-full h-full text-white hover:text-cyan-300 relative z-50 focus:outline-none">
                                 <i class="fas fa-search text-lg"></i>
-                            </a>
+                            </button>
                         </div>
                     </nav>
 
@@ -531,6 +531,35 @@
 
     <script src="{{ \App\Helpers\TemplateHelper::asset('js/script.js') }}"></script>
     @stack('scripts')
+    {{-- Search Modal --}}
+    <div x-show="searchOpen" x-cloak 
+         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm transition-opacity duration-300"
+         x-transition:enter="ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+         
+         <div class="container mx-auto px-4 relative" @click.away="searchOpen = false">
+            <button @click="searchOpen = false" class="absolute -top-20 right-4 text-white hover:text-cyan-300 text-4xl focus:outline-none">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-8 font-heading">Search</h2>
+                <form action="{{ route('frontend.search') }}" method="GET" class="relative">
+                    <input type="text" name="q" placeholder="What are you looking for?" 
+                           class="w-full bg-transparent border-b-2 border-gray-700 text-white text-2xl md:text-3xl py-4 focus:outline-none focus:border-cyan-500 transition-colors placeholder-gray-600 font-light"
+                           autofocus x-trap="searchOpen">
+                    <button type="submit" class="absolute right-0 top-1/2 -translate-y-1/2 text-cyan-500 hover:text-white text-3xl transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                <p class="text-gray-500 mt-6 text-sm">Type keywords and hit enter to search for courses, news, or pages.</p>
+            </div>
+         </div>
+    </div>
 </body>
 
 </html>
