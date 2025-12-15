@@ -10,6 +10,8 @@ use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
+use App\Helpers\TemplateHelper;
+
 class FrontendController extends Controller
 {
     /**
@@ -97,7 +99,7 @@ class FrontendController extends Controller
 
 
 
-        return view('frontend.index', compact(
+        return view(TemplateHelper::view('index'), compact(
             'sliderPosts',
             'featuredPosts',
             'latestPosts',
@@ -150,7 +152,7 @@ class FrontendController extends Controller
         $categories = Category::active()->withCount('posts')->ordered()->get();
         $popularPosts = Post::published()->orderBy('views', 'desc')->limit(5)->get();
 
-        return view('frontend.posts', compact('posts', 'categories', 'popularPosts'));
+        return view(TemplateHelper::view('posts'), compact('posts', 'categories', 'popularPosts'));
     }
 
     /**
@@ -187,7 +189,7 @@ class FrontendController extends Controller
             ->orderByRaw('COALESCE(published_at, created_at) ASC')
             ->first();
 
-        return view('frontend.post', compact(
+        return view(TemplateHelper::view('post'), compact(
             'post',
             'relatedPosts',
             'previousPost',
@@ -213,7 +215,7 @@ class FrontendController extends Controller
         $categories = Category::active()->withCount('posts')->ordered()->get();
         $popularPosts = Post::published()->orderBy('views', 'desc')->limit(5)->get();
 
-        return view('frontend.posts', compact(
+        return view(TemplateHelper::view('posts'), compact(
             'category',
             'posts',
             'categories',
@@ -241,7 +243,7 @@ class FrontendController extends Controller
 
         $categories = Category::active()->withCount('posts')->ordered()->get();
 
-        return view('frontend.gallery', compact('images', 'categories'));
+        return view(TemplateHelper::view('gallery'), compact('images', 'categories'));
     }
 
     /**
@@ -249,10 +251,16 @@ class FrontendController extends Controller
      */
     public function about()
     {
-        $aboutContent = SiteSetting::getValue('about_content', '');
-        $teamMembers = []; // You can add team members data here if needed
+        // Fetch dynamic content from Pages (Posts with specific slugs)
+        // Using 'first()' to get a single object or null
+        $aboutPost = Post::where('slug', 'about')->orWhere('slug', 'tentang-kami')->published()->first();
+        $visiPost = Post::where('slug', 'visi')->published()->first();
+        $misiPost = Post::where('slug', 'misi')->published()->first();
 
-        return view('frontend.about', compact('aboutContent', 'teamMembers'));
+        // Fallback or additional data
+        $teamMembers = [];
+
+        return view(TemplateHelper::view('about'), compact('aboutPost', 'visiPost', 'misiPost', 'teamMembers'));
     }
 
     /**
@@ -260,7 +268,7 @@ class FrontendController extends Controller
      */
     public function contact()
     {
-        return view('frontend.contact');
+        return view(TemplateHelper::view('contact'));
     }
 
     /**
@@ -311,7 +319,7 @@ class FrontendController extends Controller
         $categories = Category::active()->withCount('posts')->ordered()->get();
         $popularPosts = Post::published()->orderBy('views', 'desc')->limit(5)->get();
 
-        return view('frontend.search', compact('posts', 'categories', 'popularPosts', 'query'));
+        return view(TemplateHelper::view('search'), compact('posts', 'categories', 'popularPosts', 'query'));
     }
 
     /**

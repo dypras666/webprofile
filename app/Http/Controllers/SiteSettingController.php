@@ -43,7 +43,26 @@ class SiteSettingController extends Controller
             $settings[$setting->key] = $value;
         }
 
-        return view('admin.settings.index', compact('settings', 'settingsGrouped'));
+        // Scan for templates
+        $templates = [];
+        $templatePath = resource_path('views/template');
+        if (is_dir($templatePath)) {
+            $dirs = scandir($templatePath);
+            foreach ($dirs as $dir) {
+                if ($dir !== '.' && $dir !== '..' && is_dir($templatePath . '/' . $dir)) {
+                    $templates[] = [
+                        'name' => $dir,
+                        'label' => ucwords(str_replace('_', ' ', $dir)),
+                        'path' => $dir,
+                        'preview' => file_exists(public_path("template/{$dir}/show.png"))
+                            ? asset("template/{$dir}/show.png")
+                            : asset('images/default-template.png')
+                    ];
+                }
+            }
+        }
+
+        return view('admin.settings.index', compact('settings', 'settingsGrouped', 'templates'));
     }
 
     /**

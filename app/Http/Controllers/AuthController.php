@@ -46,7 +46,7 @@ class AuthController extends Controller
         $recaptchaSiteKey = \App\Models\SiteSetting::getValue('recaptcha_site_key');
         $recaptchaSecretKey = \App\Models\SiteSetting::getValue('recaptcha_secret_key');
 
-        if (!empty($recaptchaSiteKey) && !empty($recaptchaSecretKey)) {
+        if (!app()->isLocal() && !in_array($request->ip(), ['127.0.0.1', '::1']) && !empty($recaptchaSiteKey) && !empty($recaptchaSecretKey)) {
             $recaptchaResponse = $request->input('g-recaptcha-response');
 
             if (empty($recaptchaResponse)) {

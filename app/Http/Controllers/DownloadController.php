@@ -44,7 +44,7 @@ class DownloadController extends Controller
         $downloads = $query->with('user')->paginate(12);
         $categories = Download::getCategories();
 
-        return view('frontend.downloads.index', compact('downloads', 'categories'));
+        return view(\App\Helpers\TemplateHelper::view('downloads.index'), compact('downloads', 'categories'));
     }
 
     /**
@@ -110,7 +110,8 @@ class DownloadController extends Controller
             abort(404);
         }
 
-        return view('frontend.downloads.show', compact('download'));
+        \Illuminate\Support\Facades\Log::info('Download Show View Resolution: ' . \App\Helpers\TemplateHelper::view('downloads.show'));
+        return view(\App\Helpers\TemplateHelper::view('downloads.show'), compact('download'));
     }
 
     /**
@@ -178,7 +179,7 @@ class DownloadController extends Controller
             abort(404);
         }
 
-        return view('frontend.downloads.password', compact('download'));
+        return view(\App\Helpers\TemplateHelper::view('downloads.password'), compact('download'));
     }
 
     /**

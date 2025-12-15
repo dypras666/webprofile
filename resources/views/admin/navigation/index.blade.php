@@ -134,6 +134,11 @@
             <div x-show="activeTab === 'quicklink'" class="menu-container-tab" data-position="quicklink"
                 style="display: none;">
                 <div id="sortable-menu-quicklink" class="space-y-2 sortable-root">
+                    <div class="p-2 bg-yellow-100 text-yellow-800 text-xs rounded mb-2">
+                        Debug: Total Quicklinks filtered in View: {{ $menus->where('position', 'quicklink')->count() }}
+                        <br>
+                        Total Menus: {{ $menus->count() }}
+                    </div>
                     @foreach($menus->where('position', 'quicklink') as $menu)
                         @include('admin.navigation.partials.menu-item', ['menu' => $menu])
                     @endforeach

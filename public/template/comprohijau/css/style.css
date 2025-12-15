@@ -1,0 +1,118 @@
+/* Custom Styles for ComproHijau */
+
+/* Aspect Ratio Fallback */
+.aspect-w-16 {
+    position: relative;
+    padding-bottom: 56.25%;
+}
+
+.aspect-w-16>* {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.aspect-square {
+    position: relative;
+    padding-bottom: 100%;
+}
+
+.aspect-square>* {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Line Clamp fallbacks just in case, though Tailwind has line-clamp plugin usually */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    /* Standard */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    /* Standard */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    animation: marquee 30s linear infinite;
+}
+
+.hover\:pause:hover {
+    animation-play-state: paused;
+}
+
+/* Numbered Badges */
+.counter-badge {
+    position: relative;
+    counter-increment: posts-counter;
+}
+
+.counter-badge::before {
+    content: counter(posts-counter);
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 30px;
+    height: 30px;
+    background-color: #ef4444;
+    /* red-500 */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.posts-counter-reset {
+    counter-reset: posts-counter;
+}
+
+/* Navigation Hover Line */
+.nav-link-hover {
+    position: relative;
+}
+
+.nav-link-hover::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: currentColor;
+    transition: width 0.3s ease;
+}
+
+.nav-link-hover:hover::after {
+    width: 100%;
+}

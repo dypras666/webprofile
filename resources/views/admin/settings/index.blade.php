@@ -247,8 +247,51 @@
                     <!-- Appearance Settings -->
                     <div id="appearance-section" class="settings-section">
                         <h2 class="text-xl font-semibold text-gray-900 mb-6">Appearance Settings</h2>
-
+                        
                         <div class="space-y-6">
+                            <!-- Template Selection -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Active Template</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                    <!-- Default Template -->
+                                    <div class="relative group cursor-pointer" onclick="document.getElementById('template_default').click()">
+                                        <div class="absolute top-3 right-3 z-10">
+                                            <input type="radio" name="active_template" id="template_default" value="default" 
+                                                class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500" 
+                                                {{ ($settings['active_template'] ?? 'default') === 'default' ? 'checked' : '' }}>
+                                        </div>
+                                        <label for="template_default" class="block border-4 rounded-xl p-2 group-hover:border-blue-300 peer-checked:border-blue-600 transition-all border-gray-200">
+                                            <div class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg mb-3 overflow-hidden shadow-sm">
+                                                <img src="{{ asset('images/default-template.png') }}" alt="Default" class="object-cover w-full h-full">
+                                            </div>
+                                            <div class="flex items-center justify-between px-1">
+                                                <span class="font-bold text-gray-800">Default Theme</span>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Available Templates -->
+                                    @foreach($templates ?? [] as $template)
+                                    <div class="relative group cursor-pointer" onclick="document.getElementById('template_{{ $template['name'] }}').click()">
+                                        <div class="absolute top-3 right-3 z-10">
+                                            <input type="radio" name="active_template" id="template_{{ $template['name'] }}" value="{{ $template['name'] }}" 
+                                                class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500" 
+                                                {{ ($settings['active_template'] ?? 'default') === $template['name'] ? 'checked' : '' }}>
+                                        </div>
+                                        <label for="template_{{ $template['name'] }}" class="block border-4 rounded-xl p-2 group-hover:border-blue-300 peer-checked:border-blue-600 transition-all border-gray-200">
+                                            <div class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg mb-3 overflow-hidden shadow-sm">
+                                                <img src="{{ $template['preview'] }}" alt="{{ $template['label'] }}" class="object-cover w-full h-full">
+                                            </div>
+                                            <div class="flex items-center justify-between px-1">
+                                                <span class="font-bold text-gray-800">{{ $template['label'] }}</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            
+                            <hr class="border-gray-200">
                             <!-- Logo -->
                             <div>
                                 <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">Site Logo</label>

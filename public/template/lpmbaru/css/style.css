@@ -1,0 +1,12 @@
+/* Custom Styles for LPM Baru Template */
+
+/* Add any custom overrides here */
+.text-justify {
+    text-align: justify;
+}
+
+/* Example custom button style */
+.btn-primary-custom {
+    background-color: #3b82f6;
+    color: white;
+}
