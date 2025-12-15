@@ -217,10 +217,10 @@
                 <div class="bg-white border border-gray-100 rounded-xl p-8">
                     <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12">
                         @foreach($partners as $partner)
-                            <a href="{{ $partner->url ?? '#' }}" target="_blank"
+                            <a href="{{ $partner->meta_description ?? '#' }}" target="_blank"
                                 class="block opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0 group"
-                                title="{{ $partner->name }}">
-                                <img src="{{ Storage::url($partner->image) }}" alt="{{ $partner->name }}"
+                                title="{{ $partner->title }}">
+                                <img src="{{ $partner->featured_image_url }}" alt="{{ $partner->title }}"
                                     class="h-12 md:h-20 w-auto object-contain transition-transform group-hover:scale-110">
                             </a>
                         @endforeach
