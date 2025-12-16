@@ -207,9 +207,9 @@
                         <!-- Custom URL -->
                         <div id="custom-url-field">
                             <label class="block text-sm font-medium text-gray-700 mb-1">URL</label>
-                            <input type="url" id="menu-url" name="url"
+                            <input type="text" id="menu-url" name="url"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="https://example.com">
+                                placeholder="https://example.com or #">
                         </div>
 
                         <!-- Reference Selection -->

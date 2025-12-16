@@ -58,6 +58,9 @@
                                                     {{ $post->title }}
                                                 </a>
                                             </h2>
+                                            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                                                {{ $post->excerpt ?? Str::limit(strip_tags($post->content), 100) }}
+                                            </p>
                                             <a href="{{ route('frontend.post', $post->slug) }}"
                                                 class="text-cyan-600 font-bold text-xs uppercase tracking-wider hover:text-[#1e3a8a] transition-colors">
                                                 Read More <i class="fas fa-arrow-right ml-1"></i>

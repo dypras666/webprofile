@@ -166,7 +166,9 @@ class AdminPostController extends BaseAdminController
 
             if ($deleted) {
                 $this->logActivity('post_deleted', 'Deleted post: ' . $title, $id);
-                return back()->with('success', 'Post deleted successfully.');
+                // Redirect to index with type parameter to preserve filter
+                return redirect()->route('admin.posts.index', ['type' => $post->type])
+                    ->with('success', 'Post deleted successfully.');
             }
 
             return back()->with('error', 'Failed to delete post.');

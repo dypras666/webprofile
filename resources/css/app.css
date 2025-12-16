@@ -44,6 +44,31 @@
         @apply text-blue-600 hover:text-blue-800 underline;
     }
 
+    /* Table Styles for Prose */
+    .prose table {
+        @apply min-w-full border-collapse border border-gray-300 mb-6 mt-4;
+    }
+
+    .prose thead {
+        @apply bg-gray-100;
+    }
+
+    .prose th {
+        @apply border border-gray-300 px-4 py-3 text-left font-bold text-gray-900 bg-gray-50;
+    }
+
+    .prose td {
+        @apply border border-gray-300 px-4 py-2 text-gray-700;
+    }
+
+    .prose tr:nth-child(even) {
+        @apply bg-gray-50/50;
+    }
+
+    .prose tr:hover {
+        @apply bg-gray-50;
+    }
+
     /* Button Styles */
     .btn {
         @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;

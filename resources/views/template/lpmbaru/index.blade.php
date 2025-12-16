@@ -34,6 +34,9 @@
                                 <span><i class="far fa-calendar-alt mr-2"></i> {{ $post->created_at->format('d M Y') }}</span>
                                 <span><i class="far fa-user mr-2"></i> {{ $post->user->name ?? 'Admin' }}</span>
                             </div>
+                            <p class="text-gray-100 text-sm md:text-base mt-4 line-clamp-2 max-w-2xl drop-shadow-md">
+                                {{ $post->excerpt ?? Str::limit(strip_tags($post->content), 150) }}
+                            </p>
                         </div>
                     </div>
                 </div>

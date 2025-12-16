@@ -1,7 +1,7 @@
 @props(['post', 'comments'])
 
 @php
-    $commentsEnabled = \App\Models\SiteSetting::getValue('comments_enabled') == '1';
+    $commentsEnabled = \App\Models\SiteSetting::getValue('enable_comments') == '1';
     $recaptchaSiteKey = \App\Models\SiteSetting::getValue('recaptcha_site_key');
 @endphp
 
