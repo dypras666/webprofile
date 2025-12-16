@@ -130,7 +130,11 @@
                             <article class="counter-badge relative pl-6 group">
                                 <div class="flex gap-3 items-start">
                                     <div class="flex-grow">
-                                        <a href="{{ route('frontend.category', $post->category->slug) }}" class="text-[10px] uppercase font-bold text-secondary mb-1 block">{{ $post->category->name }}</a>
+                                        @if($post->category)
+                                            <a href="{{ route('frontend.category', $post->category->slug) }}" class="text-[10px] uppercase font-bold text-secondary mb-1 block">{{ $post->category->name }}</a>
+                                        @else
+                                            <span class="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Uncategorized</span>
+                                        @endif
                                         <h4 class="font-bold text-sm leading-snug text-gray-800 group-hover:text-primary transition-colors line-clamp-2">
                                             <a href="{{ route('frontend.post', $post->slug) }}">{{ $post->title }}</a>
                                         </h4>

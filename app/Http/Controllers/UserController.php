@@ -36,8 +36,8 @@ class UserController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -106,11 +106,11 @@ class UserController extends Controller
             DB::commit();
 
             return redirect()->route('admin.users.index')
-                           ->with('success', 'User berhasil dibuat.');
+                ->with('success', 'User berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withInput()
-                        ->with('error', 'Gagal membuat user: ' . $e->getMessage());
+                ->with('error', 'Gagal membuat user: ' . $e->getMessage());
         }
     }
 
@@ -119,6 +119,13 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        if (request()->wantsJson() || request()->ajax()) {
+            $user->load('roles');
+            $userData = $user->toArray();
+            $userData['role'] = $user->roles->first()?->name ?? 'user';
+            return response()->json($userData);
+        }
+
         $user->load('roles', 'permissions');
         return view('admin.users.show', compact('user'));
     }
@@ -156,7 +163,7 @@ class UserController extends Controller
                 if ($user->profile_photo) {
                     $this->fileUploadService->delete($user->profile_photo);
                 }
-                
+
                 $uploadResult = $this->fileUploadService->uploadImage(
                     $request->file('profile_photo'),
                     'profiles',
@@ -176,11 +183,11 @@ class UserController extends Controller
             DB::commit();
 
             return redirect()->route('admin.users.index')
-                           ->with('success', 'User berhasil diperbarui.');
+                ->with('success', 'User berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withInput()
-                        ->with('error', 'Gagal memperbarui user: ' . $e->getMessage());
+                ->with('error', 'Gagal memperbarui user: ' . $e->getMessage());
         }
     }
 
@@ -208,7 +215,7 @@ class UserController extends Controller
             DB::commit();
 
             return redirect()->route('admin.users.index')
-                           ->with('success', 'User berhasil dihapus.');
+                ->with('success', 'User berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Gagal menghapus user: ' . $e->getMessage());
@@ -230,9 +237,9 @@ class UserController extends Controller
 
         try {
             $user->update(['is_active' => !$user->is_active]);
-            
+
             $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
-            
+
             return response()->json([
                 'success' => true,
                 'message' => "User berhasil {$status}.",
@@ -272,7 +279,7 @@ class UserController extends Controller
             DB::beginTransaction();
 
             $users = User::whereIn('id', $userIds)->get();
-            
+
             foreach ($users as $user) {
                 if ($user->profile_photo) {
                     $this->fileUploadService->delete($user->profile_photo);

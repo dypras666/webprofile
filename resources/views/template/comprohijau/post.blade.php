@@ -14,8 +14,12 @@
             <nav class="text-sm text-gray-500 mb-6 flex items-center gap-2 overflow-x-auto whitespace-nowrap">
                 <a href="{{ route('frontend.index') }}" class="hover:text-primary">Beranda</a>
                 <span>/</span>
-                <a href="{{ route('frontend.category', $post->category->slug) }}"
-                    class="hover:text-primary">{{ $post->category->name }}</a>
+                @if($post->category)
+                    <a href="{{ route('frontend.category', $post->category->slug) }}"
+                        class="hover:text-primary">{{ $post->category->name }}</a>
+                @else
+                    <span class="text-gray-500">Uncategorized</span>
+                @endif
                 <span>/</span>
                 <span class="text-gray-900 truncate max-w-[200px]">{{ $post->title }}</span>
             </nav>
