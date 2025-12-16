@@ -143,7 +143,7 @@
                     <a href="{{ route('frontend.index') }}" class="flex items-center gap-3 shrink-0 mr-8">
                         @if(\App\Models\SiteSetting::getValue('logo'))
                             <img src="{{ Storage::url(\App\Models\SiteSetting::getValue('logo')) }}" alt="Logo"
-                                class="h-10 md:h-12 w-auto bg-white/10 rounded p-1">
+                                class="w-auto bg-white/10 rounded p-1" style="height: {{ \App\Models\SiteSetting::getValue('logo_height', '50') }}px">
                         @endif
                         
                     </a>

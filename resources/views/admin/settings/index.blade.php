@@ -304,12 +304,21 @@
                                 @if(isset($settings['logo']) && $settings['logo'])
                                     <div class="mb-3">
                                         <img src="{{ $settings['logo'] }}" alt="Current Logo"
-                                            class="logo-preview border border-gray-300 rounded">
+                                            class="logo-preview border border-gray-300 rounded" style="height: {{ $settings['logo_height'] ?? '50' }}px">
                                     </div>
                                 @endif
                                 <input type="file" id="logo" name="logo" accept="image/*"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <p class="text-xs text-gray-500 mt-1">Recommended size: 200x100px, PNG or JPG format</p>
+                            </div>
+
+                            <!-- Logo Height -->
+                            <div>
+                                <label for="logo_height" class="block text-sm font-medium text-gray-700 mb-2">Logo Height (px)</label>
+                                <input type="number" id="logo_height" name="logo_height"
+                                    value="{{ $settings['logo_height'] ?? '50' }}" min="20" max="200"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <p class="text-xs text-gray-500 mt-1">Adjust the height of the logo in the header. Default is 50px.</p>
                             </div>
 
                             <!-- Favicon -->

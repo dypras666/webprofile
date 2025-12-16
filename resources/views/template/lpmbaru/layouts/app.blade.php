@@ -113,7 +113,8 @@
                 <a href="{{ route('frontend.index') }}" class="flex items-center gap-2 group">
                     @if(\App\Models\SiteSetting::getValue('logo'))
                         <img src="{{ Storage::url(\App\Models\SiteSetting::getValue('logo')) }}" alt="Logo"
-                            class="h-10 md:h-12 w-auto transition-transform group-hover:scale-105">
+                            class="w-auto transition-transform group-hover:scale-105"
+                            style="height: {{ \App\Models\SiteSetting::getValue('logo_height', '50') }}px">
                     @endif
                     <div class="flex flex-col">
                         <span
