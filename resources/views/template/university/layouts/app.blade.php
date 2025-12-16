@@ -37,7 +37,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    
+    {{-- Swiper CSS --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     {{-- Tailwind CSS & Plugins --}}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -129,7 +133,7 @@
                     <a href="{{ route('frontend.index') }}" class="flex items-center gap-3 shrink-0 mr-12 group">
                         @if(\App\Models\SiteSetting::getValue('logo'))
                             <img src="{{ Storage::url(\App\Models\SiteSetting::getValue('logo')) }}" alt="Logo"
-                                class="h-12 w-auto brightness-0 invert">
+                                class="w-[200px] h-[50px] object-contain">
                         @else
                             <div class="flex flex-col">
                                 <span class="text-2xl font-heading font-bold leading-none tracking-tight">University</span>
@@ -204,7 +208,7 @@
 
     {{-- Main Content --}}
     {{-- Adjusted padding for 3-tier fixed header (approx 150px) --}}
-    <main class="flex-grow pt-[140px] md:pt-[160px]">
+    <main class="flex-grow pt-[125px] md:pt-[135px]">
         @yield('content')
     </main>
 
@@ -329,7 +333,7 @@
                     <div>
                         <h4 class="text-white font-bold uppercase tracking-wider mb-6 text-base">Recent Posts</h4>
                         <ul class="space-y-3">
-                            @php $footerPosts = \App\Models\Post::published()->latest()->take(3)->get(); @endphp
+@php $footerPosts = \App\Models\Post::where('type', 'berita')->published()->latest()->take(3)->get(); @endphp
                             @foreach($footerPosts as $post)
                                 <li>
                                     <a href="{{ route('frontend.post', $post->slug) }}"
@@ -352,10 +356,10 @@
                                         class="hover:text-white transition-colors">{{ $menu->title }}</a></li>
                             @endforeach
                             @if($footerMenus->isEmpty())
-                                <li><a href="#" class="hover:text-white transition-colors">Our Campus</a></li>
-                                <li><a href="#" class="hover:text-white transition-colors">Research</a></li>
-                                <li><a href="#" class="hover:text-white transition-colors">Projects</a></li>
-                                <li><a href="#" class="hover:text-white transition-colors">Job Opportunities</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">SIAKAD</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">Pendaftaran</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">Biro</a></li>
+                                <li><a href="#" class="hover:text-white transition-colors">Hubungi Kami</a></li>
                             @endif
                         </ul>
                     </div>
@@ -530,8 +534,71 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="{{ \App\Helpers\TemplateHelper::asset('js/script.js') }}"></script>
+    
+    {{-- Swiper JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     @stack('scripts')
     {{-- Search Modal --}}
+    @stack('modals')
+
+    {{-- Ads Popup --}}
+    @if(isset($adsPopup) && $adsPopup)
+        <div x-data="{ showAd: false }" 
+             x-init="setTimeout(() => { 
+                if (!sessionStorage.getItem('ad_popup_shown_{{ $adsPopup->id }}')) {
+                    showAd = true; 
+                    sessionStorage.setItem('ad_popup_shown_{{ $adsPopup->id }}', 'true');
+                }
+             }, 1000)" 
+             x-show="showAd"
+             class="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+             x-cloak
+             style="display: none;">
+             
+            <div class="relative max-w-lg w-full bg-white rounded-lg shadow-2xl overflow-hidden" @click.away="showAd = false">
+                <button @click="showAd = false" class="absolute top-2 right-2 text-white bg-black/50 hover:bg-black rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <a href="{{ $adsPopup->excerpt ?? '#' }}" target="{{ $adsPopup->excerpt ? '_blank' : '_self' }}">
+                    <img src="{{ Storage::url($adsPopup->featured_image) }}" alt="{{ $adsPopup->title }}" class="w-full h-auto">
+                </a>
+            </div>
+        </div>
+    @endif
+    
+    {{-- Footer Ad --}}
+    @if(isset($adsFooter) && $adsFooter)
+        <div x-data="{ 
+                minimized: false,
+                init() {
+                    setTimeout(() => {
+                        this.minimized = true;
+                    }, 5000); // Auto hide after 5 seconds
+                }
+             }" 
+             class="fixed bottom-0 left-0 right-0 z-50 transition-transform duration-500 ease-in-out"
+             :class="minimized ? 'translate-y-full' : 'translate-y-0'">
+             
+             {{-- Ad Container --}}
+             <div class="relative bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-2 text-center group">
+                
+                {{-- Toggle Button (Visible when minimized or hovered) --}}
+                <button @click="minimized = !minimized" 
+                        class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white text-gray-700 px-4 py-1 rounded-t-lg shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] text-xs font-bold uppercase flex items-center gap-2 hover:bg-gray-50 transition-colors">
+                    <span x-text="minimized ? 'Show Ad' : 'Hide Ad'"></span>
+                    <i class="fas" :class="minimized ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+
+                <div class="container mx-auto relative">
+                    <a href="{{ $adsFooter->excerpt ?? '#' }}" target="{{ $adsFooter->excerpt ? '_blank' : '_self' }}" class="block">
+                        <img src="{{ Storage::url($adsFooter->featured_image) }}" alt="{{ $adsFooter->title }}" class="mx-auto h-20 md:h-24 object-contain">
+                    </a>
+                </div>
+             </div>
+        </div>
+    @endif
+
     <div x-show="searchOpen" x-cloak 
          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm transition-opacity duration-300"
          x-transition:enter="ease-out duration-300"

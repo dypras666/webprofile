@@ -42,7 +42,7 @@ class FrontendController extends Controller
             ->where('type', 'berita')
             ->with(['category', 'user'])
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
-            ->limit(8)
+            ->limit(6)
             ->get();
 
         // Get popular posts (by views)
@@ -98,6 +98,31 @@ class FrontendController extends Controller
             ->first();
 
 
+        // Get latest events
+        $events = Post::published()
+            ->where('type', 'event')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->limit(7)
+            ->get();
+
+        // Get facilities
+        $facilities = Post::published()
+            ->where('type', 'fasilitas')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->limit(3)
+            ->get();
+
+        // Get testimonials
+        $testimonials = Post::published()
+            ->where('type', 'testimonial')
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->limit(5)
+            ->get();
+
+        // Get Team Members
+        $teamMembers = \App\Models\TeamMember::where('status', true)
+            ->orderBy('order', 'asc')
+            ->get();
 
         return view(TemplateHelper::view('index'), compact(
             'sliderPosts',
@@ -109,7 +134,11 @@ class FrontendController extends Controller
             'announcements',
             'partners',
             'latestDownloads',
-            'latestVideo'
+            'latestVideo',
+            'events',
+            'facilities',
+            'testimonials',
+            'teamMembers'
         ));
     }
 
@@ -118,6 +147,11 @@ class FrontendController extends Controller
      */
     public function posts(Request $request)
     {
+        // Redirect events to dedicated page
+        if ($request->input('type') === 'event') {
+            return redirect()->route('frontend.events', $request->except('type'));
+        }
+
         $query = Post::published()->with(['category', 'user']);
 
         // Filter by category
@@ -156,6 +190,72 @@ class FrontendController extends Controller
     }
 
     /**
+     * Display events listing
+     */
+    public function events(Request $request)
+    {
+        $query = Post::published()
+            ->where('type', 'event')
+            ->with(['category', 'user']);
+
+        // Search
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        $posts = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->paginate(SiteSetting::getValue('events_per_page', 12));
+
+        // Get all events for calendar
+        $calendarEvents = Post::published()
+            ->where('type', 'event')
+            ->select('id', 'title', 'slug', 'published_at', 'created_at', 'featured_image')
+            ->orderByRaw('COALESCE(published_at, created_at) ASC')
+            ->get();
+
+        return view(TemplateHelper::view('events'), compact('posts', 'calendarEvents'));
+    }
+
+    /**
+     * Display facilities listing
+     */
+    public function facilities()
+    {
+        $posts = Post::published()
+            ->where('type', 'fasilitas')
+            ->orderBy('sort_order', 'asc')
+            ->paginate(12);
+
+        return view(TemplateHelper::view('facilities'), compact('posts'));
+    }
+
+    /**
+     * Get all facilities for AJAX
+     */
+    public function getAllFacilities()
+    {
+        $posts = Post::published()
+            ->where('type', 'fasilitas')
+            ->orderByRaw('sort_order ASC, COALESCE(published_at, created_at) DESC')
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'excerpt' => $post->excerpt,
+                    'featured_image_url' => !empty($post->featured_image_url) ? $post->featured_image_url : asset('images/default-post.jpg'),
+                ];
+            });
+
+        return response()->json($posts);
+    }
+
+    /**
      * Display single post
      */
     public function post($slug)
@@ -189,11 +289,15 @@ class FrontendController extends Controller
             ->orderByRaw('COALESCE(published_at, created_at) ASC')
             ->first();
 
+        // Get comments
+        $comments = $post->comments()->where('status', 'approved')->orderBy('created_at', 'desc')->get();
+
         return view(TemplateHelper::view('post'), compact(
             'post',
             'relatedPosts',
             'previousPost',
-            'nextPost'
+            'nextPost',
+            'comments'
         ));
     }
 
@@ -307,6 +411,7 @@ class FrontendController extends Controller
         $query = $request->q;
 
         $posts = Post::published()
+            ->where('type', '!=', 'ads') // Exclude ads
             ->with(['category', 'user'])
             ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")

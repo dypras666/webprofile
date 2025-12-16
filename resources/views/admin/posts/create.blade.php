@@ -1,11 +1,13 @@
 @extends('layouts.admin')
 
 @php
-    $currentType = $type ?? 'berita';
+    $currentType = $currentType ?? $type ?? 'berita';
     $pageTitle = match($currentType) {
         'gallery' => 'Create Gallery',
         'video' => 'Create Video',
         'partner' => 'Tambah Partner (Kerja Sama)',
+        'event' => 'Create Event',
+        'testimonial' => 'Create Testimonial',
         default => 'Create Post'
     };
 @endphp
@@ -31,6 +33,8 @@
                                      Create a new video post with video content.
                                  @elseif($currentType === 'partner')
                                      Tambahkan partner kerja sama baru (Logo dan Link).
+                                 @elseif($currentType === 'event')
+                                     Create a new event or agenda item.
                                  @else
                                      Fill in the post information below.
                                  @endif
@@ -76,11 +80,24 @@
                                     </div>
 
                                     @if($currentType !== 'partner')
-                                    <!-- Excerpt -->
+                                    <!-- Excerpt / Rating -->
                                     <div>
-                                        <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
-                                        <textarea id="excerpt" name="excerpt" rows="3" 
-                                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">{{ old('excerpt') }}</textarea>
+                                        @if($currentType === 'testimonial')
+                                            <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">Rating (Bintang)</label>
+                                            <select id="excerpt" name="excerpt" 
+                                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-lg text-yellow-500">
+                                                <option value="5" {{ old('excerpt') == '5' ? 'selected' : '' }}>⭐⭐⭐⭐⭐ (5/5)</option>
+                                                <option value="4" {{ old('excerpt') == '4' ? 'selected' : '' }}>⭐⭐⭐⭐ (4/5)</option>
+                                                <option value="3" {{ old('excerpt') == '3' ? 'selected' : '' }}>⭐⭐⭐ (3/5)</option>
+                                                <option value="2" {{ old('excerpt') == '2' ? 'selected' : '' }}>⭐⭐ (2/5)</option>
+                                                <option value="1" {{ old('excerpt') == '1' ? 'selected' : '' }}>⭐ (1/5)</option>
+                                            </select>
+                                            <p class="text-xs text-gray-500 mt-1">Pilih jumlah bintang untuk testimoni ini.</p>
+                                        @else
+                                            <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
+                                            <textarea id="excerpt" name="excerpt" rows="3" 
+                                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">{{ old('excerpt') }}</textarea>
+                                        @endif
                                         @error('excerpt')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
@@ -181,6 +198,10 @@
                                                         <i class="fas fa-images mr-2 text-purple-600"></i>Gallery
                                                     @elseif($currentType === 'video')
                                                         <i class="fas fa-video mr-2 text-red-600"></i>Video
+                                                    @elseif($currentType === 'fasilitas')
+                                                        <i class="fas fa-building mr-2 text-indigo-600"></i>Fasilitas
+                                                    @elseif($currentType === 'event')
+                                                        <i class="fas fa-calendar-alt mr-2 text-pink-600"></i>Event
                                                     @else
                                                         <i class="fas fa-newspaper mr-2 text-blue-600"></i>Berita
                                                     @endif
@@ -344,6 +365,16 @@
             }
         });
         @endif
+        $('form').on('submit', function(e) {
+            @if($currentType !== 'partner')
+            var content = $('#content').summernote('isEmpty');
+            if(content) {
+                e.preventDefault();
+                alert('Konten tidak boleh kosong! Harap isi konten sebelum menyimpan.');
+                return false;
+            }
+            @endif
+        });
     });
 </script>
 @endpush

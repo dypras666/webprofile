@@ -36,7 +36,7 @@ class PostRequest extends FormRequest
             ],
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
-            'type' => 'required|in:berita,page,gallery,video,partner',
+            'type' => 'required|in:berita,page,gallery,video,partner,fasilitas,event,testimonial',
             'featured_image' => 'nullable|string|max:500',
             'video_url' => 'nullable|url|max:500',
             'gallery_images' => 'nullable|string|max:5000', // JSON string of media IDs from media picker

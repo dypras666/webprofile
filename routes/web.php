@@ -119,6 +119,9 @@ Route::get('/debug-gallery-data', function () {
 // Frontend Routes
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.index');
 Route::get('/posts', [FrontendController::class, 'posts'])->name('frontend.posts');
+Route::get('/events', [FrontendController::class, 'events'])->name('frontend.events');
+Route::get('/facilities', [FrontendController::class, 'facilities'])->name('frontend.facilities');
+Route::get('/ajax/facilities', [FrontendController::class, 'getAllFacilities'])->name('frontend.ajax.facilities');
 Route::get('/post/{slug}', [FrontendController::class, 'post'])->name('frontend.post');
 Route::get('/category/{slug}', [FrontendController::class, 'category'])->name('frontend.category');
 Route::get('/gallery', [FrontendController::class, 'gallery'])->name('frontend.gallery');
@@ -126,6 +129,9 @@ Route::get('/about', [FrontendController::class, 'about'])->name('frontend.about
 Route::get('/contact', [FrontendController::class, 'contact'])->name('frontend.contact');
 Route::post('/contact', [FrontendController::class, 'contactSubmit'])->name('frontend.contact.submit');
 Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
+
+// Comments
+Route::post('/comments', [App\Http\Controllers\Frontend\CommentController::class, 'store'])->name('frontend.comments.store');
 
 // Download Routes
 Route::get('/downloads', [DownloadController::class, 'index'])->name('frontend.downloads');
@@ -163,9 +169,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Posts
     Route::resource('posts', PostController::class);
-    Route::patch('/posts/{post}/toggle-publish', [PostController::class, 'togglePublish'])->name('posts.toggle-publish');
-    Route::patch('/posts/{post}/toggle-slider', [PostController::class, 'toggleSlider'])->name('posts.toggle-slider');
+    Route::post('/posts/bulk-action', [PostController::class, 'bulkAction'])->name('posts.bulk-action'); // Ensure this is registered
+    Route::patch('/posts/{post}/toggle-status', [PostController::class, 'toggleStatus'])->name('posts.toggle-status');
     Route::patch('/posts/{post}/toggle-featured', [PostController::class, 'toggleFeatured'])->name('posts.toggle-featured');
+
+    // Ads Management
+    Route::resource('ads', \App\Http\Controllers\Admin\AdminAdsController::class);
 
     // Pages (Special routes for page type posts)
     Route::get('/pages/create', [PostController::class, 'createPage'])->name('pages.create');
@@ -216,6 +225,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SiteSettingController::class, 'index'])->name('index');
         Route::put('/update', [SiteSettingController::class, 'updateAll'])->name('update'); // KEMBALI KE POST
+        Route::get('/theme', [SiteSettingController::class, 'theme'])->name('theme');
+        Route::put('/theme', [SiteSettingController::class, 'updateTheme'])->name('theme.update');
         Route::get('/{group}/edit', [SiteSettingController::class, 'edit'])->name('edit');
         Route::put('/{group}/update', [SiteSettingController::class, 'updateGroup'])->name('update.group');
         Route::get('/value/{key}', [SiteSettingController::class, 'getValue'])->name('value');
@@ -224,6 +235,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::get('/export', [SiteSettingController::class, 'export'])->name('export');
         Route::post('/import', [SiteSettingController::class, 'import'])->name('import');
     });
+
+    // Team / Data Dosen
+    // Team / Data Dosen
+    // Team / Data Dosen
+    Route::resource('team', \App\Http\Controllers\Admin\AdminTeamMemberController::class);
+    Route::post('/team/reorder', [\App\Http\Controllers\Admin\AdminTeamMemberController::class, 'reorder'])->name('team.reorder');
+    Route::patch('/team/{team}/toggle-status', [\App\Http\Controllers\Admin\AdminTeamMemberController::class, 'toggleStatus'])->name('team.toggle-status');
+
+    // Comments Management
+    Route::get('/comments', [\App\Http\Controllers\Admin\CommentController::class, 'index'])->name('comments.index');
+    Route::post('/comments/rescan', [\App\Http\Controllers\Admin\CommentController::class, 'rescan'])->name('comments.rescan');
+    Route::patch('/comments/{comment}/status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('comments.update-status');
+    Route::delete('/comments/{comment}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 

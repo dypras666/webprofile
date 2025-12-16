@@ -82,7 +82,8 @@
                             <option value="">All Categories</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}</option>
+                                    {{ $category->name }}
+                                </option>
                             @endforeach
                         </select>
                     @endif
@@ -116,11 +117,23 @@
                             <i class="fas fa-handshake mr-2"></i>
                             Add New Partner
                         </a>
+                    @elseif($currentType === 'fasilitas')
+                        <a href="{{ route('admin.posts.create', ['type' => 'fasilitas']) }}"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-building mr-2"></i>
+                            Add New Fasilitas
+                        </a>
+                    @elseif($currentType === 'event')
+                        <a href="{{ route('admin.posts.create', ['type' => 'event']) }}"
+                            class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            Add New Event
+                        </a>
                     @else
-                        <a href="{{ route('admin.posts.create') }}"
+                        <a href="{{ route('admin.posts.create', ['type' => $currentType]) }}"
                             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
                             <i class="fas fa-plus mr-2"></i>
-                            Add New Post
+                            Add New {{ ucfirst($currentType) }}
                         </a>
                     @endif
                 </form>
@@ -190,10 +203,12 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                            {{ $post->type === 'page' ? 'bg-green-100 text-green-800' :
+                                                                                                                                                            {{ $post->type === 'page' ? 'bg-green-100 text-green-800' :
                         ($post->type === 'berita' ? 'bg-blue-100 text-blue-800' :
                             ($post->type === 'gallery' ? 'bg-purple-100 text-purple-800' :
-                                ($post->type === 'video' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))) }}">
+                                ($post->type === 'video' ? 'bg-red-100 text-red-800' :
+                                    ($post->type === 'fasilitas' ? 'bg-indigo-100 text-indigo-800' :
+                                        ($post->type === 'event' ? 'bg-pink-100 text-pink-800' : 'bg-gray-100 text-gray-800'))))) }}">
                                             @if($post->type === 'page')
                                                 <i class="fas fa-file-alt mr-1"></i>
                                             @elseif($post->type === 'berita')
@@ -202,6 +217,10 @@
                                                 <i class="fas fa-images mr-1"></i>
                                             @elseif($post->type === 'video')
                                                 <i class="fas fa-video mr-1"></i>
+                                            @elseif($currentType === 'fasilitas')
+                                                <i class="fas fa-building mr-1"></i>
+                                            @elseif($currentType === 'event')
+                                                <i class="fas fa-calendar-alt mr-1"></i>
                                             @else
                                                 <i class="fas fa-file mr-1"></i>
                                             @endif
@@ -293,14 +312,33 @@
                                             <i class="fas fa-handshake mr-2"></i>
                                             Add New Partner
                                         </a>
+                                    @elseif($currentType === 'fasilitas')
+                                        <i class="fas fa-building text-4xl mb-4"></i>
+                                        <p class="text-lg font-medium">No facilities found</p>
+                                        <p class="text-sm">Get started by creating your first facility.</p>
+                                        <a href="{{ route('admin.posts.create', ['type' => 'fasilitas']) }}"
+                                            class="mt-4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                            <i class="fas fa-building mr-2"></i>
+                                            Create Fasilitas
+                                        </a>
+                                    @elseif($currentType === 'event')
+                                        <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                                        <p class="text-lg font-medium">No events found</p>
+                                        <p class="text-sm">Get started by creating your first event.</p>
+                                        <a href="{{ route('admin.posts.create', ['type' => 'event']) }}"
+                                            class="mt-4 inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700">
+                                            <i class="fas fa-calendar-alt mr-2"></i>
+                                            Create Event
+                                        </a>
                                     @else
                                         <i class="fas fa-newspaper text-4xl mb-4"></i>
-                                        <p class="text-lg font-medium">No posts found</p>
-                                        <p class="text-sm">Get started by creating your first post.</p>
-                                        <a href="{{ route('admin.posts.create') }}"
+                                        <p class="text-lg font-medium">No {{ strtolower($sectionTitle) }} found</p>
+                                        <p class="text-sm">Get started by creating your first
+                                            {{ strtolower(Str::singular($sectionTitle)) }}.</p>
+                                        <a href="{{ route('admin.posts.create', ['type' => $currentType]) }}"
                                             class="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                             <i class="fas fa-plus mr-2"></i>
-                                            Create Post
+                                            Create {{ ucfirst($currentType) }}
                                         </a>
                                     @endif
                                 </div>

@@ -235,6 +235,14 @@
                     }
                 }
             });
+        $('form').on('submit', function(e) {
+            var content = $('#content').summernote('isEmpty');
+            if(content) {
+                e.preventDefault();
+                alert('Konten halaman tidak boleh kosong! Harap isi konten sebelum menyimpan.');
+                return false;
+            }
+        });
     });
 </script>
 @endpush

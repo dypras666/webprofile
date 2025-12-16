@@ -503,4 +503,120 @@ class SiteSettingController extends Controller
             return back()->with('error', 'Gagal mengimpor pengaturan: ' . $e->getMessage());
         }
     }
+    /**
+     * Show the theme customization form.
+     */
+    public function theme()
+    {
+        $template = \App\Models\SiteSetting::getValue('active_template', 'default');
+
+        if ($template === 'default') {
+            return redirect()->route('admin.settings.index')
+                ->with('error', 'Default theme does not support customization.');
+        }
+
+        $configPath = resource_path("views/template/{$template}/theme-config.php");
+
+        if (!file_exists($configPath)) {
+            return redirect()->route('admin.settings.index')
+                ->with('error', "Theme config file not found for '{$template}'.");
+        }
+
+        $themeConfig = include $configPath;
+
+        // Helper to flatten array with dot notation
+        $flatten = function ($array, $prefix = '') use (&$flatten) {
+            $result = [];
+            foreach ($array as $key => $value) {
+                if (is_array($value)) {
+                    $result = array_merge($result, $flatten($value, $prefix . $key . '.'));
+                } else {
+                    $result[$prefix . $key] = $value;
+                }
+            }
+            return $result;
+        };
+
+        $flatConfig = $flatten($themeConfig);
+        $dbValues = [];
+
+        foreach ($flatConfig as $key => $default) {
+            // DB Key format: theme_{template}_{key_slug}
+            // We use underscores for DB keys, so replace dots with underscores
+            $dbKey = 'theme_' . $template . '_' . str_replace('.', '_', $key);
+            $dbValues[$key] = \App\Models\SiteSetting::getValue($dbKey);
+        }
+
+        return view('admin.settings.theme', compact('template', 'themeConfig', 'dbValues', 'flatConfig'));
+    }
+
+    /**
+     * Update theme configuration.
+     */
+    public function updateTheme(Request $request)
+    {
+        $template = \App\Models\SiteSetting::getValue('active_template', 'default');
+
+        if ($template === 'default') {
+            return back()->with('error', 'Default theme cannot be updated.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Handle all inputs including files
+            $allInputs = $request->except(['_token', '_method']);
+
+            foreach ($allInputs as $key => $value) {
+                // Key comes as dot notation from form, convert to DB format
+                $dbKey = 'theme_' . $template . '_' . str_replace('.', '_', $key);
+
+                // Check if this is a file upload
+                if ($request->hasFile($key)) {
+                    $file = $request->file($key);
+
+                    // Delete old file if exists
+                    $oldValue = \App\Models\SiteSetting::getValue($dbKey);
+                    if ($oldValue && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldValue)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($oldValue);
+                    }
+
+                    // Upload new file
+                    $uploadService = app(\App\Services\FileUploadService::class);
+                    $uploadedMedia = $uploadService->upload($file, 'theme');
+                    $value = $uploadedMedia->file_path;
+
+                    \App\Models\SiteSetting::set($dbKey, $value, 'image', 'theme_' . $template);
+                } else {
+                    // For text inputs (skip if it was a file input but empty - handled by hasFile check logic implicitly?
+                    // No, if file input is empty, $request->file($key) is null.
+                    // But $request->except() might typically not include file keys if they are empty?
+                    // Actually browsers usually don't send file fields if empty, or send empty filename.
+                    // Laravel's $request->all() / except() usually includes non-file inputs.
+                    // If it's a text input, save it. If it's a file input but empty, we shouldn't overwrite with null unless intended.
+                    // But here we are iterating over *inputs*.
+
+                    // We should only save if it's NOT a file (already handled) AND not null/empty if that wipes data?
+                    // Let's rely on standard handling: if user leaves file empty, it won't be in hasFile.
+                    // IMPORTANT: If we have mixed inputs, we need to be careful.
+
+                    if (!$request->hasFile($key)) {
+                        \App\Models\SiteSetting::set($dbKey, $value, 'text', 'theme_' . $template);
+                    }
+                }
+            }
+
+            // Clear cache
+            Cache::forget("site_settings_theme_{$template}");
+            Cache::forget('all_site_settings');
+
+            DB::commit();
+
+            return back()->with('success', 'Theme settings updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update theme settings: ' . $e->getMessage());
+        }
+    }
 }

@@ -39,6 +39,9 @@ class PostController extends Controller
         // Filter by type
         if ($request->filled('type')) {
             $query->byType($request->type);
+        } else {
+            // Default to 'post' (Berita) if no type specified
+            $query->byType('post');
         }
 
         // Filter by category
@@ -161,9 +164,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         try {
+            $type = $post->type; // Capture type before deletion
             $this->postService->deletePost($post->id);
 
-            return redirect()->route('admin.posts.index')
+            return redirect()->route('admin.posts.index', ['type' => $type])
                 ->with('success', 'Post berhasil dihapus.');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menghapus post: ' . $e->getMessage());

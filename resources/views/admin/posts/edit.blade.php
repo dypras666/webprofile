@@ -49,12 +49,25 @@
                             @enderror
                         </div>
 
-                        <!-- Excerpt -->
+                        <!-- Excerpt / Rating -->
                         <div>
-                            <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
-                            <textarea id="excerpt" name="excerpt" rows="3" 
-                                      placeholder="Brief description of the post..."
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">{{ old('excerpt', $post->excerpt) }}</textarea>
+                            @if($post->type === 'testimonial')
+                                <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">Rating (Bintang)</label>
+                                <select id="excerpt" name="excerpt" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-lg text-yellow-500">
+                                    <option value="5" {{ old('excerpt', $post->excerpt) == '5' ? 'selected' : '' }}>⭐⭐⭐⭐⭐ (5/5)</option>
+                                    <option value="4" {{ old('excerpt', $post->excerpt) == '4' ? 'selected' : '' }}>⭐⭐⭐⭐ (4/5)</option>
+                                    <option value="3" {{ old('excerpt', $post->excerpt) == '3' ? 'selected' : '' }}>⭐⭐⭐ (3/5)</option>
+                                    <option value="2" {{ old('excerpt', $post->excerpt) == '2' ? 'selected' : '' }}>⭐⭐ (2/5)</option>
+                                    <option value="1" {{ old('excerpt', $post->excerpt) == '1' ? 'selected' : '' }}>⭐ (1/5)</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Pilih jumlah bintang untuk testimoni ini.</p>
+                            @else
+                                <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
+                                <textarea id="excerpt" name="excerpt" rows="3" 
+                                          placeholder="Brief description of the post..."
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">{{ old('excerpt', $post->excerpt) }}</textarea>
+                            @endif
                             @error('excerpt')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror

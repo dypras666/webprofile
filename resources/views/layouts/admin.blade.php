@@ -123,104 +123,200 @@
                         <span class="sidebar-text ml-3 font-medium">Dashboard</span>
                     </a>
 
-                    <!-- Content Management -->
-                    <div class="space-y-1">
-                        <!-- Posts (Berita) -->
-                        <a href="{{ route('admin.posts.index', ['type' => 'berita']) }}"
-                            class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'berita' ? 'bg-gray-700 text-blue-400' : '' }}"
-                            title="Berita">
-                            <i class="sidebar-icon fas fa-newspaper w-5 text-center"></i>
-                            <span class="sidebar-text ml-3 font-medium">Berita</span>
-                        </a>
+                    <!-- Master Data Group -->
+                    <div
+                        x-data="{ open: {{ request()->routeIs('admin.posts.*') || request()->routeIs('admin.downloads.*') || request()->routeIs('admin.media.*') || request()->routeIs('admin.ads.*') || request()->routeIs('admin.team.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open"
+                            class="flex items-center w-full px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 justify-between text-gray-300">
+                            <div class="flex items-center">
+                                <i class="sidebar-icon fas fa-database w-5 text-center"></i>
+                                <span class="sidebar-text ml-3 font-medium">Master Data</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-200"
+                                :class="{ 'transform rotate-180': open }"></i>
+                        </button>
+                        <div x-show="open" x-collapse class="pl-4 space-y-1 mt-1">
+                            <!-- Posts (Berita) -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'berita']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'berita' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Berita">
+                                <i class="sidebar-icon fas fa-newspaper w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Berita</span>
+                            </a>
 
-                        <!-- Partners (Kerja Sama) -->
-                        <a href="{{ route('admin.posts.index', ['type' => 'partner']) }}"
-                            class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'partner' ? 'bg-gray-700 text-blue-400' : '' }}"
-                            title="Kerja Sama">
-                            <i class="sidebar-icon fas fa-handshake w-5 text-center"></i>
-                            <span class="sidebar-text ml-3 font-medium">Kerja Sama</span>
-                        </a>
+                            <!-- Ads Manager -->
+                            <a href="{{ route('admin.ads.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.ads.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Ads Manager">
+                                <i class="sidebar-icon fas fa-ad w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Ads Manager</span>
+                            </a>
 
-                        <!-- Pages (Halaman) -->
-                        <a href="{{ route('admin.posts.index', ['type' => 'page']) }}"
-                            class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'page' ? 'bg-gray-700 text-blue-400' : '' }}"
-                            title="Halaman">
-                            <i class="sidebar-icon fas fa-file-alt w-5 text-center"></i>
-                            <span class="sidebar-text ml-3 font-medium">Halaman</span>
-                        </a>
+                            <!-- Partners (Kerja Sama) -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'partner']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'partner' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Kerja Sama">
+                                <i class="sidebar-icon fas fa-handshake w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Kerja Sama</span>
+                            </a>
 
-                        <!-- Gallery -->
-                        <a href="{{ route('admin.posts.index', ['type' => 'gallery']) }}"
-                            class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'gallery' ? 'bg-gray-700 text-blue-400' : '' }}"
-                            title="Gallery">
-                            <i class="sidebar-icon fas fa-images w-5 text-center"></i>
-                            <span class="sidebar-text ml-3 font-medium">Gallery</span>
-                        </a>
+                            <!-- Pages (Halaman) -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'page']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'page' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Halaman">
+                                <i class="sidebar-icon fas fa-file-alt w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Halaman</span>
+                            </a>
 
-                        <!-- Video -->
-                        <a href="{{ route('admin.posts.index', ['type' => 'video']) }}"
-                            class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'video' ? 'bg-gray-700 text-blue-400' : '' }}"
-                            title="Video">
-                            <i class="sidebar-icon fas fa-video w-5 text-center"></i>
-                            <span class="sidebar-text ml-3 font-medium">Video</span>
-                        </a>
+                            <!-- Gallery -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'gallery']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'gallery' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Gallery">
+                                <i class="sidebar-icon fas fa-images w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Gallery</span>
+                            </a>
+
+                            <!-- Video -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'video']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'video' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Video">
+                                <i class="sidebar-icon fas fa-video w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Video</span>
+                            </a>
+
+                            <!-- Fasilitas (Facilities) -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'fasilitas']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'fasilitas' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Fasilitas">
+                                <i class="sidebar-icon fas fa-building w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Fasilitas</span>
+                            </a>
+
+                            <!-- Event -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'event']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'event' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Event">
+                                <i class="sidebar-icon fas fa-calendar-alt w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Event</span>
+                            </a>
+
+                            <!-- Testimoni -->
+                            <a href="{{ route('admin.posts.index', ['type' => 'testimonial']) }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.posts.*') && request()->get('type') == 'testimonial' ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Testimoni">
+                                <i class="sidebar-icon fas fa-comment-dots w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Testimoni</span>
+                            </a>
+
+                            <!-- Komentar -->
+                            <a href="{{ route('admin.comments.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.comments.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Komentar Berita">
+                                <i class="sidebar-icon fas fa-comments w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Komentar Berita</span>
+                            </a>
+
+                            <!-- Media -->
+                            <a href="{{ route('admin.media.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.media.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Media Galeri">
+                                <i class="sidebar-icon fas fa-images w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Media</span>
+                            </a>
+
+                            <!-- Downloads -->
+                            <a href="{{ route('admin.downloads.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.downloads.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="File Downloads">
+                                <i class="sidebar-icon fas fa-download w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Downloads</span>
+                            </a>
+
+                            <!-- Team / Data Dosen -->
+                            <a href="{{ route('admin.team.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.team.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Data Dosen / Team">
+                                <i class="sidebar-icon fas fa-users w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Data Dosen / Team</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <!-- Categories -->
-                    <a href="{{ route('admin.categories.index') }}"
-                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-700 text-blue-400' : '' }}"
-                        title="Categories">
-                        <i class="sidebar-icon fas fa-tags w-5 text-center"></i>
-                        <span class="sidebar-text ml-3 font-medium">Categories</span>
-                    </a>
+                    <!-- REFERENSI DATA GROUP -->
+                    <div
+                        x-data="{ open: {{ request()->routeIs('admin.categories.*') || request()->routeIs('admin.download-categories.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open"
+                            class="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                            <div class="flex items-center">
+                                <i class="fas fa-database w-5 text-center"></i>
+                                <span class="ml-3 sidebar-text">Referensi Data</span>
+                            </div>
+                            <i class="fas fa-chevron-down w-3 h-3 transition-transform duration-200"
+                                :class="{ 'transform rotate-180': open }"></i>
+                        </button>
+                        <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95" class="pl-4 mt-2 space-y-1">
 
-                    <!-- Navigation -->
-                    <a href="{{ route('admin.navigation.index') }}"
-                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.navigation.*') ? 'bg-gray-700 text-blue-400' : '' }}"
-                        title="Navigation">
-                        <i class="sidebar-icon fas fa-bars w-5 text-center"></i>
-                        <span class="sidebar-text ml-3 font-medium">Navigation</span>
-                    </a>
+                            <!-- Categories -->
+                            <a href="{{ route('admin.categories.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Kategori Berita">
+                                <i class="sidebar-icon fas fa-tags w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Kategori Berita</span>
+                            </a>
 
-                    <!-- Media -->
-                    <a href="{{ route('admin.media.index') }}"
-                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.media.*') ? 'bg-gray-700 text-blue-400' : '' }}"
-                        title="Media">
-                        <i class="sidebar-icon fas fa-images w-5 text-center"></i>
-                        <span class="sidebar-text ml-3 font-medium">Media</span>
-                    </a>
+                            <!-- Download Categories -->
+                            <a href="{{ route('admin.download-categories.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.download-categories.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Kategori Download">
+                                <i class="sidebar-icon fas fa-folder w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Kategori Download</span>
+                            </a>
+                        </div>
+                    </div>
 
-                    <!-- Downloads -->
-                    <a href="{{ route('admin.downloads.index') }}"
-                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.downloads.*') ? 'bg-gray-700 text-blue-400' : '' }}"
-                        title="Downloads">
-                        <i class="sidebar-icon fas fa-download w-5 text-center"></i>
-                        <span class="sidebar-text ml-3 font-medium">Downloads</span>
-                    </a>
+                    <!-- KONFIGURASI GROUP -->
+                    <div
+                        x-data="{ open: {{ request()->routeIs('admin.navigation.*') || request()->routeIs('admin.users.*') || request()->routeIs('admin.settings.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open"
+                            class="flex items-center w-full px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 justify-between text-gray-300">
+                            <div class="flex items-center">
+                                <i class="sidebar-icon fas fa-cogs w-5 text-center"></i>
+                                <span class="sidebar-text ml-3 font-medium">Konfigurasi</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-200"
+                                :class="{ 'transform rotate-180': open }"></i>
+                        </button>
+                        <div x-show="open" x-collapse class="pl-4 space-y-1 mt-1">
+                            <!-- Navigation -->
+                            <a href="{{ route('admin.navigation.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.navigation.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Menu Navigasi">
+                                <i class="sidebar-icon fas fa-sitemap w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Menu Navigasi</span>
+                            </a>
 
-                    <!-- Download Categories -->
-                    <a href="{{ route('admin.download-categories.index') }}"
-                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.download-categories.*') ? 'bg-gray-700 text-blue-400' : '' }}"
-                        title="Download Categories">
-                        <i class="sidebar-icon fas fa-folder w-5 text-center"></i>
-                        <span class="sidebar-text ml-3 font-medium">DL Categories</span>
-                    </a>
+                            <!-- Users -->
+                            <a href="{{ route('admin.users.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Users">
+                                <i class="sidebar-icon fas fa-users w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Users</span>
+                            </a>
 
-                    <!-- Users -->
-                    <a href="{{ route('admin.users.index') }}"
-                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-gray-700 text-blue-400' : '' }}"
-                        title="Users">
-                        <i class="sidebar-icon fas fa-users w-5 text-center"></i>
-                        <span class="sidebar-text ml-3 font-medium">Users</span>
-                    </a>
-
-                    <!-- Settings -->
-                    <a href="{{ route('admin.settings.index') }}"
-                        class="flex items-center px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.settings.*') ? 'bg-gray-700 text-blue-400' : '' }}"
-                        title="Settings">
-                        <i class="sidebar-icon fas fa-cog w-5 text-center"></i>
-                        <span class="sidebar-text ml-3 font-medium">Settings</span>
-                    </a>
+                            <!-- Settings -->
+                            <a href="{{ route('admin.settings.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.settings.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Settings">
+                                <i class="sidebar-icon fas fa-cog w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">Settings</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- User Menu -->

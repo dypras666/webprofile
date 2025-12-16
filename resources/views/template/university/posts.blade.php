@@ -84,80 +84,54 @@
             </div>
 
             {{-- Sidebar --}}
-            <aside class="w-full lg:w-1/4 space-y-12 pl-0 lg:pl-8 border-l border-transparent lg:border-gray-100">
+            @php
+                $sidebarBg = \App\Models\SiteSetting::getValue('theme_university_sidebar_background_image');
+                if (!$sidebarBg) {
+                    $sidebarBg = \App\Helpers\TemplateHelper::getThemeConfig('sidebar.background_image');
+                }
+            @endphp
+            <aside
+                class="w-full lg:w-1/4 space-y-8 {{ $sidebarBg ? 'p-6 rounded-xl' : 'pl-0 lg:pl-8 border-l border-transparent lg:border-gray-100' }}"
+                style="{{ $sidebarBg ? 'background-image: url(' . $sidebarBg . '); background-size: cover; background-position: center;' : '' }}">
 
-                {{-- Main Menu Widget --}}
+                {{-- Search Widget --}}
                 <div>
                     <h3
                         class="text-lg font-bold font-heading text-gray-800 uppercase tracking-wider mb-6 pb-2 border-b border-gray-200">
-                        Main Menu</h3>
-                    <ul class="border border-gray-200 divide-y divide-gray-200 bg-white">
-                        <li class="relative group">
-                            <a href="{{ route('frontend.index') }}"
-                                class="block px-4 py-3 text-sm text-gray-600 hover:text-[#1e3a8a] hover:bg-gray-50 transition-colors font-bold">
-                                <i class="fas fa-home w-5 text-gray-400 group-hover:text-[#1e3a8a]"></i> Home
-                            </a>
-                        </li>
-                        {{-- Fetching quick links or a specific menu --}}
-                        @php $sidebarMenu = \App\Models\NavigationMenu::getMenuTree('quicklink')->take(5); @endphp
-                        @foreach($sidebarMenu as $menu)
-                            <li class="relative group">
-                                <a href="{{ $menu->final_url }}" target="{{ $menu->target }}"
-                                    class="block px-4 py-3 text-sm text-gray-600 hover:text-[#1e3a8a] hover:bg-gray-50 transition-colors font-medium">
-                                    <i class="fas fa-book w-5 text-gray-400 group-hover:text-[#1e3a8a]"></i> {{ $menu->title }}
-                                </a>
-                            </li>
-                        @endforeach
-                        {{-- Fallback static links if empty to match image look --}}
-                        @if($sidebarMenu->isEmpty())
-                            <li><a href="#" class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 font-medium"><i
-                                        class="fas fa-calendar-alt w-5 text-gray-400"></i> Events</a></li>
-                            <li><a href="#" class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 font-medium"><i
-                                        class="fas fa-graduation-cap w-5 text-gray-400"></i> Courses</a></li>
-                            <li><a href="#" class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 font-medium"><i
-                                        class="fas fa-file-alt w-5 text-gray-400"></i> Pages</a></li>
-                            <li><a href="#" class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 font-medium"><i
-                                        class="fas fa-bolt w-5 text-gray-400"></i> Shortcodes</a></li>
-                        @endif
-                    </ul>
-                </div>
-
-                {{-- Course Search Widget --}}
-                <div>
-                    <h3
-                        class="text-lg font-bold font-heading text-gray-800 uppercase tracking-wider mb-6 pb-2 border-b border-gray-200">
-                        Course Search</h3>
-                    <form action="{{ route('frontend.search') }}" method="GET" class="space-y-3 bg-gray-100 p-6">
-                        <div>
-                            <select
-                                class="w-full bg-white border border-transparent px-4 py-2.5 text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-[#1e3a8a]">
-                                <option>All Categories</option>
-                                {{-- Mock categories for look --}}
-                                <option>Engineering</option>
-                                <option>Business</option>
-                                <option>IT</option>
-                            </select>
-                        </div>
-                        <div class="relative">
-                            <input type="text" name="q" placeholder="SEARCH"
-                                class="w-full bg-white border border-transparent px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a8a]">
-                            <button type="submit"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#1e3a8a]">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
+                        Pencarian
+                    </h3>
+                    <form action="{{ route('frontend.search') }}" method="GET" class="relative">
+                        <input type="text" name="q" placeholder="Cari Berita..."
+                            class="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white transition-colors rounded">
+                        <button type="submit"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#1e3a8a]">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </form>
                 </div>
 
-                {{-- Text Widget (Optional match) --}}
+                {{-- Quick Links Widget --}}
                 <div>
                     <h3
                         class="text-lg font-bold font-heading text-gray-800 uppercase tracking-wider mb-6 pb-2 border-b border-gray-200">
-                        Text Widget</h3>
-                    <p class="text-sm text-gray-500 leading-relaxed">
-                        This is a text widget, which allows you to add text or HTML to your sidebar. You can use them to
-                        display text, links, images, HTML, or a combination of these.
-                    </p>
+                        Tautan Cepat
+                    </h3>
+                    <ul class="space-y-3">
+                        @php $quickLinks = \App\Models\NavigationMenu::getMenuTree('quicklink'); @endphp
+                        @foreach($quickLinks as $link)
+                            <li>
+                                <a href="{{ $link->final_url }}" target="{{ $link->target }}"
+                                    class="flex items-center text-gray-600 hover:text-[#1e3a8a] transition-colors group">
+                                    <span
+                                        class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#1e3a8a] transition-colors"></span>
+                                    {{ $link->title }}
+                                </a>
+                            </li>
+                        @endforeach
+                        @if($quickLinks->isEmpty())
+                            <li class="text-gray-500 italic text-sm">Belum ada tautan cepat.</li>
+                        @endif
+                    </ul>
                 </div>
 
             </aside>

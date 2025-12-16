@@ -104,6 +104,7 @@
                     @csrf
                     @method('PUT')
                     <!-- General Settings -->
+                    <input type="hidden" name="_active_tab" id="active_tab_input" value="general">
                     <div id="general-section" class="settings-section active">
                         <h2 class="text-xl font-semibold text-gray-900 mb-6">General Settings</h2>
 
@@ -284,6 +285,11 @@
                                             </div>
                                             <div class="flex items-center justify-between px-1">
                                                 <span class="font-bold text-gray-800">{{ $template['label'] }}</span>
+                                                @if(($settings['active_template'] ?? 'default') === $template['name'])
+                                                    <a href="{{ route('admin.settings.theme') }}" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded hover:bg-indigo-200 transition-colors">
+                                                        <i class="fas fa-magic mr-1"></i> Sesuaikan
+                                                    </a>
+                                                @endif
                                             </div>
                                         </label>
                                     </div>
@@ -345,6 +351,7 @@
 
                             <!-- Show Excerpts -->
                             <div class="flex items-center">
+                                <input type="hidden" name="show_excerpts" value="0">
                                 <input type="checkbox" id="show_excerpts" name="show_excerpts" value="1" {{ ($settings['show_excerpts'] ?? false) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 <label for="show_excerpts" class="ml-2 text-sm text-gray-700">Show post excerpts on
@@ -526,6 +533,7 @@
                         <div class="space-y-6">
                             <!-- Enable Registration -->
                             <div class="flex items-center">
+                                <input type="hidden" name="enable_registration" value="0">
                                 <input type="checkbox" id="enable_registration" name="enable_registration" value="1" {{ ($settings['enable_registration'] ?? false) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 <label for="enable_registration" class="ml-2 text-sm text-gray-700">Allow user
@@ -534,6 +542,7 @@
 
                             <!-- Require Email Verification -->
                             <div class="flex items-center">
+                                <input type="hidden" name="require_email_verification" value="0">
                                 <input type="checkbox" id="require_email_verification" name="require_email_verification"
                                     value="1" {{ ($settings['require_email_verification'] ?? false) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -543,6 +552,7 @@
 
                             <!-- Enable Comments -->
                             <div class="flex items-center">
+                                <input type="hidden" name="enable_comments" value="0">
                                 <input type="checkbox" id="enable_comments" name="enable_comments" value="1" {{ ($settings['enable_comments'] ?? false) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 <label for="enable_comments" class="ml-2 text-sm text-gray-700">Enable comments on
@@ -551,6 +561,7 @@
 
                             <!-- Moderate Comments -->
                             <div class="flex items-center">
+                                <input type="hidden" name="moderate_comments" value="0">
                                 <input type="checkbox" id="moderate_comments" name="moderate_comments" value="1" {{ ($settings['moderate_comments'] ?? false) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 <label for="moderate_comments" class="ml-2 text-sm text-gray-700">Moderate comments before
@@ -586,6 +597,7 @@
                         <div class="space-y-6">
                             <!-- Maintenance Mode -->
                             <div class="flex items-center">
+                                <input type="hidden" name="maintenance_mode" value="0">
                                 <input type="checkbox" id="maintenance_mode" name="maintenance_mode" value="1" {{ ($settings['maintenance_mode'] ?? false) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 <label for="maintenance_mode" class="ml-2 text-sm text-gray-700">Enable maintenance
@@ -657,9 +669,25 @@
             // Add active class to clicked nav item
             element.classList.add('active');
 
+            // Update hidden input
+            if (document.getElementById('active_tab_input')) {
+                document.getElementById('active_tab_input').value = sectionId;
+            }
+
             // Prevent default link behavior
             event.preventDefault();
         }
+
+        // On Load: Check URL hash
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+                const sectionId = window.location.hash.substring(1);
+                const navLink = document.querySelector(`a[href="#${sectionId}"]`);
+                if (navLink) {
+                    navLink.click(); // Trigger click to show section
+                }
+            }
+        });
 
         // Color picker sync
         document.getElementById('theme_color').addEventListener('change', function () {
