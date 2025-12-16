@@ -40,10 +40,51 @@
 
                 {{-- Right Column: Main Slider --}}
                 <div class="lg:col-span-8 order-1 lg:order-2 relative h-[450px] lg:h-auto min-h-[500px]">
-                    @if($sliderPosts->count() > 0)
+                    @php
+                        $welcomeEnabled = \App\Models\SiteSetting::getValue('welcome_slider_enabled') == '1';
+                    @endphp
+
+                    @if($sliderPosts->count() > 0 || $welcomeEnabled)
                         <!-- Swiper -->
                         <div class="swiper heroSwiper w-full h-full">
                             <div class="swiper-wrapper">
+                                {{-- Welcome Slide --}}
+                                @if($welcomeEnabled)
+                                    @php
+                                        $welcomeBg = \App\Models\SiteSetting::getValue('welcome_slider_background');
+                                        if ($welcomeBg && !str_starts_with($welcomeBg, 'http')) {
+                                            $welcomeBg = Storage::url($welcomeBg);
+                                        }
+                                        $welcomeTitle = \App\Models\SiteSetting::getValue('welcome_slider_title', 'Welcome');
+                                        $welcomeSubtitle = \App\Models\SiteSetting::getValue('welcome_slider_subtitle', '');
+                                        $btnText = \App\Models\SiteSetting::getValue('welcome_slider_button_text');
+                                        $btnLink = \App\Models\SiteSetting::getValue('welcome_slider_button_link', '#');
+                                    @endphp
+                                    <div class="swiper-slide relative w-full h-full bg-gray-900">
+                                        <img src="{{ $welcomeBg ?? asset('images/default-hero.jpg') }}"
+                                            class="w-full h-full object-cover">
+
+                                        {{-- Overlay Content --}}
+                                        <div
+                                            class="absolute bottom-10 right-10 left-auto max-w-xl bg-white/95 backdrop-blur-sm p-8 shadow-lg border-l-4 border-cyan-500 hidden md:block">
+                                            <h2 class="text-3xl font-bold text-[#1e3a8a] mb-3 font-heading">
+                                                {{ $welcomeTitle }}
+                                            </h2>
+                                            @if($welcomeSubtitle)
+                                                <p class="text-gray-600 text-base mb-6 leading-relaxed">
+                                                    {{ $welcomeSubtitle }}
+                                                </p>
+                                            @endif
+                                            @if($btnText)
+                                                <a href="{{ $btnLink }}"
+                                                    class="inline-block bg-[#1e3a8a] text-white font-bold py-2 px-6 rounded hover:bg-cyan-600 transition-colors uppercase tracking-wider text-sm">
+                                                    {{ $btnText }} <i class="fas fa-arrow-right ml-2"></i>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+
                                 @foreach($sliderPosts as $post)
                                     <div class="swiper-slide relative w-full h-full bg-gray-100">
                                         <img src="{{ $post->featured_image_url ? $post->featured_image_url : asset('images/default-hero.jpg') }}"

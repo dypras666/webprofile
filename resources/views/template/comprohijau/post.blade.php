@@ -31,9 +31,9 @@
 
                     {{-- Featured Image --}}
                     @if($post->featured_image)
-                        <div class="w-full aspect-video relative">
+                        <div class="w-full">
                             <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
-                                class="absolute inset-0 w-full h-full object-cover">
+                                class="w-full h-auto object-cover">
                         </div>
                     @endif
 
