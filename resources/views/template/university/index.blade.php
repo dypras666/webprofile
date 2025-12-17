@@ -22,6 +22,9 @@
         'sliderPosts' => $sliderPosts
     ])
 
+    {{-- Program Studi Slider Section --}}
+    @include('template.university.components.program_studi_section', ['programStudis' => $programStudis ?? collect([])])
+
 
 
     {{-- Facilities Section (Dark Mode with Map Pattern) --}}
@@ -235,7 +238,7 @@
 
                             {{-- Date --}}
                             <div class="text-xs text-gray-500 mb-3 font-medium uppercase tracking-wide">
-                                {{ $post->created_at->format('d F Y') }}
+                                {{ $post->published_at ? $post->published_at->format('d F Y') : $post->created_at->format('d F Y') }}
                             </div>
 
                             <p class="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-4 flex-grow">
@@ -299,10 +302,10 @@
                                 <div
                                     class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm shadow-md text-center overflow-hidden min-w-[60px]">
                                     <div class="bg-cyan-600 text-white text-[10px] uppercase py-1 font-bold tracking-wider">
-                                        {{ $event->created_at->format('M') }}
+                                        {{ $event->published_at ? $event->published_at->format('M') : $event->created_at->format('M') }}
                                     </div>
-                                    <div class="text-xl font-bold text-gray-800 py-1 font-heading">
-                                        {{ $event->created_at->format('d') }}
+                                    <div class="text-xl font-bold font-heading text-gray-800 leading-none">
+                                        {{ $event->published_at ? $event->published_at->format('d') : $event->created_at->format('d') }}
                                     </div>
                                 </div>
 
@@ -328,7 +331,7 @@
                                     class="mt-auto pt-4 border-t border-dashed border-gray-100 flex items-center justify-between text-xs text-gray-500">
                                     <div class="flex items-center gap-2">
                                         <i class="far fa-clock text-cyan-500"></i>
-                                        <span>{{ $event->created_at->format('H:i') }} WIB</span>
+                                        <span>{{ $event->published_at ? $event->published_at->format('H:i') : $event->created_at->format('H:i') }} WIB</span>
                                     </div>
                                     <div class="group-hover:translate-x-1 transition-transform duration-300">
                                         <i class="fas fa-arrow-right text-cyan-500"></i>

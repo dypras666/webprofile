@@ -229,9 +229,9 @@
                                     Photo</label>
                                 @if(isset($settings['leader_photo']) && $settings['leader_photo'])
                                     <div class="mb-3">
-                                        <img src="{{ Str::startsWith($settings['leader_photo'], 'http') ? $settings['leader_photo'] : Storage::disk('public')->url($settings['leader_photo']) }}"
+                                        <img src="{{ \Illuminate\Support\Str::startsWith($settings['leader_photo'], 'http') ? $settings['leader_photo'] : \Illuminate\Support\Facades\Storage::disk('public')->url($settings['leader_photo']) }}"
                                             alt="Leader Photo" class="logo-preview border border-gray-300 rounded"
-                                            style="max-height: 200px;">
+                                            style="height: 100px;">
                                     </div>
                                 @endif
                                 <input type="file" id="leader_photo" name="leader_photo" accept="image/*"
@@ -296,7 +296,7 @@
                                     class="block text-sm font-medium text-gray-700 mb-2">Slider Background Image</label>
                                 @if(isset($settings['welcome_slider_background']) && $settings['welcome_slider_background'])
                                     <div class="mb-3">
-                                        <img src="{{ Str::startsWith($settings['welcome_slider_background'], 'http') ? $settings['welcome_slider_background'] : Storage::disk('public')->url($settings['welcome_slider_background']) }}"
+                                        <img src="{{ \Illuminate\Support\Str::startsWith($settings['welcome_slider_background'], 'http') ? $settings['welcome_slider_background'] : \Illuminate\Support\Facades\Storage::disk('public')->url($settings['welcome_slider_background']) }}"
                                             alt="Slider Background" class="logo-preview border border-gray-300 rounded"
                                             style="max-height: 200px;">
                                     </div>
@@ -325,6 +325,8 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
+
 
                         <!-- Appearance Settings -->
                         <div id="appearance-section" class="settings-section">
@@ -427,6 +429,18 @@
                                     <input type="file" id="favicon" name="favicon" accept="image/*"
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <p class="text-xs text-gray-500 mt-1">Recommended size: 32x32px, ICO or PNG format</p>
+                                </div>
+
+                                <!-- Footer Menu Title -->
+                                <div>
+                                    <label for="footer_menu_title"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Footer
+                                        Menu Title</label>
+                                    <input type="text" id="footer_menu_title" name="footer_menu_title"
+                                        value="{{ $settings['footer_menu_title'] ?? 'Tautan' }}"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <p class="text-xs text-gray-500 mt-1">Title for the 4th column in footer (default:
+                                        Tautan)</p>
                                 </div>
 
                                 <!-- Theme Color -->

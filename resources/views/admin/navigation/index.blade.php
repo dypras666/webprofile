@@ -104,6 +104,11 @@
                     class="py-2 px-4 border-b-2 font-medium text-sm focus:outline-none">
                     Quick Links
                 </button>
+                <button @click="activeTab = 'footer_2'"
+                    :class="{ 'border-blue-500 text-blue-600': activeTab === 'footer_2', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'footer_2' }"
+                    class="py-2 px-4 border-b-2 font-medium text-sm focus:outline-none">
+                    Footer Link
+                </button>
             </div>
 
             <!-- Top Navigation -->
@@ -143,6 +148,19 @@
                         @include('admin.navigation.partials.menu-item', ['menu' => $menu])
                     @endforeach
                     @if($menus->where('position', 'quicklink')->count() === 0)
+                        <p class="text-gray-500 text-center py-4">Belum ada menu di posisi ini.</p>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Footer Link (Footer 2) -->
+            <div x-show="activeTab === 'footer_2'" class="menu-container-tab" data-position="footer_2"
+                style="display: none;">
+                <div id="sortable-menu-footer_2" class="space-y-2 sortable-root">
+                    @foreach($menus->where('position', 'footer_2') as $menu)
+                        @include('admin.navigation.partials.menu-item', ['menu' => $menu])
+                    @endforeach
+                    @if($menus->where('position', 'footer_2')->count() === 0)
                         <p class="text-gray-500 text-center py-4">Belum ada menu di posisi ini.</p>
                     @endif
                 </div>
@@ -189,6 +207,7 @@
                                 <option value="top">Top Navigation</option>
                                 <option value="bottom">Bottom Navigation</option>
                                 <option value="quicklink">Quick Links</option>
+                                <option value="footer_2">Footer Link</option>
                             </select>
                         </div>
 

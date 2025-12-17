@@ -52,7 +52,9 @@
                                     <div class="p-5 flex flex-col flex-grow">
                                         <div class="flex items-center gap-4 text-xs text-gray-500 mb-3">
                                             <span class="flex items-center"><i class="far fa-calendar-alt mr-1"></i>
-                                                {{ $post->created_at->format('d M Y') }}</span>
+                                                <span class="text-xs text-gray-500 flex items-center gap-1">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    {{ $post->published_at ? $post->published_at->format('d M Y') : $post->created_at->format('d M Y') }}</span>
                                         </div>
 
                                         <h3

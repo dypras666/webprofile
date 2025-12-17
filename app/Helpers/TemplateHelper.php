@@ -108,4 +108,15 @@ class TemplateHelper
 
         return $array;
     }
+    /**
+     * Get a general site setting value wrapper.
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public static function getSetting($key, $default = null)
+    {
+        return SiteSetting::getValue($key, $default);
+    }
 }

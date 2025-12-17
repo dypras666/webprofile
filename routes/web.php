@@ -118,12 +118,17 @@ Route::get('/debug-gallery-data', function () {
 
 // Frontend Routes
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.index');
-Route::get('/posts', [FrontendController::class, 'posts'])->name('frontend.posts');
+Route::get('/berita', [FrontendController::class, 'posts'])->name('frontend.posts');
 Route::get('/events', [FrontendController::class, 'events'])->name('frontend.events');
 Route::get('/facilities', [FrontendController::class, 'facilities'])->name('frontend.facilities');
 Route::get('/ajax/facilities', [FrontendController::class, 'getAllFacilities'])->name('frontend.ajax.facilities');
-Route::get('/post/{slug}', [FrontendController::class, 'post'])->name('frontend.post');
-Route::get('/category/{slug}', [FrontendController::class, 'category'])->name('frontend.category');
+
+// Prodi Detail Route
+Route::get('/prodi/{code}', [FrontendController::class, 'programStudi'])->name('frontend.prodi.detail');
+
+Route::get('/berita/{slug}', [FrontendController::class, 'post'])->name('frontend.post');
+Route::get('/halaman/{slug}', [FrontendController::class, 'page'])->name('frontend.page');
+Route::get('/kategori/{slug}', [FrontendController::class, 'category'])->name('frontend.category');
 Route::get('/gallery', [FrontendController::class, 'gallery'])->name('frontend.gallery');
 Route::get('/about', [FrontendController::class, 'about'])->name('frontend.about');
 Route::get('/contact', [FrontendController::class, 'contact'])->name('frontend.contact');
@@ -134,11 +139,11 @@ Route::get('/search', [FrontendController::class, 'search'])->name('frontend.sea
 Route::post('/comments', [App\Http\Controllers\Frontend\CommentController::class, 'store'])->name('frontend.comments.store');
 
 // Download Routes
-Route::get('/downloads', [DownloadController::class, 'index'])->name('frontend.downloads');
-Route::get('/downloads/json', [DownloadController::class, 'getDownloadsJson'])->name('frontend.downloads.json');
-Route::get('/downloads/{download}', [DownloadController::class, 'show'])->name('frontend.downloads.show');
-Route::get('/downloads/{download}/password', [DownloadController::class, 'showPasswordForm'])->name('frontend.downloads.password');
-Route::post('/downloads/{download}/download', [DownloadController::class, 'download'])->name('frontend.downloads.download');
+Route::get('/download', [DownloadController::class, 'index'])->name('frontend.downloads');
+Route::get('/download/json', [DownloadController::class, 'getDownloadsJson'])->name('frontend.downloads.json');
+Route::get('/download/{download}', [DownloadController::class, 'show'])->name('frontend.downloads.show');
+Route::get('/download/{download}/password', [DownloadController::class, 'showPasswordForm'])->name('frontend.downloads.password');
+Route::post('/download/{download}/download', [DownloadController::class, 'download'])->name('frontend.downloads.download');
 
 // API Routes for Frontend
 Route::get('/api/posts/type/{type}', [FrontendController::class, 'getPostsByType'])->name('api.posts.type');
@@ -248,6 +253,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/comments/rescan', [\App\Http\Controllers\Admin\CommentController::class, 'rescan'])->name('comments.rescan');
     Route::patch('/comments/{comment}/status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('comments.update-status');
     Route::delete('/comments/{comment}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('comments.destroy');
+
+    // Program Studi
+    Route::resource('prodi', \App\Http\Controllers\Admin\ProgramStudiController::class);
 });
 
 

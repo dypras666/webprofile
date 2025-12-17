@@ -124,6 +124,11 @@ class FrontendController extends Controller
             ->orderBy('order', 'asc')
             ->get();
 
+        // Get Program Studi
+        $programStudis = \App\Models\ProgramStudi::orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
+
         return view(TemplateHelper::view('index'), compact(
             'sliderPosts',
             'featuredPosts',
@@ -138,7 +143,8 @@ class FrontendController extends Controller
             'events',
             'facilities',
             'testimonials',
-            'teamMembers'
+            'teamMembers',
+            'programStudis'
         ));
     }
 
@@ -265,6 +271,11 @@ class FrontendController extends Controller
             ->with(['category', 'user'])
             ->firstOrFail();
 
+        // Redirect 'page' type to new route
+        if ($post->type === 'page') {
+            return redirect()->route('frontend.page', $post->slug);
+        }
+
         // Increment views
         $post->incrementViews();
 
@@ -290,6 +301,36 @@ class FrontendController extends Controller
             ->first();
 
         // Get comments
+        $comments = $post->comments()->where('status', 'approved')->orderBy('created_at', 'desc')->get();
+
+        return view(TemplateHelper::view('post'), compact(
+            'post',
+            'relatedPosts',
+            'previousPost',
+            'nextPost',
+            'comments'
+        ));
+    }
+
+    /**
+     * Display single page
+     */
+    public function page($slug)
+    {
+        $post = Post::published()
+            ->where('slug', $slug)
+            ->where('type', 'page')
+            ->with(['category', 'user'])
+            ->firstOrFail();
+
+        $post->incrementViews();
+
+        // For pages, we pass filtered/empty variables for the common view
+        $relatedPosts = collect();
+        $previousPost = null;
+        $nextPost = null;
+
+        // Get comments if any (though usually disabled for pages)
         $comments = $post->comments()->where('status', 'approved')->orderBy('created_at', 'desc')->get();
 
         return view(TemplateHelper::view('post'), compact(
@@ -397,6 +438,25 @@ class FrontendController extends Controller
         // For now, we'll just return success message
 
         return back()->with('success', 'Pesan Anda berhasil dikirim. Terima kasih!');
+    }
+
+    /**
+     * Display Program Studi Detail
+     */
+    public function programStudi($code)
+    {
+        $prodi = \App\Models\ProgramStudi::where('code', $code)
+            ->with('programHead')
+            ->firstOrFail();
+
+        // Get related prodi for sidebar
+        $otherProdi = \App\Models\ProgramStudi::where('id', '!=', $prodi->id)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->limit(5)
+            ->get();
+
+        return view(TemplateHelper::view('prodi'), compact('prodi', 'otherProdi'));
     }
 
     /**

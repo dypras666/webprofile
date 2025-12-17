@@ -62,11 +62,11 @@
                                         class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm shadow-md text-center rounded-lg overflow-hidden min-w-[50px]">
                                         <div
                                             class="bg-cyan-600 text-white text-[10px] uppercase py-1 font-bold tracking-wider px-2">
-                                            {{ $event->created_at->format('M') }}
+                                            <span
+                                                class="text-[10px] font-bold uppercase tracking-wider block leading-tight">{{ $event->published_at ? $event->published_at->format('M') : $event->created_at->format('M') }}</span>
                                         </div>
-                                        <div class="text-xl font-bold text-gray-800 py-1 font-heading">
-                                            {{ $event->created_at->format('d') }}
-                                        </div>
+                                        <span
+                                            class="text-2xl font-bold block leading-none">{{ $event->published_at ? $event->published_at->format('d') : $event->created_at->format('d') }}</span>
                                     </div>
 
                                     {{-- Category --}}
@@ -93,7 +93,8 @@
                                         class="mt-auto pt-4 border-t border-dashed border-gray-100 flex items-center justify-between text-xs text-gray-500">
                                         <div class="flex items-center gap-2">
                                             <i class="far fa-clock text-cyan-500"></i>
-                                            <span>{{ $event->created_at->format('H:i') }} WIB</span>
+                                            <span>{{ $event->published_at ? $event->published_at->format('H:i') : $event->created_at->format('H:i') }}
+                                                WIB</span>
                                         </div>
                                         <span
                                             class="group-hover:translate-x-1 transition-transform duration-300 text-cyan-600 font-medium">
@@ -169,10 +170,10 @@
                             <template x-for="date in no_of_days">
                                 <div class="h-10 w-10 mx-auto flex items-center justify-center rounded-full transition-all relative group cursor-pointer"
                                     :class="{
-                                             'bg-cyan-600 text-white font-bold shadow-md': isToday(date) && !isSelected(date),
-                                             'bg-cyan-100 text-cyan-700 font-bold': isSelected(date),
-                                             'hover:bg-gray-100 text-gray-700': !isToday(date) && !isSelected(date)
-                                         }" @click="selectDate(date)">
+                                                 'bg-cyan-600 text-white font-bold shadow-md': isToday(date) && !isSelected(date),
+                                                 'bg-cyan-100 text-cyan-700 font-bold': isSelected(date),
+                                                 'hover:bg-gray-100 text-gray-700': !isToday(date) && !isSelected(date)
+                                             }" @click="selectDate(date)">
 
                                     <span x-text="date"></span>
 

@@ -24,6 +24,18 @@
                     @php
                         $currentValue = $dbValues[$key] ?? $default;
                         $label = ucwords(str_replace(['.', '_'], ' ', $key));
+                        // Custom label mapping for better readability
+                        $customLabels = [
+                            'hero_title' => 'Hero Section Title',
+                            'hero_subtitle' => 'Hero Section Subtitle',
+                            'cta_text' => 'Call to Action Text',
+                            'cta_url' => 'Call to Action URL',
+                            // Add more mapings as needed for specific theme keys
+                        ];
+                        if (array_key_exists($key, $customLabels)) {
+                            $label = $customLabels[$key];
+                        }
+
                         $isTextarea = strlen($default) > 50 || str_contains($key, 'description') || str_contains($key, 'text');
                         $isImage = str_contains($key, 'image') || str_contains($key, 'background') || str_contains($key, 'logo') || str_contains($key, 'banner_image');
                     @endphp
@@ -45,11 +57,11 @@
                                     </div>
                                 @endif
                                 <input type="file" name="{{ $key }}" id="{{ $key }}" class="w-full text-sm text-gray-500
-                                                file:mr-4 file:py-2 file:px-4
-                                                file:rounded-full file:border-0
-                                                file:text-sm file:font-semibold
-                                                file:bg-blue-50 file:text-blue-700
-                                                hover:file:bg-blue-100">
+                                                            file:mr-4 file:py-2 file:px-4
+                                                            file:rounded-full file:border-0
+                                                            file:text-sm file:font-semibold
+                                                            file:bg-blue-50 file:text-blue-700
+                                                            hover:file:bg-blue-100">
 
                                 @if($currentValue)
                                     <p class="text-xs text-gray-500">Current: {{ basename($currentValue) }}</p>

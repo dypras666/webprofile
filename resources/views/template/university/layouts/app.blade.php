@@ -259,7 +259,7 @@
                                     <a href="{{ route('frontend.post', $post->slug) }}" class="hover:text-white transition-colors block line-clamp-2">
                                         {{ $post->title }}
                                     </a>
-                                    <span class="text-[10px] text-gray-600 block mt-1">{{ $post->created_at->format('d M Y') }}</span>
+                                    <span class="text-[10px] text-gray-600 block mt-1">{{ $post->published_at ? $post->published_at->format('d M Y') : $post->created_at->format('d M Y') }}</span>
                                 </li>
                             @endforeach
                             @if($announcements->isEmpty())
@@ -293,22 +293,24 @@
                         </ul>
                     </div>
 
-                    {{-- Column 4: Contact Box --}}
+                    {{-- Column 4: Footer 2 Menu --}}
                     <div>
-                        <div class="border border-white/10 p-6">
-                            <h4 class="text-white font-bold uppercase tracking-wider mb-6 text-sm">Contact</h4>
-                            <div class="space-y-3 text-sm">
-                                <p>Email: <span class="text-gray-300">{{
-                                        \App\Models\SiteSetting::getValue('contact_email', 'email-us@example.com')
-                                        }}</span></p>
-                                <p>Telephone: <span
-                                        class="text-gray-300">{{ \App\Models\SiteSetting::getValue('contact_phone', '0123 456 789') }}</span>
-                                </p>
-                                <p>Address: <span
-                                        class="text-gray-300">{{ \App\Models\SiteSetting::getValue('contact_address', '123 Main street, Los Angeles, CA, USA') }}</span>
-                                </p>
-                            </div>
-                        </div>
+                        <h4 class="text-white font-bold uppercase tracking-wider mb-6 text-base">
+                            {{ \App\Models\SiteSetting::getValue('theme_university_footer_menu_title', 'Tautan') }}
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            @php $footer2Menus = \App\Models\NavigationMenu::getMenuTree('footer_2'); @endphp
+                            @foreach($footer2Menus as $menu)
+                                <li>
+                                    <a href="{{ $menu->final_url }}" target="{{ $menu->target }}" class="hover:text-white transition-colors">
+                                        {{ $menu->title }}
+                                    </a>
+                                </li>
+                            @endforeach
+                            @if($footer2Menus->isEmpty())
+                                <li class="text-gray-600 italic">Menu 'footer_2' empty</li>
+                            @endif
+                        </ul>
                     </div>
 
                 </div>
@@ -327,6 +329,23 @@
                             {{ Str::limit(\App\Models\SiteSetting::getValue('site_description'), 150) }}
                         </p>
                        
+                        </p>
+                        
+                        {{-- Contact Info Moved Here --}}
+                        <div class="space-y-3 text-sm mt-6 border-t border-white/10 pt-6">
+                            <p class="flex items-start gap-3">
+                                <i class="fas fa-envelope mt-1 text-gray-500"></i>
+                                <span class="text-gray-300">{{ \App\Models\SiteSetting::getValue('contact_email', 'email-us@example.com') }}</span>
+                            </p>
+                            <p class="flex items-start gap-3">
+                                <i class="fas fa-phone mt-1 text-gray-500"></i>
+                                <span class="text-gray-300">{{ \App\Models\SiteSetting::getValue('contact_phone', '0123 456 789') }}</span>
+                            </p>
+                            <p class="flex items-start gap-3">
+                                <i class="fas fa-map-marker-alt mt-1 text-gray-500"></i>
+                                <span class="text-gray-300">{{ \App\Models\SiteSetting::getValue('contact_address', '123 Main street, Los Angeles, CA, USA') }}</span>
+                            </p>
+                        </div>
                     </div>
 
                     {{-- Recent Posts --}}
@@ -340,7 +359,7 @@
                                         class="text-sm hover:text-white transition-colors block">
                                         {{ $post->title }}
                                     </a>
-                                    <span class="text-xs text-gray-600">{{ $post->created_at->format('F d, Y') }}</span>
+                                    <span class="text-xs text-gray-600">{{ $post->published_at ? $post->published_at->format('F d, Y') : $post->created_at->format('F d, Y') }}</span>
                                 </li>
                             @endforeach
                         </ul>
@@ -394,9 +413,7 @@
                             class="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-white hover:text-white transition-colors"><i
                                 class="fab fa-linkedin-in"></i></a>
                     @endif
-                    <a href="#"
-                        class="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-white hover:text-white transition-colors"><i
-                            class="fab fa-google-plus-g"></i></a>
+                    
                 </div>
 
             </div>

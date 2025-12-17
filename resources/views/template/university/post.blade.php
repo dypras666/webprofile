@@ -53,7 +53,7 @@
                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
                                         </path>
                                     </svg>
-                                    {{ $post->created_at->isoFormat('D MMMM Y') }}
+                                    {{ $post->published_at ? $post->published_at->isoFormat('D MMMM Y') : $post->created_at->isoFormat('D MMMM Y') }}
                                 </span>
                                 <span class="flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +194,9 @@
                                                 <h5 class="text-sm font-medium text-gray-800 line-clamp-2 mb-1 hover:text-primary">
                                                     <a href="{{ route('frontend.post', $related->slug) }}">{{ $related->title }}</a>
                                                 </h5>
-                                                <div class="text-xs text-gray-500">{{ $related->created_at->format('d M Y') }}</div>
+                                                <div class="text-xs text-gray-500">
+                                                    {{ $related->published_at ? $related->published_at->format('d M Y') : $related->created_at->format('d M Y') }}
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach

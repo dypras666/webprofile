@@ -10,6 +10,7 @@ return [
     'footer' => [
         'about_title' => 'Tentang Kami',
         'contact_title' => 'Hubungi Kami',
+        'menu_title' => 'Tautan', // Added footer menu title
     ],
     'sections' => [
         'news_title' => 'Berita Terbaru',

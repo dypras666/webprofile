@@ -49,7 +49,7 @@ class NavigationController extends Controller
             'css_class' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'is_active' => 'boolean',
-            'position' => 'required|in:top,bottom,quicklink'
+            'position' => 'required|in:top,bottom,quicklink,footer_2'
         ]);
 
         // Get the next sort order
@@ -87,7 +87,7 @@ class NavigationController extends Controller
             'css_class' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'is_active' => 'boolean',
-            'position' => 'required|in:top,bottom,quicklink'
+            'position' => 'required|in:top,bottom,quicklink,footer_2'
         ]);
 
         // Prevent setting self as parent

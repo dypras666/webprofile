@@ -35,9 +35,9 @@
                                     <div
                                         class="bg-[#1e3a8a] text-white w-16 h-16 flex flex-col items-center justify-center shadow-md">
                                         <span
-                                            class="text-[10px] font-bold uppercase tracking-wider block leading-tight">{{ $post->created_at->format('M') }}</span>
+                                            class="text-[10px] font-bold uppercase tracking-wider block leading-tight">{{ $post->published_at ? $post->published_at->format('M') : $post->created_at->format('M') }}</span>
                                         <span
-                                            class="text-2xl font-bold block leading-none">{{ $post->created_at->format('d') }}</span>
+                                            class="text-2xl font-bold block leading-none">{{ $post->published_at ? $post->published_at->format('d') : $post->created_at->format('d') }}</span>
                                     </div>
                                 </div>
 

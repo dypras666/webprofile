@@ -231,13 +231,36 @@
                                 <i class="sidebar-icon fas fa-download w-5 text-center text-xs"></i>
                                 <span class="sidebar-text ml-3">Downloads</span>
                             </a>
+                        </div>
+                    </div>
+
+                    <!-- INSTITUSI GROUP -->
+                    <div
+                        x-data="{ open: {{ request()->routeIs('admin.prodi.*') || request()->routeIs('admin.team.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open"
+                            class="flex items-center w-full px-4 py-3 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 justify-between text-gray-300">
+                            <div class="flex items-center">
+                                <i class="sidebar-icon fas fa-university w-5 text-center"></i>
+                                <span class="sidebar-text ml-3 font-medium">Institusi</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-200"
+                                :class="{ 'transform rotate-180': open }"></i>
+                        </button>
+                        <div x-show="open" x-collapse class="pl-4 space-y-1 mt-1">
+                            <!-- Prodi -->
+                            <a href="{{ route('admin.prodi.index') }}"
+                                class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.prodi.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
+                                title="Program Studi">
+                                <i class="sidebar-icon fas fa-graduation-cap w-5 text-center text-xs"></i>
+                                <span class="sidebar-text ml-3">prodi</span>
+                            </a>
 
                             <!-- Team / Data Dosen -->
                             <a href="{{ route('admin.team.index') }}"
                                 class="flex items-center px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors duration-200 {{ request()->routeIs('admin.team.*') ? 'bg-gray-700 text-blue-400' : 'text-gray-400' }}"
                                 title="Data Dosen / Team">
                                 <i class="sidebar-icon fas fa-users w-5 text-center text-xs"></i>
-                                <span class="sidebar-text ml-3">Data Dosen / Team</span>
+                                <span class="sidebar-text ml-3">Data Dosen</span>
                             </a>
                         </div>
                     </div>
