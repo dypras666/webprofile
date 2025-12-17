@@ -30,14 +30,14 @@ class LppmSiteSettingSeeder extends Seeder
             ],
             [
                 'key' => 'site_url',
-                'value' => 'https://lpm.iimsabak.ac.id',
+                'value' => 'https://iimsabak.ac.id',
                 'type' => 'url',
                 'group' => 'general',
                 'description' => 'The main URL of your website'
             ],
             [
-                'key' => 'admin_email',
-                'value' => 'lpm@iimsabak.ac.id',
+                'key' => 'contact_email',
+                'value' => 'info@iimsabak.ac.id',
                 'type' => 'email',
                 'group' => 'general',
                 'description' => 'Primary email address for administration'

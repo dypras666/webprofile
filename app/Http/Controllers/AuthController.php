@@ -24,6 +24,13 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
+        $activeTemplate = \App\Helpers\TemplateHelper::getActiveTemplate();
+        $themeView = "template.{$activeTemplate}.login";
+
+        if ($activeTemplate !== 'default' && view()->exists($themeView)) {
+            return view($themeView);
+        }
+
         return view('auth.login');
     }
 
