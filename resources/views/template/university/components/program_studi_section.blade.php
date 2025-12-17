@@ -123,8 +123,7 @@
                     spaceBetween: 30,
                     loop: true,
                     centeredSlides: true,
-                    loop: true,
-                    centeredSlides: true,
+                    loopedSlides: 8, // Ensure enough slides are duplicated for loop mode
                     // effect: 'coverflow', // Removed to fix interaction issues
                     // coverflowEffect: { ... },
                     autoplay: {
