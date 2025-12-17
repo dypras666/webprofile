@@ -372,18 +372,7 @@
                         @endforeach
                     </div>
 
-                    {{-- Action Buttons --}}
-                    <div class="text-center mt-12 flex flex-col md:flex-row justify-center items-center gap-4">
-                        <a href="{{ route('frontend.facilities') }}"
-                            class="min-w-[200px] border border-white text-white px-8 py-3 text-sm font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-all">
-                            Lihat Semua Fasilitas <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                        </a>
-                        <span class="text-gray-500 text-xs font-bold uppercase">OR</span>
-                        <button @click="$dispatch('open-tour')"
-                            class="min-w-[200px] bg-cyan-600 border border-cyan-600 text-white px-8 py-3 text-sm font-bold uppercase tracking-wider hover:bg-cyan-700 hover:border-cyan-700 transition-all shadow-lg shadow-cyan-900/50">
-                            Campus Tour <i class="fas fa-play ml-2 text-xs"></i>
-                        </button>
-                    </div>
+                   
 
                 </div>
             </div>
