@@ -135,12 +135,12 @@
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
 
-                            <!-- Admin Email -->
+                            <!-- Contact Email -->
                             <div>
-                                <label for="admin_email" class="block text-sm font-medium text-gray-700 mb-2">Admin
+                                <label for="contact_email" class="block text-sm font-medium text-gray-700 mb-2">Contact
                                     Email</label>
-                                <input type="email" id="admin_email" name="admin_email"
-                                    value="{{ $settings['admin_email'] ?? '' }}"
+                                <input type="email" id="contact_email" name="contact_email"
+                                    value="{{ $settings['contact_email'] ?? '' }}"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
 

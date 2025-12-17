@@ -1,6 +1,8 @@
 @extends('template.university.layouts.app')
 
-@section('title', 'Blog - ' . \App\Models\SiteSetting::getValue('site_name'))
+@section('title', isset($category) ? $category->name . ' - ' . \App\Models\SiteSetting::getValue('site_name') : 'Blog - ' . \App\Models\SiteSetting::getValue('site_name'))
+@section('description', isset($category) ? 'Posts in category ' . $category->name : 'Read our latest news and updates.')
+@section('keywords', isset($category) ? $category->name . ', news, blog' : 'news, blog, updates')
 
 @section('content')
 

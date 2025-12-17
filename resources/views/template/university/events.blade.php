@@ -1,6 +1,8 @@
 @extends('template.university.layouts.app')
 
 @section('title', 'Events - ' . \App\Models\SiteSetting::getValue('site_name'))
+@section('description', 'Discover upcoming events, seminars, and activities at ' . \App\Models\SiteSetting::getValue('site_name'))
+@section('keywords', 'events, seminars, workshops, activities, ' . \App\Models\SiteSetting::getValue('site_name'))
 
 @section('content')
 
@@ -170,10 +172,10 @@
                             <template x-for="date in no_of_days">
                                 <div class="h-10 w-10 mx-auto flex items-center justify-center rounded-full transition-all relative group cursor-pointer"
                                     :class="{
-                                                 'bg-cyan-600 text-white font-bold shadow-md': isToday(date) && !isSelected(date),
-                                                 'bg-cyan-100 text-cyan-700 font-bold': isSelected(date),
-                                                 'hover:bg-gray-100 text-gray-700': !isToday(date) && !isSelected(date)
-                                             }" @click="selectDate(date)">
+                                                     'bg-cyan-600 text-white font-bold shadow-md': isToday(date) && !isSelected(date),
+                                                     'bg-cyan-100 text-cyan-700 font-bold': isSelected(date),
+                                                     'hover:bg-gray-100 text-gray-700': !isToday(date) && !isSelected(date)
+                                                 }" @click="selectDate(date)">
 
                                     <span x-text="date"></span>
 

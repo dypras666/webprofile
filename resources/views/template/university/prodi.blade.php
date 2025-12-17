@@ -1,6 +1,8 @@
 @extends('template.university.layouts.app')
 
 @section('title', $prodi->name . ' - ' . \App\Helpers\TemplateHelper::getSetting('site_name'))
+@section('description', Str::limit(strip_tags($prodi->description ? $prodi->description : 'Program Studi ' . $prodi->name . ' at ' . \App\Helpers\TemplateHelper::getSetting('site_name')), 160))
+@section('keywords', $prodi->name . ', Program Studi, ' . $prodi->degree)
 
 @push('styles')
 <style>

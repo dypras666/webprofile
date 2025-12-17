@@ -1,6 +1,8 @@
 @extends('template.university.layouts.app')
 
 @section('title', 'Galeri Foto - ' . \App\Models\SiteSetting::getValue('site_name'))
+@section('description', 'Explore our photo gallery featuring campus life, activities, and facilities at ' . \App\Models\SiteSetting::getValue('site_name'))
+@section('keywords', 'gallery, photos, campus life, ' . \App\Models\SiteSetting::getValue('site_name'))
 
 @section('content')
 
