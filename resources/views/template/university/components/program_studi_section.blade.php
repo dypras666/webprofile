@@ -21,10 +21,10 @@
             </div>
 
             {{-- Swiper --}}
-            <div class="swiper prodiSwiper pb-12 px-4">
+            <div class="swiper prodiSwiper pb-12 px-4 !overflow-visible">
                 <div class="swiper-wrapper">
                     @foreach($programStudis as $prodi)
-                        <div class="swiper-slide h-auto">
+                        <div class="swiper-slide h-auto !w-[300px] md:!w-[350px] lg:!w-[380px]">
                             <div
                                 class="group h-[400px] w-full bg-blue-600 rounded-2xl shadow-xl relative overflow-hidden transform transition-all duration-300 hover:-translate-y-2">
 
@@ -36,7 +36,7 @@
                                         <div class="absolute top-6 right-6">
                                             <div
                                                 class="bg-yellow-400 text-blue-900 w-12 h-12 rounded-lg flex flex-col items-center justify-center shadow-lg transform rotate-3">
-                                                <span class="text-lg font-bold">{{ $prodi->accreditation }}</span> 
+                                                <span class="text-lg font-bold">{{ $prodi->accreditation }}</span>
                                             </div>
                                         </div>
                                     @endif
@@ -55,7 +55,8 @@
                                     <h4 class="text-yellow-400 font-bold text-lg uppercase tracking-wide mb-1">Program Studi
                                     </h4>
                                     <h3 class="text-white font-heading font-bold text-2xl md:text-3xl leading-tight">
-                                        {{ $prodi->name }}</h3>
+                                        {{ $prodi->name }}
+                                    </h3>
                                 </div>
 
                                 {{-- Hover State (Overlay) --}}
@@ -67,7 +68,7 @@
                                     </h3>
 
                                     <div
-                                        class="text-blue-100 text-sm leading-relaxed mb-8 flex-grow overflow-y-auto custom-scrollbar">
+                                        class="text-blue-100 text-sm leading-relaxed mb-8 flex-grow overflow-y-auto custom-scrollbar [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 text-left">
                                         {!! $prodi->description ?? 'Informasi detail mengenai program studi ini.' !!}
                                     </div>
 
@@ -101,10 +102,12 @@
 
                 {{-- Navigation --}}
                 <div
-                    class="swiper-button-next !text-yellow-400 !w-10 !h-10 !bg-blue-900/50 !rounded-full !backdrop-blur-sm after:!text-lg hover:!bg-blue-900 transition-colors">
+                    class="swiper-button-next !text-yellow-400 !w-10 !h-10 !bg-blue-900/50 !rounded-full !backdrop-blur-sm hover:!bg-blue-900 transition-colors after:!content-none flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-lg"></i>
                 </div>
                 <div
-                    class="swiper-button-prev !text-yellow-400 !w-10 !h-10 !bg-blue-900/50 !rounded-full !backdrop-blur-sm after:!text-lg hover:!bg-blue-900 transition-colors">
+                    class="swiper-button-prev !text-yellow-400 !w-10 !h-10 !bg-blue-900/50 !rounded-full !backdrop-blur-sm hover:!bg-blue-900 transition-colors after:!content-none flex items-center justify-center">
+                    <i class="fas fa-chevron-left text-lg"></i>
                 </div>
 
                 <div class="swiper-pagination !text-yellow-400 !bottom-0"></div>
@@ -116,18 +119,14 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 new Swiper(".prodiSwiper", {
-                    slidesPerView: 1,
+                    slidesPerView: "auto",
                     spaceBetween: 30,
                     loop: true,
                     centeredSlides: true,
-                    effect: 'coverflow',
-                    coverflowEffect: {
-                        rotate: 0,
-                        stretch: 0,
-                        depth: 100,
-                        modifier: 1,
-                        slideShadows: false,
-                    },
+                    loop: true,
+                    centeredSlides: true,
+                    // effect: 'coverflow', // Removed to fix interaction issues
+                    // coverflowEffect: { ... },
                     autoplay: {
                         delay: 3000,
                         disableOnInteraction: false,
@@ -140,21 +139,7 @@
                     navigation: {
                         nextEl: ".swiper-button-next",
                         prevEl: ".swiper-button-prev",
-                    },
-                    breakpoints: {
-                        640: {
-                            slidesPerView: 1,
-                            spaceBetween: 20,
-                        },
-                        768: {
-                            slidesPerView: 2,
-                            spaceBetween: 30,
-                        },
-                        1024: {
-                            slidesPerView: 3,
-                            spaceBetween: 40,
-                        },
-                    },
+                    }
                 });
             });
         </script>
