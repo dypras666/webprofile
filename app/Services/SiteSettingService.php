@@ -26,7 +26,7 @@ class SiteSettingService
     {
         return Cache::remember($this->cacheKey . '_all', $this->cacheTTL, function () {
             $settings = SiteSetting::orderBy('category')->orderBy('sort_order')->get();
-            
+
             $grouped = [];
             foreach ($settings as $setting) {
                 $grouped[$setting->category][] = [
@@ -42,7 +42,7 @@ class SiteSettingService
                     'sort_order' => $setting->sort_order
                 ];
             }
-            
+
             return $grouped;
         });
     }
@@ -80,14 +80,14 @@ class SiteSettingService
     public function getSetting($key, $default = null)
     {
         $cacheKey = $this->cacheKey . '_' . $key;
-        
+
         return Cache::remember($cacheKey, $this->cacheTTL, function () use ($key, $default) {
             $setting = SiteSetting::where('key', $key)->first();
-            
+
             if (!$setting) {
                 return $default;
             }
-            
+
             return $this->formatValue($setting);
         });
     }
@@ -95,40 +95,50 @@ class SiteSettingService
     /**
      * Update single setting
      */
-    public function updateSetting($key, $value): bool
+    public function updateSetting($key, $value): SiteSetting
     {
         DB::beginTransaction();
-        
+
         try {
-            $setting = SiteSetting::where('key', $key)->first();
-            
+            // Check if key is ID or Key string
+            if (is_numeric($key)) {
+                $setting = SiteSetting::find($key);
+            } else {
+                $setting = SiteSetting::where('key', $key)->first();
+            }
+
             if (!$setting) {
                 throw new \Exception('Setting not found: ' . $key);
             }
-            
-            // Handle file uploads
-            if ($value instanceof UploadedFile) {
-                // Delete old file if exists
-                if ($setting->value && $setting->type === 'file') {
-                    $this->fileUploadService->delete($setting->value);
+
+            // Extract value from array if passed as ['value' => ...]
+            if (is_array($value) && isset($value['value'])) {
+                $setting->update($value);
+            } else {
+                // Handle file uploads
+                if ($value instanceof UploadedFile) {
+                    // Delete old file if exists
+                    if ($setting->value && $setting->type === 'file') {
+                        $this->fileUploadService->delete($setting->value);
+                    }
+
+                    $media = $this->fileUploadService->upload($value, 'settings');
+                    $value = $media->path;
                 }
-                
-                $media = $this->fileUploadService->upload($value, 'settings');
-                $value = $media->path;
+
+                // Validate value
+                $this->validateSettingValue($setting, $value);
+
+                // Update setting value
+                $setting->update(['value' => $value]);
             }
-            
-            // Validate value
-            $this->validateSettingValue($setting, $value);
-            
-            // Update setting
-            $setting->update(['value' => $value]);
-            
+
             // Clear caches
-            $this->clearSettingCache($key);
-            
+            $this->clearSettingCache($setting->key);
+
             DB::commit();
-            
-            return true;
+
+            return $setting;
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -138,42 +148,44 @@ class SiteSettingService
     /**
      * Update multiple settings
      */
-    public function updateSettings(array $settings): bool
+    public function updateSettings(array $settings): int
     {
         DB::beginTransaction();
-        
+
         try {
+            $count = 0;
             foreach ($settings as $key => $value) {
                 $setting = SiteSetting::where('key', $key)->first();
-                
+
                 if (!$setting) {
                     continue; // Skip non-existent settings
                 }
-                
+
                 // Handle file uploads
                 if ($value instanceof UploadedFile) {
                     // Delete old file if exists
                     if ($setting->value && $setting->type === 'file') {
                         $this->fileUploadService->delete($setting->value);
                     }
-                    
+
                     $media = $this->fileUploadService->upload($value, 'settings');
                     $value = $media->path;
                 }
-                
+
                 // Validate value
                 $this->validateSettingValue($setting, $value);
-                
+
                 // Update setting
                 $setting->update(['value' => $value]);
+                $count++;
             }
-            
+
             // Clear all setting caches
             $this->clearAllSettingCaches();
-            
+
             DB::commit();
-            
-            return true;
+
+            return $count;
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -186,37 +198,37 @@ class SiteSettingService
     public function createSetting(array $data): SiteSetting
     {
         DB::beginTransaction();
-        
+
         try {
             // Check if key already exists
             if (SiteSetting::where('key', $data['key'])->exists()) {
                 throw new \Exception('Setting key already exists: ' . $data['key']);
             }
-            
+
             // Handle file upload
             if (isset($data['value']) && $data['value'] instanceof UploadedFile) {
                 $media = $this->fileUploadService->upload($data['value'], 'settings');
                 $data['value'] = $media->path;
             }
-            
+
             // Set default values
             $data['category'] = $data['category'] ?? 'general';
             $data['type'] = $data['type'] ?? 'text';
             $data['is_required'] = $data['is_required'] ?? false;
             $data['sort_order'] = $data['sort_order'] ?? 0;
-            
+
             // Encode options if provided
             if (isset($data['options']) && is_array($data['options'])) {
                 $data['options'] = json_encode($data['options']);
             }
-            
+
             $setting = SiteSetting::create($data);
-            
+
             // Clear caches
             $this->clearAllSettingCaches();
-            
+
             DB::commit();
-            
+
             return $setting;
         } catch (\Exception $e) {
             DB::rollback();
@@ -230,27 +242,27 @@ class SiteSettingService
     public function deleteSetting($key): bool
     {
         DB::beginTransaction();
-        
+
         try {
             $setting = SiteSetting::where('key', $key)->first();
-            
+
             if (!$setting) {
                 return false;
             }
-            
+
             // Delete associated file if exists
             if ($setting->value && $setting->type === 'file') {
                 $this->fileUploadService->delete($setting->value);
             }
-            
+
             $deleted = $setting->delete();
-            
+
             // Clear caches
             $this->clearSettingCache($key);
             $this->clearAllSettingCaches();
-            
+
             DB::commit();
-            
+
             return $deleted;
         } catch (\Exception $e) {
             DB::rollback();
@@ -299,10 +311,16 @@ class SiteSettingService
     /**
      * Export settings to array
      */
-    public function exportSettings(): array
+    public function exportSettings($category = null): array
     {
-        $settings = SiteSetting::all();
-        
+        $query = SiteSetting::query();
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        $settings = $query->get();
+
         $export = [];
         foreach ($settings as $setting) {
             $export[$setting->key] = [
@@ -317,7 +335,7 @@ class SiteSettingService
                 'sort_order' => $setting->sort_order
             ];
         }
-        
+
         return $export;
     }
 
@@ -327,33 +345,33 @@ class SiteSettingService
     public function importSettings(array $settings, $overwrite = false): int
     {
         DB::beginTransaction();
-        
+
         try {
             $imported = 0;
-            
+
             foreach ($settings as $key => $data) {
                 $existingSetting = SiteSetting::where('key', $key)->first();
-                
+
                 if ($existingSetting && !$overwrite) {
                     continue; // Skip existing settings if not overwriting
                 }
-                
+
                 $settingData = array_merge($data, ['key' => $key]);
-                
+
                 if ($existingSetting) {
                     $existingSetting->update($settingData);
                 } else {
                     SiteSetting::create($settingData);
                 }
-                
+
                 $imported++;
             }
-            
+
             // Clear all caches
             $this->clearAllSettingCaches();
-            
+
             DB::commit();
-            
+
             return $imported;
         } catch (\Exception $e) {
             DB::rollback();
@@ -367,29 +385,29 @@ class SiteSettingService
     public function resetToDefaults(array $keys = []): int
     {
         DB::beginTransaction();
-        
+
         try {
             $query = SiteSetting::query();
-            
+
             if (!empty($keys)) {
                 $query->whereIn('key', $keys);
             }
-            
+
             $settings = $query->get();
             $reset = 0;
-            
+
             foreach ($settings as $setting) {
                 if ($setting->default_value !== null) {
                     $setting->update(['value' => $setting->default_value]);
                     $reset++;
                 }
             }
-            
+
             // Clear all caches
             $this->clearAllSettingCaches();
-            
+
             DB::commit();
-            
+
             return $reset;
         } catch (\Exception $e) {
             DB::rollback();
@@ -398,18 +416,29 @@ class SiteSettingService
     }
 
     /**
+     * Reset settings by category
+     */
+    public function resetCategory(string $category): int
+    {
+        $keys = SiteSetting::where('category', $category)->pluck('key')->toArray();
+        return $this->resetToDefaults($keys);
+    }
+
+
+
+    /**
      * Get settings for frontend
      */
     public function getFrontendSettings(): array
     {
         return Cache::remember($this->cacheKey . '_frontend', $this->cacheTTL, function () {
             $settings = SiteSetting::where('is_public', true)->get();
-            
+
             $frontendSettings = [];
             foreach ($settings as $setting) {
                 $frontendSettings[$setting->key] = $this->formatValue($setting);
             }
-            
+
             return $frontendSettings;
         });
     }
@@ -447,6 +476,39 @@ class SiteSettingService
     }
 
     /**
+     * Get general settings
+     */
+    public function getGeneralSettings(): array
+    {
+        return $this->getSettingsByCategory('general');
+    }
+
+    /**
+     * Clear all cache (public wrapper)
+     */
+    public function clearCache(): void
+    {
+        $this->clearAllSettingCaches();
+    }
+
+    /**
+     * Test email configuration
+     */
+    public function testEmailConfiguration(string $email): bool
+    {
+        // Simple test to see if we can send an email
+        try {
+            \Illuminate\Support\Facades\Mail::raw('Test email from ' . config('app.name'), function ($message) use ($email) {
+                $message->to($email)
+                    ->subject('Test Email Configuration');
+            });
+            return true;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
      * Validate setting value
      */
     protected function validateSettingValue(SiteSetting $setting, $value): void
@@ -455,7 +517,7 @@ class SiteSettingService
         if ($setting->is_required && empty($value)) {
             throw new \Exception('Setting "' . $setting->label . '" is required');
         }
-        
+
         // Type-specific validation
         switch ($setting->type) {
             case 'email':
@@ -463,31 +525,31 @@ class SiteSettingService
                     throw new \Exception('Invalid email format for "' . $setting->label . '"');
                 }
                 break;
-                
+
             case 'url':
                 if ($value && !filter_var($value, FILTER_VALIDATE_URL)) {
                     throw new \Exception('Invalid URL format for "' . $setting->label . '"');
                 }
                 break;
-                
+
             case 'number':
                 if ($value && !is_numeric($value)) {
                     throw new \Exception('"' . $setting->label . '" must be a number');
                 }
                 break;
-                
+
             case 'boolean':
                 if ($value && !in_array($value, [true, false, 1, 0, '1', '0', 'true', 'false'])) {
                     throw new \Exception('"' . $setting->label . '" must be a boolean value');
                 }
                 break;
-                
+
             case 'json':
                 if ($value && !is_array($value) && !json_decode($value)) {
                     throw new \Exception('"' . $setting->label . '" must be valid JSON');
                 }
                 break;
-                
+
             case 'select':
             case 'radio':
                 if ($value && $setting->options) {
@@ -499,11 +561,11 @@ class SiteSettingService
                 }
                 break;
         }
-        
+
         // Custom validation rules
         if ($setting->validation_rules && $value) {
             $rules = explode('|', $setting->validation_rules);
-            
+
             foreach ($rules as $rule) {
                 if (strpos($rule, 'min:') === 0) {
                     $min = (int) substr($rule, 4);
@@ -511,7 +573,7 @@ class SiteSettingService
                         throw new \Exception('"' . $setting->label . '" must be at least ' . $min . ' characters');
                     }
                 }
-                
+
                 if (strpos($rule, 'max:') === 0) {
                     $max = (int) substr($rule, 4);
                     if (strlen($value) > $max) {
@@ -528,24 +590,24 @@ class SiteSettingService
     protected function formatValue(SiteSetting $setting)
     {
         $value = $setting->value;
-        
+
         switch ($setting->type) {
             case 'boolean':
                 return in_array($value, [1, '1', 'true', true]);
-                
+
             case 'number':
                 return is_numeric($value) ? (float) $value : $value;
-                
+
             case 'json':
                 return is_string($value) ? json_decode($value, true) : $value;
-                
+
             case 'checkbox':
                 return is_string($value) ? explode(',', $value) : $value;
-                
+
             case 'file':
             case 'image':
                 return $value ? asset('storage/' . $value) : $value;
-                
+
             default:
                 return $value;
         }
@@ -571,18 +633,18 @@ class SiteSettingService
             // Fallback for cache drivers that don't support tagging (like database)
             Cache::flush();
         }
-        
+
         // Also clear specific caches
         $patterns = [
             $this->cacheKey . '_all',
             $this->cacheKey . '_frontend',
             $this->cacheKey . '_categories'
         ];
-        
+
         foreach ($patterns as $pattern) {
             Cache::forget($pattern);
         }
-        
+
         // Clear category caches
         $categories = $this->getCategories();
         foreach ($categories as $category) {
@@ -596,13 +658,13 @@ class SiteSettingService
     public function backupSettings(): string
     {
         $settings = $this->exportSettings();
-        
+
         $backup = [
             'timestamp' => now()->toISOString(),
             'version' => '1.0',
             'settings' => $settings
         ];
-        
+
         return json_encode($backup, JSON_PRETTY_PRINT);
     }
 
@@ -612,11 +674,11 @@ class SiteSettingService
     public function restoreSettings(string $backupData): int
     {
         $backup = json_decode($backupData, true);
-        
+
         if (!$backup || !isset($backup['settings'])) {
             throw new \Exception('Invalid backup data');
         }
-        
+
         return $this->importSettings($backup['settings'], true);
     }
 
@@ -626,13 +688,13 @@ class SiteSettingService
     public function getFormConfiguration($category = null): array
     {
         $query = SiteSetting::orderBy('sort_order');
-        
+
         if ($category) {
             $query->where('category', $category);
         }
-        
+
         $settings = $query->get();
-        
+
         $config = [];
         foreach ($settings as $setting) {
             $config[] = [
@@ -648,7 +710,7 @@ class SiteSettingService
                 'help_text' => $setting->help_text
             ];
         }
-        
+
         return $config;
     }
 }

@@ -17,6 +17,18 @@ class FrontendController extends Controller
     /**
      * Display the homepage
      */
+    public function team()
+    {
+        $teamMembers = \App\Models\TeamMember::where('status', true)
+            ->orderBy('order', 'asc')
+            ->get();
+
+        return view(TemplateHelper::view('team'), compact('teamMembers'));
+    }
+
+    /**
+     * Display homepage
+     */
     public function index()
     {
         // Get slider posts

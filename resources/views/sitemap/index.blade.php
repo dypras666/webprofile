@@ -27,11 +27,51 @@
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
+    <url>
+        <loc>{{ route('frontend.posts') }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>{{ route('frontend.events') }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>{{ route('frontend.facilities') }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>{{ route('frontend.team') }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    {{-- Program Studi --}}
+    @foreach ($programStudis as $prodi)
+        <url>
+            <loc>{{ route('frontend.prodi.detail', $prodi->code) }}</loc>
+            <lastmod>{{ $prodi->updated_at->toAtomString() }}</lastmod>
+            <changefreq>monthly</changefreq>
+            <priority>0.8</priority>
+        </url>
+    @endforeach
+
+    {{-- Downloads (Individual) --}}
+    @foreach ($downloads as $download)
+        <url>
+            <loc>{{ route('frontend.downloads.show', $download) }}</loc>
+            <lastmod>{{ $download->updated_at->toAtomString() }}</lastmod>
+            <changefreq>monthly</changefreq>
+            <priority>0.6</priority>
+        </url>
+    @endforeach
 
     {{-- Posts --}}
     @foreach ($posts as $post)
         <url>
-            <loc>{{ route('frontend.post', $post->slug) }}</loc>
+            <loc>{{ $post->type === 'page' ? route('frontend.page', $post->slug) : route('frontend.post', $post->slug) }}</loc>
             <lastmod>{{ $post->updated_at->toAtomString() }}</lastmod>
             <changefreq>weekly</changefreq>
             <priority>0.8</priority>

@@ -134,6 +134,7 @@ Route::get('/about', [FrontendController::class, 'about'])->name('frontend.about
 Route::get('/contact', [FrontendController::class, 'contact'])->name('frontend.contact');
 Route::post('/contact', [FrontendController::class, 'contactSubmit'])->name('frontend.contact.submit');
 Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
+Route::get('/team', [FrontendController::class, 'team'])->name('frontend.team');
 
 // Comments
 Route::post('/comments', [App\Http\Controllers\Frontend\CommentController::class, 'store'])->name('frontend.comments.store');

@@ -1,23 +1,31 @@
-@props(['teamMembers'])
+@extends('template.university.layouts.app')
 
-@if(isset($teamMembers) && $teamMembers->count() > 0)
-    <div class="w-full py-20 bg-white">
-        <div class="container mx-auto px-4 md:px-6">
+@section('title', 'Tenaga Pengajar - ' . \App\Helpers\TemplateHelper::getSetting('site_name'))
+@section('description', 'Tenaga Pengajar dan Staff di ' . \App\Helpers\TemplateHelper::getSetting('site_name'))
 
-            {{-- Section Title --}}
-            <div class="text-center mb-16">
-                <h2
-                    class="text-3xl md:text-4xl font-bold text-[#1e3a8a] mb-4 font-heading uppercase tracking-wider relative inline-block">
-                    {{ \App\Helpers\TemplateHelper::getThemeConfig('sections.team_title', 'Our Team') }}
-                </h2>
-                <div class="w-24 h-1 bg-[#ffd700] mx-auto rounded-full mb-6"></div>
-                <a href="{{ route('frontend.team') }}"
-                    class="inline-block text-[#1e3a8a] hover:text-cyan-600 font-medium transition-colors">
-                    Lihat Semua Tenaga Pengajar <i class="fas fa-arrow-right ml-1"></i>
-                </a>
-            </div>
+@section('content')
 
-            {{-- Team Grid --}}
+    {{-- Header --}}
+    <div class="bg-[#1e3a8a] py-12 border-b border-blue-800 relative overflow-hidden">
+        {{-- Background Pattern Abstract --}}
+        <div class="absolute inset-0 opacity-10">
+            <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"></path>
+            </svg>
+        </div>
+
+        <div class="container mx-auto px-4 md:px-6 relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-heading font-bold text-white mb-4">Tenaga Pengajar</h1>
+            <p class="text-blue-100 text-lg max-w-2xl mx-auto">
+                Berkenalan dengan tim pengajar dan staf kami yang berdedikasi.
+            </p>
+        </div>
+    </div>
+
+    {{-- Main Content --}}
+    <div class="container mx-auto px-4 md:px-6 py-16">
+
+        @if($teamMembers->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 @foreach($teamMembers as $member)
                     <div
@@ -92,7 +100,18 @@
                     </div>
                 @endforeach
             </div>
-
-        </div>
+        @else
+            <div class="bg-gray-50 p-12 text-center rounded-xl border border-gray-100">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-200 rounded-full mb-4 text-gray-400">
+                    <i class="fas fa-users text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Belum ada data tenaga pengajar</h3>
+                <p class="text-gray-500 mb-6">Data tenaga pengajar akan segera ditambahkan.</p>
+                <a href="{{ route('frontend.index') }}"
+                    class="inline-block px-6 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                    Kembali ke Beranda
+                </a>
+            </div>
+        @endif
     </div>
-@endif
+@endsection

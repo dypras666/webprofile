@@ -161,9 +161,9 @@ class AdminSettingController extends BaseAdminController
                 return back()->with('error', 'No settings to update.');
             }
 
-            $updated = $this->settingService->updateMultipleSettings($settings);
+            $updated = $this->settingService->updateSettings($settings);
 
-            $this->logActivity('settings_bulk_updated', 'Updated ' . count($updated) . ' settings in category: ' . $category);
+            $this->logActivity('settings_bulk_updated', 'Updated ' . $updated . ' settings in category: ' . $category);
 
             return back()->with('success', 'Settings updated successfully.');
         } catch (\Exception $e) {
@@ -201,7 +201,7 @@ class AdminSettingController extends BaseAdminController
 
         try {
             $settings = $request->except(['_token', '_method']);
-            $this->settingService->updateMultipleSettings($settings);
+            $this->settingService->updateSettings($settings);
 
             $this->logActivity('general_settings_updated', 'Updated general settings');
 
@@ -244,7 +244,7 @@ class AdminSettingController extends BaseAdminController
 
         try {
             $settings = $request->except(['_token', '_method']);
-            $this->settingService->updateMultipleSettings($settings);
+            $this->settingService->updateSettings($settings);
 
             $this->logActivity('seo_settings_updated', 'Updated SEO settings');
 
@@ -259,7 +259,7 @@ class AdminSettingController extends BaseAdminController
      */
     public function socialMedia(): View
     {
-        $settings = $this->settingService->getSocialMediaSettings();
+        $settings = $this->settingService->getSocialSettings();
 
         return view('admin.settings.social-media', compact('settings'));
     }
@@ -288,7 +288,7 @@ class AdminSettingController extends BaseAdminController
 
         try {
             $settings = $request->except(['_token', '_method']);
-            $this->settingService->updateMultipleSettings($settings);
+            $this->settingService->updateSettings($settings);
 
             $this->logActivity('social_media_settings_updated', 'Updated social media settings');
 
@@ -332,7 +332,7 @@ class AdminSettingController extends BaseAdminController
 
         try {
             $settings = $request->except(['_token', '_method']);
-            $this->settingService->updateMultipleSettings($settings);
+            $this->settingService->updateSettings($settings);
 
             $this->logActivity('email_settings_updated', 'Updated email settings');
 
@@ -374,7 +374,7 @@ class AdminSettingController extends BaseAdminController
 
         try {
             $settings = $request->except(['_token', '_method']);
-            $this->settingService->updateMultipleSettings($settings);
+            $this->settingService->updateSettings($settings);
 
             $this->logActivity('appearance_settings_updated', 'Updated appearance settings');
 
@@ -393,7 +393,7 @@ class AdminSettingController extends BaseAdminController
             $category = $request->get('category');
             $format = $request->get('format', 'json');
 
-            $data = $this->settingService->exportSettings($category, $format);
+            $data = $this->settingService->exportSettings($category);
 
             $filename = 'settings';
             if ($category) {
@@ -427,9 +427,9 @@ class AdminSettingController extends BaseAdminController
 
             $imported = $this->settingService->importSettings($file, $overwrite);
 
-            $this->logActivity('settings_imported', 'Imported ' . count($imported) . ' settings');
+            $this->logActivity('settings_imported', 'Imported ' . $imported . ' settings');
 
-            return back()->with('success', 'Settings imported successfully. ' . count($imported) . ' settings were imported.');
+            return back()->with('success', 'Settings imported successfully. ' . $imported . ' settings were imported.');
         } catch (\Exception $e) {
             return back()->with('error', 'Import failed: ' . $e->getMessage());
         }
@@ -447,7 +447,11 @@ class AdminSettingController extends BaseAdminController
 
         try {
             $category = $request->get('category');
-            $count = $this->settingService->resetSettings($category);
+            if ($category) {
+                $count = $this->settingService->resetCategory($category);
+            } else {
+                $count = $this->settingService->resetToDefaults();
+            }
 
             $message = $category
                 ? "Reset {$count} settings in category: {$category}"
@@ -554,7 +558,7 @@ class AdminSettingController extends BaseAdminController
         ]);
 
         try {
-            $value = $this->settingService->getSettingValue($request->key);
+            $value = $this->settingService->getSetting($request->key);
 
             return $this->successResponse('Setting retrieved', [
                 'key' => $request->key,
@@ -576,7 +580,7 @@ class AdminSettingController extends BaseAdminController
         ]);
 
         try {
-            $updated = $this->settingService->updateSettingValue($request->key, $request->value);
+            $updated = $this->settingService->updateSetting($request->key, $request->value);
 
             if ($updated) {
                 $this->logActivity('setting_updated', 'Updated setting: ' . $request->key);
